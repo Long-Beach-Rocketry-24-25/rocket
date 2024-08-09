@@ -4,17 +4,14 @@ project(myapp
     LANGUAGES CXX C ASM
 )
 
+add_compile_definitions(
+    ${MCU_NAME}=TRUE
+    USE_HAL_DRIVER=TRUE
+)
+
 if (BUILD_TARGET STREQUAL "Demo")
-    add_compile_definitions(
-        STM32H503xx=TRUE
-        USE_HAL_DRIVER=TRUE
-    )
     add_subdirectory(app/Demo)
 elseif (BUILD_TARGET STREQUAL "can")
-    add_compile_definitions(
-        STM32H503xx=TRUE
-        USE_HAL_DRIVER=TRUE
-    )
     add_subdirectory(app/can)
 endif()
 
