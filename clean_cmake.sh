@@ -1,4 +1,4 @@
-garbage=(build.ninja CMakeCache.txt "CMakeFiles" cmake_install.cmake)
+garbage=(build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake)
 
 dirs=("mcu_support" "common")
 

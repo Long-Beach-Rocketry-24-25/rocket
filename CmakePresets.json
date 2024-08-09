@@ -21,14 +21,25 @@
             "cacheVariables": {
                 "CMAKE_C_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -fdata-sections -ffunction-sections -Wall -Og",
                 "CMAKE_CXX_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -fdata-sections -ffunction-sections -Wall -Og",
+                "LINK_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard",
                 "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE"
+            }
+        },
+        {
+            "name": "stm32h503",
+            "displayName": "stm32h503",
+            "description": "Compiler settings for stm32h503",
+            "inherits": "stm32h5",
+            "cacheVariables": {
+                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h503/STM32H503xx_FLASH.ld",
+                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h503/startup_stm32h503xx.s"
             }
         },
         {
             "name": "Demo",
             "displayName": "Demo",
             "description": "Compiler settings for Demo",
-            "inherits": "stm32h5",
+            "inherits": "stm32h503",
             "generator": "MinGW Makefiles",
             "binaryDir": "${sourceDir}/app/Demo/Build",
             "cacheVariables": {
@@ -40,7 +51,7 @@
             "name": "can",
             "displayName": "can",
             "description": "Compiler settings for can",
-            "inherits": "stm32h5",
+            "inherits": "stm32h503",
             "generator": "MinGW Makefiles",
             "binaryDir": "${sourceDir}/app/can/Build",
             "cacheVariables": {

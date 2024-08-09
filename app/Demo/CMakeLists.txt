@@ -1,7 +1,3 @@
-set(MCU_SUPPORT ${CMAKE_SOURCE_DIR}/mcu_support/stm32/h5xx/h503)
-set(LINKER_SCRIPT ${MCU_SUPPORT}/STM32H503xx_FLASH.ld)
-set(STARTUP_FILE ${MCU_SUPPORT}/startup_stm32h503xx.s)
-
 set(EXECUTABLE demo)
 
 add_subdirectory(BSP)
@@ -15,10 +11,6 @@ add_executable(${EXECUTABLE}
 
 target_link_options(${EXECUTABLE} PUBLIC
     -T${LINKER_SCRIPT}
-    -mcpu=cortex-m33
-    -mthumb
-    -mfpu=fpv5-sp-d16
-    -mfloat-abi=hard
     -specs=nosys.specs
     -lc
     -lm
