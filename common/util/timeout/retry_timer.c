@@ -1,11 +1,39 @@
+<<<<<<< HEAD:common/util/timeout/retry_timer.c
 #include "retry_timer.h"
+=======
+/**
+ * Basic implementation of timer interface.
+ * Times out after counting x iterations.
+ * 
+ * Author: Nick Fan
+ */
 
+#pragma once
+
+#include "timeout.h"
+
+/**
+ * Data necessary for each timer instance.
+ */
+typedef struct
+{
+    size_t reset;
+	volatile size_t counter;
+} RetryData;
+>>>>>>> c047760 (nf-f7: experimental):common/util/retry_timer.h
+
+/**
+ * Start function for Timeout interface.
+ */
 void retry_timer_start(void * data)
 {
     RetryData* retry_data = (RetryData *) data;
     retry_data->counter = retry_data->reset;
 }
 
+/**
+ * Tick function for Timeout interface.
+ */
 bool retry_timer_tick(void * data)
 {
     RetryData* retry_data = (RetryData *) data;
@@ -18,6 +46,14 @@ bool retry_timer_tick(void * data)
 
 }
 
+/**
+ * Initializes a Timeout interface as a Retry Timer, that expires
+ * after checking the condition for 'count' iterations.
+ * 
+ * @param timer the timeout interface to initialize.
+ * @param retry the data for a retry timer to use for the instance.
+ * @param count the number of iterations before the timer expires each time.
+ */
 void retry_timer_init(Timeout* timer, RetryData* retry, size_t count)
 {
     retry->reset = count;
