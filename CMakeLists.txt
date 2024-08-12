@@ -15,5 +15,6 @@ elseif (BUILD_TARGET STREQUAL "usart")
     add_subdirectory(app/usart)
 endif()
 
-add_subdirectory(mcu_support)
+add_subdirectory(mcu_support/stm32/h5xx)
+add_subdirectory(mcu_support/cmsis)
 add_subdirectory(common)

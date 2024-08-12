@@ -38,9 +38,6 @@ int main(void)
     ring_buffer_init(&usart1_buf, &usart1_data, sizeof(usart1_data));
     Usart_Init(&usart1, USART1_BASE, &time);
     Usart_Config(&usart1, SystemCoreClock, 115200);
-    NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority( USART1_IRQn, NVIC_EncodePriority(0, 1, 0));
-    NVIC_EnableIRQ(USART1_IRQn);
 
     xTaskCreateStatic( vTask1,   /* Pointer to the function that implements the task. */
                        "Task 1", /* Text name for the task. */

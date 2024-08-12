@@ -28,6 +28,10 @@ void BSP_Init(void)
 
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
+    NVIC_SetPriorityGrouping(0);
+    NVIC_SetPriority( USART1_IRQn, NVIC_EncodePriority(0, 1, 0));
+    NVIC_EnableIRQ(USART1_IRQn);
+
     HAL_InitTick(0);
     SystemClock_Config();
     
