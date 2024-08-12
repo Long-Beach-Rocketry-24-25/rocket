@@ -18,7 +18,9 @@ bool cli_register_command(const Command *cmd)
 {
     if (num_commands < MAX_ARGS) {
         commands[num_commands++] = *cmd;
+        return true;
     }
+    return false;
 }
 
 static void parse_command(char *input, int *argc, char *argv[]) {

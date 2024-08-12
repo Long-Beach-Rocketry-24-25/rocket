@@ -1,7 +1,6 @@
 
 #include "usart_cli.h"
 
-#define MSG_READY 0x1
 
 static StackType_t cli_task_stack[50];
 static StaticTask_t cli_task_buffer;
@@ -22,9 +21,6 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
 {
     for (size_t i = 0; i < max; ++i)
     {
-        /*
-         * Evaluates left to right.
-         */
         uint8_t data = 0;
         bool success = ring_buffer_pop(buf, &data);
         string[i] = (char) data;
@@ -38,7 +34,7 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
 bool cli_write(const char * data)
 {
     size_t size = 0;
-    size_t max = 60;
+    size_t max = MAX_SEND_LEN;
     while (size < max)
     {
         if (data[size] == '\0')
@@ -47,9 +43,10 @@ bool cli_write(const char * data)
         }
         size++;
     }
-    Usart_Send(&usart, data, size);
+    bool success = 0;
+    success = Usart_Send(&usart, (uint8_t *) data, size);
     Usart_Send(&usart, (uint8_t*) "\n", 1);
-    return true;
+    return success;
 }
 
 static void boot_msg()
@@ -109,7 +106,7 @@ static void cli_process_task(void * params)
             }
             else
             {
-                if (strcmp(command, "LBR") == 0)
+                if (strcmp(command, PASSWORD) == 0)
                 {
                     active = true;
                     cli_write("Password accepted, booting...");
@@ -157,7 +154,11 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
 
     for (size_t i = 0; i < num_commands; ++i)
     {
-        cli_register_command(&commands[i]);
+        if (!cli_register_command(&commands[i]))
+        {
+            return false;
+        }
     }
     cli_task = xTaskCreateStatic( cli_process_task, "CLI", 50, NULL, 1, cli_task_stack, &cli_task_buffer);
+    return true;
 }

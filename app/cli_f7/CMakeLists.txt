@@ -6,7 +6,6 @@ add_executable(${EXECUTABLE}
     main.c
     freertos.c
     interrupts.c
-    usart_cli.c
     ${STARTUP_FILE}
 )
 
@@ -23,10 +22,7 @@ target_link_options(${EXECUTABLE} PRIVATE
 
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
-    cli
-    drivers
-    timeout
-    container
+    usart_cli
 )
 
 add_custom_command(TARGET ${EXECUTABLE}
