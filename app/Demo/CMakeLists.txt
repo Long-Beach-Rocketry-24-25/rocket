@@ -22,7 +22,6 @@ target_link_options(${EXECUTABLE} PUBLIC
 
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
-    cli
 )
 
 add_custom_command(TARGET ${EXECUTABLE}

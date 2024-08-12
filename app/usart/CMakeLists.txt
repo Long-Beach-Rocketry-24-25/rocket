@@ -23,7 +23,8 @@ target_link_options(${EXECUTABLE} PUBLIC
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
     drivers
-    util
+    container
+    timeout
     cli
 )
 

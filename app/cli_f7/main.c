@@ -4,10 +4,7 @@
 
 #include "bsp.h"
 
-#include "cli.h"
-#include "st_usart.h"
-#include "retry_timer.h"
-#include "ring_buffer.h"
+#include "usart_cli.h"
 
 /* The task functions. */
 void vTask1( void * pvParameters );
@@ -22,22 +19,12 @@ StaticTask_t task2_buffer;
 
 /*-----------------------------------------------------------*/
 
-RingBuffer usart3_buf;
-uint8_t usart3_data[256] = {0};
-
-Timeout time;
-RetryData rd;
-
-Usart usart3;
+void blink(int argc, char* argv[]);
 
 int main(void)
 {
 
     BSP_Init();
-    retry_timer_init(&time, &rd, 1000);
-    ring_buffer_init(&usart3_buf, &usart3_data, sizeof(usart3_data));
-    Usart_Init(&usart3, USART3_BASE, &time);
-    Usart_Config(&usart3, SystemCoreClock, 115200);
 
     xTaskCreateStatic( vTask1,   /* Pointer to the function that implements the task. */
                        "Task 1", /* Text name for the task. */
@@ -50,6 +37,10 @@ int main(void)
 
     /* Create the other task in exactly the same way. */
     xTaskCreateStatic( vTask2, "Task 2", 50, NULL, 1, task2_stack, &task2_buffer);
+
+
+    Command commands[2] = { {"Blink", blink, "Blinks LED."} };
+    create_cli_task(USART3_BASE, SystemCoreClock, commands, 1);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
@@ -69,13 +60,6 @@ void vTask1( void * pvParameters )
 
     for ( ; ; )
     {
-        // Do event flag here later
-        uint8_t data[2] = {0};
-        bool success = ring_buffer_pop(&usart3_buf, &data);
-        if (success)
-        {
-            Usart_Send(&usart3, data, 1);
-        }
 
         /* Delay for a period. */
         vTaskDelay(10);
@@ -87,24 +71,18 @@ void vTask2( void * pvParameters )
     for( ; ; )
     {
         /* Do something. */
-        GPIOB->ODR ^= GPIO_ODR_OD0;
 
         /* Delay for a period. */
         vTaskDelay(100);   
     }
 }
 
+void blink(int argc, char* argv[])
+{
+    GPIOB->ODR ^= GPIO_ODR_OD0;
+}
+
 void USART3_IRQHandler(void)
 {
-    // Set event flag here later.
-    if (Usart_Isr_Set(&usart3, USART_ISR_RXNE))
-    {
-        uint8_t data = 0;
-        Usart_Recv(&usart3, &data, 1);
-        if (data == '\n')
-        {
-            
-        }
-        ring_buffer_insert(&usart3_buf, data);
-    }
+    usart_rx_callback();
 }

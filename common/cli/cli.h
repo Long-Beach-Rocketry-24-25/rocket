@@ -6,7 +6,7 @@
 #pragma once
 
 
-#include "str_comm.h"
+#include "send.h"
 
 #include "stdint.h"
 #include "stdbool.h"
@@ -24,6 +24,6 @@ typedef struct {
     const char *help;
 } Command;
 
-void cli_init(StrComm *comm);
-void cli_process(void);
+void cli_init(Send *comm);
+bool cli_process(const char * message);
 bool cli_register_command(const Command *cmd);
