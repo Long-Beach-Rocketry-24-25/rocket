@@ -1,26 +1,4 @@
-<<<<<<< HEAD:common/util/timeout/retry_timer.c
 #include "retry_timer.h"
-=======
-/**
- * Basic implementation of timer interface.
- * Times out after counting x iterations.
- * 
- * Author: Nick Fan
- */
-
-#pragma once
-
-#include "timeout.h"
-
-/**
- * Data necessary for each timer instance.
- */
-typedef struct
-{
-    size_t reset;
-	volatile size_t counter;
-} RetryData;
->>>>>>> c047760 (nf-f7: experimental):common/util/retry_timer.h
 
 /**
  * Start function for Timeout interface.
