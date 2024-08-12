@@ -19,6 +19,15 @@ void BSP_Init(void)
 
     RCC->APB1LENR |= RCC_APB1LENR_USART2EN;
 
+    // Usart 1 
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    GPIOB->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE7);
+    GPIOB->MODER |= (0x2 << GPIO_MODER_MODE6_Pos) | (0x2 << GPIO_MODER_MODE7_Pos);
+    GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL6 | GPIO_AFRL_AFSEL7);
+    GPIOB->AFR[0] |= (0x7 << GPIO_AFRL_AFSEL6_Pos) | (0x7 << GPIO_AFRL_AFSEL7_Pos);
+
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+
     HAL_InitTick(0);
     SystemClock_Config();
     

@@ -22,25 +22,25 @@ StaticTask_t task2_buffer;
 
 /*-----------------------------------------------------------*/
 
-RingBuffer usart2_buf;
-uint8_t usart2_data[256] = {0};
+RingBuffer usart1_buf;
+uint8_t usart1_data[256] = {0};
 
 Timeout time;
 RetryData rd;
 
-Usart usart2;
+Usart usart1;
 
 int main(void)
 {
 
     BSP_Init();
     retry_timer_init(&time, &rd, 1000);
-    ring_buffer_init(&usart2_buf, &usart2_data, sizeof(usart2_data));
-    Usart_Init(&usart2, USART2_BASE, &time);
-    Usart_Config(&usart2, SystemCoreClock, 115200);
+    ring_buffer_init(&usart1_buf, &usart1_data, sizeof(usart1_data));
+    Usart_Init(&usart1, USART1_BASE, &time);
+    Usart_Config(&usart1, SystemCoreClock, 115200);
     NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority( USART2_IRQn, NVIC_EncodePriority(0, 1, 0));
-    NVIC_EnableIRQ(USART2_IRQn);
+    NVIC_SetPriority( USART1_IRQn, NVIC_EncodePriority(0, 1, 0));
+    NVIC_EnableIRQ(USART1_IRQn);
 
     xTaskCreateStatic( vTask1,   /* Pointer to the function that implements the task. */
                        "Task 1", /* Text name for the task. */
@@ -72,17 +72,16 @@ void vTask1( void * pvParameters )
 
     for ( ; ; )
     {
-        // Usart_Send(&usart2, data, sizeof(data));
+        // Do event flag here later
         uint8_t data[2] = {0};
-        data[1] = ring_buffer_pop(&usart2_buf, &data);
-        if (data[1])
+        bool success = ring_buffer_pop(&usart1_buf, &data);
+        if (success)
         {
-            Usart_Send(&usart2, data, 1);
+            Usart_Send(&usart1, data, 1);
         }
-        Usart_Send(&usart2, usart2_buf.data, 1);
 
         /* Delay for a period. */
-        vTaskDelay(500);
+        vTaskDelay(10);
     }
 }
 
@@ -98,15 +97,14 @@ void vTask2( void * pvParameters )
     }
 }
 
-void USART2_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
+    // Set event flag here later.
     GPIOA->ODR ^= GPIO_ODR_OD0;
-    if (USART2->ISR & USART_ISR_RXNE)
+    if (USART1->ISR & USART_ISR_RXNE)
     {
         uint8_t data = 0;
-        Usart_Recv(&usart2, &data, 1);
-        ring_buffer_insert(&usart2_buf, data);
-        uint8_t msg[5] = {"hi\n"};
-        Usart_Send(&usart2, &msg, 3);
+        Usart_Recv(&usart1, &data, 1);
+        ring_buffer_insert(&usart1_buf, data);
     }
 }
