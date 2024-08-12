@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "projectName": "proj2",
+    "configurations": [
+        {
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceRoot}/app/usart/build/app/usart/usart",
+            "name": "JTAG DEBUG USART",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "STM32H503",
+            "svdFile": "${workspaceRoot}/mcu_support/stm32/h5xx/h503/STM32H503.svd",
+            "runToMain": true,
+            "configFiles": [
+                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+                "${workspaceRoot}/mcu_support/stm32/h5xx/stm32h5x.cfg"
+            ],
+            "debuggerArgs": [
+                "-d",
+                "${workspaceRoot}",
+            ],
+            "preRestartCommands": [
+                "add-symbol-file app/usart/build/app/usart/usart",
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": true,
+        }
+    ]
+}

@@ -7,20 +7,10 @@
     },
     "configurePresets": [
         {
-            "name": "stm32",
-            "displayName": "stm32",
-            "hidden": true,
-            "description": "Compiler settings for ST MCUs",
-            "toolchainFile": "cmake/arm-none-eabi-gcc.cmake"
-        },
-        {
             "name": "stm32h5",
             "hidden": true,
-            "inherits": "stm32",
+            "toolchainFile": "cmake/gcc-m33.cmake",
             "cacheVariables": {
-                "CMAKE_C_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -fdata-sections -ffunction-sections -Wall -Og",
-                "CMAKE_CXX_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -fdata-sections -ffunction-sections -Wall -Og",
-                "LINK_FLAGS": "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard",
                 "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE"
             }
         },
@@ -56,14 +46,14 @@
             }
         },
         {
-            "name": "can",
-            "description": "Compiler settings for can",
+            "name": "usart",
+            "description": "Compiler settings for usart example",
             "inherits": "stm32h503",
             "generator": "MinGW Makefiles",
-            "binaryDir": "${sourceDir}/app/can/Build",
+            "binaryDir": "${sourceDir}/app/usart/Build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "can"
+                "BUILD_TARGET": "usart"
             }
         }
     ]

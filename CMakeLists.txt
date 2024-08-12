@@ -11,8 +11,9 @@ add_compile_definitions(
 
 if (BUILD_TARGET STREQUAL "Demo")
     add_subdirectory(app/Demo)
-elseif (BUILD_TARGET STREQUAL "can")
-    add_subdirectory(app/can)
+elseif (BUILD_TARGET STREQUAL "usart")
+    add_subdirectory(app/usart)
 endif()
 
 add_subdirectory(mcu_support)
+add_subdirectory(common)
