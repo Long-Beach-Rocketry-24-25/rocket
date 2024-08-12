@@ -1,4 +1,4 @@
-#include "stm32h5xx.h"
+#include "stm32f7xx.h"
 
 /**
   * @brief This function handles Non maskable interrupt.

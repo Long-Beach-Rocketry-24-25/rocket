@@ -7,6 +7,24 @@
     },
     "configurePresets": [
         {
+            "name": "stm32f7",
+            "hidden": true,
+            "toolchainFile": "cmake/gcc-m7.cmake",
+            "cacheVariables": {
+                "FREERTOS_PORT": "GCC_ARM_CM7"
+            }
+        },
+        {
+            "name": "stm32f746",
+            "hidden": true,
+            "inherits": "stm32f7",
+            "cacheVariables": {
+                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746zgtx_FLASH.ld",
+                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f7xx/f746/startup_stm32f746zgtx.s",
+                "MCU_NAME": "STM32F746xx"
+            }
+        },
+        {
             "name": "stm32h5",
             "hidden": true,
             "toolchainFile": "cmake/gcc-m33.cmake",
@@ -54,6 +72,17 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TARGET": "usart"
+            }
+        },
+        {
+            "name": "cli_f7",
+            "description": "Compiler settings for cli example",
+            "inherits": "stm32f746",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/app/cli_f7/Build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TARGET": "cli_f7"
             }
         }
     ]

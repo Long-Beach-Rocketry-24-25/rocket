@@ -46,3 +46,8 @@ bool Usart_Recv(Usart *usart, uint8_t *data, size_t size)
 
     return true;
 }
+
+bool Usart_Isr_Set(Usart *usart, uint32_t mask)
+{
+    return usart->bus->ISR & mask;
+}

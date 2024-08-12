@@ -27,6 +27,32 @@
                 "monitor reset"
             ],
             "showDevDebugOutput": true,
+        },
+        {
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceRoot}/app/cli_f7/build/app/cli_f7/cli_f7",
+            "name": "JTAG DEBUG CLI F7",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "STM32F746",
+            "svdFile": "${workspaceRoot}/mcu_support/stm32/f7xx/f746/STM32F746.svd",
+            "runToMain": true,
+            "configFiles": [
+                "${workspaceRoot}/mcu_support/stm32/stlink.cfg",
+                "${workspaceRoot}/mcu_support/stm32/f7xx/stm32f7x.cfg"
+            ],
+            "debuggerArgs": [
+                "-d",
+                "${workspaceRoot}",
+            ],
+            "preRestartCommands": [
+                "add-symbol-file app/frtest/build/app/frtest/frtest",
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": true,
         }
     ]
 }

@@ -19,7 +19,6 @@ bool cli_register_command(const Command *cmd) {
     }
 }
 
-
 static void parse_command(char *input, int *argc, char *argv[]) {
     *argc = 0;
     char *token = strtok(input, " ");

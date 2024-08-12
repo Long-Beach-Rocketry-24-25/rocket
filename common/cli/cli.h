@@ -8,9 +8,6 @@
 
 #include "str_comm.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "stdint.h"
 #include "stdbool.h"
 #include "string.h"

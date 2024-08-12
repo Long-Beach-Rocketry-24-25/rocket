@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "bus.h"
 #include "st_usart_def.h"
-
 #include "timeout.h"
 
 #include <stdint.h>
@@ -45,3 +45,5 @@ void Usart_Config(Usart *usart, uint32_t system_core_clk, uint32_t baudrate);
 bool Usart_Send(Usart *usart, uint8_t *data, size_t size);
 
 bool Usart_Recv(Usart *usart, uint8_t *data, size_t size);
+
+bool Usart_Isr_Set(Usart *usart, uint32_t mask);
