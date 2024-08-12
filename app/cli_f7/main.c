@@ -20,6 +20,7 @@ StaticTask_t task2_buffer;
 /*-----------------------------------------------------------*/
 
 void blink(int argc, char* argv[]);
+void logo(int argc, char* argvp[]);
 
 int main(void)
 {
@@ -39,8 +40,11 @@ int main(void)
     xTaskCreateStatic( vTask2, "Task 2", 50, NULL, 1, task2_stack, &task2_buffer);
 
 
-    Command commands[2] = { {"Blink", blink, "Blinks LED."} };
-    create_cli_task(USART3_BASE, SystemCoreClock, commands, 1);
+    Command commands[2] = { 
+        {"Blink", blink, "Blinks LED."},
+        {"Logo", logo, "Prints logo."}
+    };
+    create_cli_task(USART3_BASE, SystemCoreClock, commands, 2);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
@@ -80,6 +84,28 @@ void vTask2( void * pvParameters )
 void blink(int argc, char* argv[])
 {
     GPIOB->ODR ^= GPIO_ODR_OD0;
+    cli_write("Blink!", 6);
+}
+
+void logo(int argc, char* argv[])
+{
+    static const char* logo[] = {
+    "    ~+",
+    "",
+    "                *       +",
+    "        '                  |",
+    "    ()    .-.,=\"``\"=.    - o -",
+    "          '=/_       \\     |",
+    "       *   |  '=._    |",
+    "            \\     `=./`,        '",
+    "         .   '=.__.=' `='      *",
+    "+                         +",
+    "    O      *        '       ."
+    };
+    for (int i = 0; i < 11; ++i)
+    {
+        cli_write(logo[i], strlen(logo[i]));
+    }
 }
 
 void USART3_IRQHandler(void)

@@ -14,6 +14,7 @@
 
 
 #define MAX_CMD_LENGTH 64
+#define MAX_RSP_LENGTH 15
 #define MAX_ARGS 8
 
 typedef void (*CommandHandler)(int argc, char *argv[]);

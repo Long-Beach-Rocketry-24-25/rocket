@@ -33,15 +33,15 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
     }
 }
 
-static bool write_str(const char * data, size_t size)
+bool cli_write(const char * data, size_t size)
 {
     Usart_Send(&usart, data, size);
     Usart_Send(&usart, (uint8_t *)"\n", 1);
+    return true;
 }
 
 static void cli_process_task(void * params)
 {
-    
     for ( ;; )
     {
         if (msg_ready)
@@ -79,7 +79,7 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
     Usart_Init(&usart, usart_base_addr, &time);
     Usart_Config(&usart, sys_core_clk, 115200);
 
-    send.write_str = write_str;
+    send.write_str = cli_write;
     cli_init(&send);
 
     for (size_t i = 0; i < num_commands; ++i)
