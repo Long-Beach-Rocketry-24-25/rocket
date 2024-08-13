@@ -8,8 +8,6 @@ static StaticTask_t cli_task_buffer;
 static RingBuffer usart_buf;
 static uint8_t usart_data[256] = {0};
 
-static Timeout time;
-static RetryData rd;
 static Usart usart;
 static Send send;
 
@@ -34,21 +32,15 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
             return i;
         }
     }
+
+    return 0;
 }
 
-/**
- * Writes a null terminated string to the command line, automatically
- * adding a newline. 
- * 
- * @param data a null terminated c string.
- * 
- * @returns True if successful, false otherwise.
- */
-static bool usart_write_str(const char * data)
+bool usart_write_str(const char * data)
 {
     size_t size = 0;
     size_t max = MAX_SEND_LEN;
-    while (size < max)
+    while (size <= max)
     {
         if (data[size] == '\0')
         {
@@ -58,8 +50,8 @@ static bool usart_write_str(const char * data)
     }
     bool success = 0;
     uint8_t term_char = CLI_TERMINATION_CHAR;
-    success = Usart_Send(&usart, (uint8_t *) data, size);
-    Usart_Send(&usart, &term_char, 1);
+    success = usart.send(&usart, (uint8_t *) data, size);
+    usart.send(&usart, &term_char, 1);
     return success;
 }
 
@@ -143,18 +135,18 @@ static void cli_process_task(void * params)
                 }
             }
         }
-        vTaskDelay(100);
+        // vTaskDelay(100);
     }
 }
 
 void usart_rx_callback()
 {
-    if (Usart_Isr_Set(&usart, USART_ISR_RXNE))
+    if (usart.rx_ready(&usart))
     {
-        Usart_Check_Overrun(&usart);
+        usart.clear_errors(&usart);
         BaseType_t higher_prio_task_woken = pdFALSE;
         uint8_t data = 0;
-        Usart_Recv(&usart, &data, 1);
+        usart.recv(&usart, &data, 1);
         ring_buffer_insert(&usart_buf, data);
         if (data == CLI_TERMINATION_CHAR)
         {
@@ -165,13 +157,10 @@ void usart_rx_callback()
     }
 }
 
-bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
-                     Command * commands, size_t num_commands)
+bool create_cli_task(Usart *cli_usart, Command * commands, size_t num_commands)
 {
-    retry_timer_init(&time, &rd, 1000);
+    usart = *cli_usart;
     ring_buffer_init(&usart_buf, &usart_data, sizeof(usart_data));
-    Usart_Init(&usart, usart_base_addr, &time);
-    Usart_Config(&usart, sys_core_clk, 115200);
 
     send.write_str = usart_write_str;
     cli_init(&send);
@@ -183,6 +172,6 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
             return false;
         }
     }
-    cli_task = xTaskCreateStatic( cli_process_task, "CLI", 200, NULL, 1, cli_task_stack, &cli_task_buffer);
+    cli_task = xTaskCreateStatic(cli_process_task, "CLI", 200, NULL, 1, cli_task_stack, &cli_task_buffer);
     return true;
 }

@@ -10,7 +10,7 @@
 #include "task.h"
 
 #include "ring_buffer.h"
-#include "st_usart.h"
+#include "usart.h"
 #include "retry_timer.h"
 
 #include "cli.h"
@@ -21,7 +21,7 @@
 #define CLI_TERMINATION_CHAR '\n'
 
 /**
- * Usart RXNE callback, to be called in 
+ * Usart RX Ready callback, to be called in 
  * USARTx_IRQHandler().
  */
 void usart_rx_callback();
@@ -31,13 +31,12 @@ void usart_rx_callback();
  * clock frequency. A list of commands can be registered to add
  * functionality to the command line.
  * 
- * @param usart_base_addr 32-bit peripheral base address.
- * @param sys_core_clk the system core clock frequency.
+ * @param cli_usart the usart driver to use.
  * @param commands a list of commands to register.
  * @param num_commands the size of the command list.
  * 
  * @returns True if all commands are registered and the task is created,
  *          otherwise false.
  */
-bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
+bool create_cli_task(Usart* cli_usart,
                      Command * commands, size_t num_commands);

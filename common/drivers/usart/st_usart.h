@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "bus.h"
+#include "usart.h"
 #include "st_usart_def.h"
 #include "timeout.h"
 
@@ -34,18 +34,20 @@ typedef struct
 
 typedef struct
 {
-    ST_USART_TypeDef * bus;
+    ST_USART_TypeDef * instance;
     Timeout * timer;
-} Usart;
+} StPrivUsart;
 
-void Usart_Init(Usart *usart, uint32_t base_addr, Timeout* timer);
+void St_Usart_Init(Usart *usart, StPrivUsart *st_usart, uint32_t base_addr, Timeout* timer);
 
-void Usart_Config(Usart *usart, uint32_t system_core_clk, uint32_t baudrate);
+void St_Usart_Config(Usart *usart, uint32_t system_core_clk, uint32_t baudrate);
 
-bool Usart_Send(Usart *usart, uint8_t *data, size_t size);
+bool St_Usart_Send(Usart *usart, uint8_t *data, size_t size);
 
-bool Usart_Recv(Usart *usart, uint8_t *data, size_t size);
+bool St_Usart_Recv(Usart *usart, uint8_t *data, size_t size);
 
-bool Usart_Check_Overrun(Usart *usart);
+bool St_Usart_Clear_Errors(Usart *usart);
 
-bool Usart_Isr_Set(Usart *usart, uint32_t mask);
+bool St_Usart_Rx_Ready(Usart* usart);
+
+bool St_Usart_Isr_Set(Usart *usart, uint32_t mask);

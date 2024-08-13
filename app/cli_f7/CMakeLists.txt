@@ -23,6 +23,7 @@ target_link_options(${EXECUTABLE} PRIVATE
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
     usart_cli
+    usart
 )
 
 add_custom_command(TARGET ${EXECUTABLE}

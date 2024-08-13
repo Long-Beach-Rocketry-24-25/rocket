@@ -4,6 +4,7 @@
 
 #include "bsp.h"
 
+#include "usart.h"
 #include "usart_cli.h"
 
 /* The task functions. */
@@ -18,15 +19,17 @@ StaticTask_t task1_buffer;
 
 void blink(int argc, char* argv[]);
 
+Usart usart;
+
 int main(void)
 {
 
-    BSP_Init();
+    BSP_Init(&usart);
 
     Command commands[2] = { 
         {"Blink", blink, "Blinks LED."}
     };
-    create_cli_task(USART3_BASE, SystemCoreClock, commands, 1);
+    create_cli_task(&usart, commands, 1);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
@@ -53,7 +56,7 @@ void vTask1( void * pvParameters )
 void blink(int argc, char* argv[])
 {
     GPIOB->ODR ^= GPIO_ODR_OD0;
-    cli_write("Blink!");
+    cli_write("Blink - %d", GPIOB->ODR & GPIO_ODR_OD0);
 }
 
 void USART3_IRQHandler(void)

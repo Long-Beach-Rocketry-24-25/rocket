@@ -1,7 +1,11 @@
 
 #include "bsp.h"
 
-void BSP_Init(void)
+static StPrivUsart st_usart;
+static Timeout time;
+static RetryData rd;
+
+void BSP_Init(Usart *usart)
 {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN | RCC_AHB1ENR_GPIOBEN;
 
@@ -18,5 +22,9 @@ void BSP_Init(void)
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority( USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
+
+    retry_timer_init(&time, &rd, 1000);
+    St_Usart_Init(usart, &st_usart, USART3_BASE, &time);
+    St_Usart_Config(usart, SystemCoreClock, 115200);
 
 }

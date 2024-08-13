@@ -15,6 +15,7 @@ target_include_directories(bsp PUBLIC .)
 target_link_libraries(bsp
     PUBLIC
         st_f7_support
+        usart
     INTERFACE
         freertos_kernel
 )

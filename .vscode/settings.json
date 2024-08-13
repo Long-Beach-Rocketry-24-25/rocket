@@ -9,6 +9,12 @@
         "xstring": "cpp",
         "xtree": "cpp",
         "xutility": "cpp",
-        "cli.h": "c"
-    }
+        "cli.h": "c",
+        "algorithm": "c",
+        "charconv": "c",
+        "iomanip": "c",
+        "xlocmon": "c",
+        "xlocnum": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": false
 }
