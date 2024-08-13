@@ -29,6 +29,8 @@ void usart_rx_callback();
  * Writes a null terminated string to the command line, automatically
  * adding a newline. 
  * 
+ * @param data a null terminated c string.
+ * 
  * @returns True if successful, false otherwise.
  */
 bool cli_write(const char* data);
