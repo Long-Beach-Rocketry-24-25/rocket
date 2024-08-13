@@ -65,7 +65,7 @@ bool cli_process(const char * message)
          * Unknown command parsed.
          */
         char response[] = "Unknown command!\n";
-        comm->write_str(response, strlen(response));
+        comm->write_str(response);
         return false;
     }
 }

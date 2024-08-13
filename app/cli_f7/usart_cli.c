@@ -14,7 +14,9 @@ static RetryData rd;
 static Usart usart;
 static Send send;
 
-static bool msg_ready;
+static TaskHandle_t cli_task;
+
+static bool active = false;
 
 static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
 {
@@ -33,25 +35,93 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
     }
 }
 
-bool cli_write(const char * data, size_t size)
+bool cli_write(const char * data)
 {
+    size_t size = 0;
+    size_t max = 60;
+    while (size < max)
+    {
+        if (data[size] == '\0')
+        {
+            break;
+        }
+        size++;
+    }
     Usart_Send(&usart, data, size);
-    Usart_Send(&usart, (uint8_t *)"\n", 1);
+    Usart_Send(&usart, (uint8_t*) "\n", 1);
     return true;
+}
+
+static void boot_msg()
+{
+    static const char* logo[] = {
+        CLI_VER,
+        "",
+        "                       ....              ..",
+        "                                           .'.",
+        "        . . . .      ...;:;'.                  ..",
+        "      . . .     .,coo:;,...';ldd.    ..           ..",
+        "    . .     ,;;'        ,.,    ;k,      `'`        '",
+        "          .o;    ':c;:;;,,,:;.   ; '     c:.         ``",
+        ".       .x.    ,;'.   .:cc:ccoc    :      od;",
+        ".      .l;   'c'   .;:oOKXKKOkl;   l.     ; xo         '",
+        ". .   ;c    :;   .:. cKNNWNXKd; ; :    .l:.        .",
+        ". .  .;.    ;,   'l. .xkOOkOxl, .    .:oc",
+        "   .  ;,'     ,.  .o,  .':,..  . . : c.             THE",
+        "   .  .cc'    ''   :x'     .,:;' ' .        INDOMITABLE",
+        "        ;c.     .'   ;xc.                  HUMAN SPIRIT",
+        "         .'...    ..  .lo:,... ....;;'.   SHALL PREVAIL",
+        "            ...         ..';",
+        "              .;;..",
+        "                  ..",
+        "",
+        "",
+    };
+    for (int i = 0; i < 21; ++i)
+    {
+        cli_write(logo[i]);
+    }
 }
 
 static void cli_process_task(void * params)
 {
+    const TickType_t max_block_time = pdMS_TO_TICKS(UINT32_MAX);
+    BaseType_t rx_cplt;
+
+    cli_write("enter pass: ");
+
     for ( ;; )
     {
-        if (msg_ready)
+        rx_cplt = xTaskNotifyWait( pdFALSE,
+                                 UINT32_MAX,
+                                 NULL,
+                                 max_block_time);
+        if (rx_cplt == pdPASS)
         {
-            msg_ready = false;
             char command[MAX_CMD_LENGTH];
-
             size_t num_chars = get_string_from_buf(&usart_buf, command, MAX_CMD_LENGTH);
             command[num_chars] = '\0';
-            cli_process(command);
+
+            if (active)
+            {
+                cli_process(command);
+                cli_write("root:~$: ");
+            }
+            else
+            {
+                if (strcmp(command, "LBR") == 0)
+                {
+                    active = true;
+                    cli_write("Password accepted, booting...");
+                    boot_msg();
+                    cli_write("root:~$: ");
+                }
+                else
+                {
+                    cli_write("Bad password, try again.");
+                    cli_write("enter pass: ");
+                }
+            }
         }
         vTaskDelay(100);
     }
@@ -61,13 +131,16 @@ void usart_rx_callback()
 {
     if (Usart_Isr_Set(&usart, USART_ISR_RXNE))
     {
+        BaseType_t higher_prio_task_woken = pdFALSE;
         uint8_t data = 0;
         Usart_Recv(&usart, &data, 1);
         ring_buffer_insert(&usart_buf, data);
         if (data == '\n')
         {
-            msg_ready = true;
+            xTaskNotifyFromISR(cli_task, 0, eNoAction,
+                               &higher_prio_task_woken);
         }
+        portYIELD_FROM_ISR(higher_prio_task_woken);
     }
 }
 
@@ -86,5 +159,5 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
     {
         cli_register_command(&commands[i]);
     }
-    xTaskCreateStatic( cli_process_task, "CLI", 50, NULL, 1, cli_task_stack, &cli_task_buffer);
+    cli_task = xTaskCreateStatic( cli_process_task, "CLI", 50, NULL, 1, cli_task_stack, &cli_task_buffer);
 }

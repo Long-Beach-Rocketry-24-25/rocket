@@ -10,5 +10,5 @@
 #include <stddef.h>
 
 typedef struct {
-    bool (*write_str)(const char *data, size_t size);
+    bool (*write_str)(const char *data);
 } Send;

@@ -15,8 +15,8 @@ void BSP_Init(void)
 
     RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
 
-    NVIC_SetPriorityGrouping(4);
-    NVIC_SetPriority( USART3_IRQn, NVIC_EncodePriority(4, 6, 0));
+    NVIC_SetPriorityGrouping(0);
+    NVIC_SetPriority( USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
 }
