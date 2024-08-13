@@ -10,8 +10,6 @@ add_executable(${EXECUTABLE}
     ${STARTUP_FILE}
 )
 
-# target_include_directories(${EXECUTABLE} PRIVATE .)
-
 target_link_options(${EXECUTABLE} PRIVATE
     -T${LINKER_SCRIPT}
     -specs=nosys.specs
