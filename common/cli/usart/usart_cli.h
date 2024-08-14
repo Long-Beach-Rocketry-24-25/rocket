@@ -18,22 +18,13 @@
 #define CLI_VER "usart-cli-v0.1"
 #define PASSWORD "LBR"
 #define MAX_SEND_LEN 60
+#define CLI_TERMINATION_CHAR '\n'
 
 /**
  * Usart RXNE callback, to be called in 
  * USARTx_IRQHandler().
  */
 void usart_rx_callback();
-
-/**
- * Writes a null terminated string to the command line, automatically
- * adding a newline. 
- * 
- * @param data a null terminated c string.
- * 
- * @returns True if successful, false otherwise.
- */
-bool usart_write_str(const char* data);
 
 /**
  * Creates a FreeRTOS CLI processing task using a given USART/core

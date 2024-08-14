@@ -46,4 +46,6 @@ bool Usart_Send(Usart *usart, uint8_t *data, size_t size);
 
 bool Usart_Recv(Usart *usart, uint8_t *data, size_t size);
 
+bool Usart_Check_Overrun(Usart *usart);
+
 bool Usart_Isr_Set(Usart *usart, uint32_t mask);

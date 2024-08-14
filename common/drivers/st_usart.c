@@ -47,6 +47,14 @@ bool Usart_Recv(Usart *usart, uint8_t *data, size_t size)
     return true;
 }
 
+bool Usart_Check_Overrun(Usart *usart)
+{
+    if (usart->bus->ISR & USART_ISR_ORE)
+    {
+        usart->bus->ICR |= USART_ICR_ORECF;
+    }
+}
+
 bool Usart_Isr_Set(Usart *usart, uint32_t mask)
 {
     return usart->bus->ISR & mask;
