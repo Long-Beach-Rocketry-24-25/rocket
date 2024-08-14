@@ -2,7 +2,7 @@
 #include "usart_cli.h"
 
 
-static StackType_t cli_task_stack[50];
+static StackType_t cli_task_stack[200];
 static StaticTask_t cli_task_buffer;
 
 static RingBuffer usart_buf;
@@ -31,7 +31,7 @@ static size_t get_string_from_buf(RingBuffer *buf, char *string, size_t max)
     }
 }
 
-bool cli_write(const char * data)
+bool usart_write_str(const char * data)
 {
     size_t size = 0;
     size_t max = MAX_SEND_LEN;
@@ -101,7 +101,9 @@ static void cli_process_task(void * params)
 
             if (active)
             {
+                taskENTER_CRITICAL();
                 cli_process(command);
+                taskEXIT_CRITICAL();
                 cli_write("root:~$: ");
             }
             else
@@ -149,7 +151,7 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
     Usart_Init(&usart, usart_base_addr, &time);
     Usart_Config(&usart, sys_core_clk, 115200);
 
-    send.write_str = cli_write;
+    send.write_str = usart_write_str;
     cli_init(&send);
 
     for (size_t i = 0; i < num_commands; ++i)
@@ -159,6 +161,6 @@ bool create_cli_task(uint32_t usart_base_addr, uint32_t sys_core_clk,
             return false;
         }
     }
-    cli_task = xTaskCreateStatic( cli_process_task, "CLI", 50, NULL, 1, cli_task_stack, &cli_task_buffer);
+    cli_task = xTaskCreateStatic( cli_process_task, "CLI", 200, NULL, 1, cli_task_stack, &cli_task_buffer);
     return true;
 }

@@ -33,7 +33,7 @@ void usart_rx_callback();
  * 
  * @returns True if successful, false otherwise.
  */
-bool cli_write(const char* data);
+bool usart_write_str(const char* data);
 
 /**
  * Creates a FreeRTOS CLI processing task using a given USART/core

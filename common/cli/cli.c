@@ -14,6 +14,19 @@ void cli_init(Send *driver)
     comm = driver;
 }
 
+bool cli_write(const char *data, ...)
+{
+    char buf[MAX_RSP_LENGTH];
+    va_list vl;
+    va_start(vl, data);
+    vsprintf(buf, data, vl);
+    va_end(vl);
+
+    buf[MAX_RSP_LENGTH - 1] = '\0';
+
+    return comm->write_str(buf); 
+}
+
 bool cli_register_command(const Command *cmd)
 {
     if (num_commands < MAX_ARGS) {
