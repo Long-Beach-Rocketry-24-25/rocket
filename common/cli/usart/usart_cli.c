@@ -135,7 +135,6 @@ static void cli_process_task(void * params)
                 }
             }
         }
-        // vTaskDelay(100);
     }
 }
 

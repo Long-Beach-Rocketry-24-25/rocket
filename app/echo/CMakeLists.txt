@@ -1,4 +1,4 @@
-set(EXECUTABLE usart)
+set(EXECUTABLE echo)
 
 add_subdirectory(BSP)
 
@@ -22,7 +22,7 @@ target_link_options(${EXECUTABLE} PUBLIC
 
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
-    drivers
+    usart
     container
     timeout
     cli

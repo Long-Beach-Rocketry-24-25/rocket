@@ -64,14 +64,14 @@
             }
         },
         {
-            "name": "usart",
-            "description": "Compiler settings for usart example",
+            "name": "echo",
+            "description": "Compiler settings for echo example",
             "inherits": "stm32h503",
             "generator": "MinGW Makefiles",
-            "binaryDir": "${sourceDir}/app/usart/Build",
+            "binaryDir": "${sourceDir}/app/echo/Build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "usart"
+                "BUILD_TARGET": "echo"
             }
         },
         {

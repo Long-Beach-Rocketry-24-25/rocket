@@ -27,6 +27,7 @@ uint8_t usart1_data[256] = {0};
 
 Timeout time;
 RetryData rd;
+StPrivUsart st_usart;
 
 Usart usart1;
 
@@ -36,8 +37,8 @@ int main(void)
     BSP_Init();
     retry_timer_init(&time, &rd, 1000);
     ring_buffer_init(&usart1_buf, &usart1_data, sizeof(usart1_data));
-    Usart_Init(&usart1, USART1_BASE, &time);
-    Usart_Config(&usart1, SystemCoreClock, 115200);
+    St_Usart_Init(&usart1, &st_usart, USART1_BASE, &time);
+    St_Usart_Config(&usart1, SystemCoreClock, 115200);
 
     xTaskCreateStatic( vTask1,   /* Pointer to the function that implements the task. */
                        "Task 1", /* Text name for the task. */
@@ -74,7 +75,7 @@ void vTask1( void * pvParameters )
         bool success = ring_buffer_pop(&usart1_buf, &data);
         if (success)
         {
-            Usart_Send(&usart1, data, 1);
+            usart1.send(&usart1, data, 1);
         }
 
         /* Delay for a period. */
@@ -96,12 +97,10 @@ void vTask2( void * pvParameters )
 
 void USART1_IRQHandler(void)
 {
-    // Set event flag here later.
-    GPIOA->ODR ^= GPIO_ODR_OD0;
-    if (USART1->ISR & USART_ISR_RXNE)
+    if (usart1.rx_ready(&usart1))
     {
         uint8_t data = 0;
-        Usart_Recv(&usart1, &data, 1);
+        usart1.recv(&usart1, &data, 1);
         ring_buffer_insert(&usart1_buf, data);
     }
 }
