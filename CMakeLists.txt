@@ -23,6 +23,8 @@ elseif (BUILD_TARGET STREQUAL "echo")
     add_subdirectory(app/echo)
 elseif (BUILD_TARGET STREQUAL "cli_f7")
     add_subdirectory(app/cli_f7)
+elseif (BUILD_TARGET STREQUAL "cli_h5")
+    add_subdirectory(app/cli_h5)
 endif()
 
 add_subdirectory(mcu_support/cmsis)

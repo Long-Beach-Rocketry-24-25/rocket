@@ -2,7 +2,7 @@
 #include "usart_cli.h"
 
 
-static StackType_t cli_task_stack[200];
+static StackType_t cli_task_stack[1024];
 static StaticTask_t cli_task_buffer;
 
 static RingBuffer usart_buf;
@@ -114,9 +114,7 @@ static void cli_process_task(void * params)
 
             if (active)
             {
-                taskENTER_CRITICAL();
                 cli_process(command);
-                taskEXIT_CRITICAL();
                 cli_write("root:~$: ");
             }
             else
@@ -171,6 +169,6 @@ bool create_cli_task(Usart *cli_usart, Command * commands, size_t num_commands)
             return false;
         }
     }
-    cli_task = xTaskCreateStatic(cli_process_task, "CLI", 200, NULL, 1, cli_task_stack, &cli_task_buffer);
+    cli_task = xTaskCreateStatic(cli_process_task, "CLI", 1024, NULL, 1, cli_task_stack, &cli_task_buffer);
     return true;
 }

@@ -16,7 +16,7 @@ void cli_init(Send *driver)
 
 bool cli_write(const char *data, ...)
 {
-    char buf[MAX_RSP_LENGTH];
+    char buf[MAX_RSP_LENGTH] = { 0 };
     va_list vl;
     va_start(vl, data);
     vsprintf(buf, data, vl);

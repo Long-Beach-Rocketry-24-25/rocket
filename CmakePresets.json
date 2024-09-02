@@ -84,6 +84,17 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TARGET": "cli_f7"
             }
+        },
+        {
+            "name": "cli_h5",
+            "description": "Compiler settings for cli example",
+            "inherits": "stm32h503",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/app/cli_h5/Build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TARGET": "cli_h5"
+            }
         }
     ]
 }
