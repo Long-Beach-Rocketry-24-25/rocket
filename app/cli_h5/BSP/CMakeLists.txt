@@ -16,6 +16,7 @@ target_link_libraries(bsp
     PUBLIC
         st_h5_support
         usart
+        i2c
     INTERFACE
         freertos_kernel
 )

@@ -47,10 +47,6 @@
 /* Section where include file can be added */
 /* USER CODE END Includes */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
   #include <stdint.h>
@@ -67,13 +63,12 @@ extern "C" {
 #define configCPU_CLOCK_HZ                       ( SystemCoreClock )
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 7 )
-#define configMINIMAL_STACK_SIZE                 ((uint16_t)512)
+#define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_16_BIT_TICKS                   0
 #define configUSE_MUTEXES                        1
 #define configQUEUE_REGISTRY_SIZE                8
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION  1
-#define configUSE_TASK_NOTIFICATIONS             1
 #define configENABLE_TRUSTZONE                   0
 /* USER CODE BEGIN MESSAGE_BUFFER_LENGTH_TYPE */
 /* Defaults to size_t for backward compatibility, but can be changed
@@ -143,9 +138,5 @@ standard names. */
 /* USER CODE BEGIN Defines */
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 /* USER CODE END Defines */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* FREERTOS_CONFIG_H */

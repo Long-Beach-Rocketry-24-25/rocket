@@ -14,7 +14,8 @@
         "charconv": "c",
         "iomanip": "c",
         "xlocmon": "c",
-        "xlocnum": "c"
+        "xlocnum": "c",
+        "i2c.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }
