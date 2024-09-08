@@ -47,7 +47,7 @@ void BSP_Init(Usart *usart, I2c *i2c)
     GPIOC->AFR[1] &= ~(GPIO_AFRH_AFSEL8 | GPIO_AFRH_AFSEL9);
     GPIOC->AFR[1] |= (0x4 << GPIO_AFRH_AFSEL8_Pos) | (0x4 << GPIO_AFRH_AFSEL9_Pos);
 
-    retry_timer_init(&time, &rd, 1000);
+    retry_timer_init(&time, &rd, 10);
     St_Usart_Init(usart, &st_usart, USART1_BASE, &time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
 

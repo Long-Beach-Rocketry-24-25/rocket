@@ -10,6 +10,8 @@
 
 #include "tmp102.h"
 
+#include "string_hex.h"
+
 /*-----------------------------------------------------------*/
 
 void blink(int argc, char* argv[]);
@@ -59,164 +61,74 @@ void read_temp(int argc, char* argv[])
     cli_write("Temp: %dC", (int) x);
 }
 
-uint8_t char_to_hex(char data)
-{
-    if (data >= '0' && data <= '9')
-    {
-        return data - '0';
-    }
-    else if (data >= 'A' && data <= 'F')
-    {
-        return data - 'A' + 10;
-    }
-    else if (data >= 'a' && data <= 'f')
-    {
-        return data - 'a' + 10;
-    }
-}
-
-bool is_hex(char data)
-{
-    return (data >= '0' && data <= '9') ||
-           (data >= 'A' && data <= 'F');
-}
-
 void write_i2c(int argc, char* argv[])
 {
-    #define MAX_SIZE 16
+    #define MAX_I2CW_SIZE 16
     size_t count = 0;
     bool valid = true;
     uint8_t id = 0;
     uint16_t address = 0;
-    uint8_t data[MAX_SIZE] = {0};
+    uint8_t data[MAX_I2CW_SIZE] = {0};
 
     for (int i = 1; i < argc && valid; ++i)
     {
-        size_t count = 0;
-        int j = 0;
-        while (argv[i][j] != '\0')
+        if (i == 1)
         {
-            if (is_hex(argv[i][j]))
-            {
-                if (i == 1)
-                {
-                    if (j < 2)
-                    {
-                        id <<= 4;
-                        id |= char_to_hex(argv[i][j]);
-                    }
-                    else
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
-                else if (i == 2)
-                {
-                    if (j < 4)
-                    {
-                        address <<= 4;
-                        address |= char_to_hex(argv[i][j]);
-                    }
-                    else
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
-                else
-                {
-                    data[i - 3] = char_to_hex(argv[i][j]);
-                }
-                j++;
-            }
-            else
-            {
-                valid = false;
-                break;
-            }
+            id = str_to_8(argv[i]);
         }
-        count++;
+        else if (i == 2)
+        {
+            address = str_to_16(argv[i]);
+        }
+        else
+        {
+            data[i - 3] = str_to_8(argv[i]);
+            count++;
+        }
 
         /*
          * i >= ( (max_size - 1) + 2 ), because
          * address takes up 1 argument, id takes up 1.
          */
-        if (i >= MAX_SIZE)
+        if (i >= MAX_I2CW_SIZE)
         {
             break;
         }
     }
 
-    cli_write("Writing: %x %x %x %x...", id, address, data[0], data[1]);
+    cli_write("Writing: %x %x %x %x... s%d", id, address, data[0], data[1], count);
+    i2c.set_target(&i2c, id << 1);
     i2c.write(&i2c, address, data, count);
 }
 
 void read_i2c(int argc, char *argv[])
 {
-    #define MAX_SIZE 3
+    #define MAX_I2CR_SIZE 3
     bool valid = true;
     uint8_t id = 0;
     uint16_t address = 0;
     uint16_t size = 0;
-    uint8_t data[MAX_SIZE] = {0};
+    uint8_t data[MAX_I2CR_SIZE] = {0};
 
     for (int i = 1; i < argc && valid; ++i)
     {
-        int j = 0;
-        while (argv[i][j] != '\0')
+        if (i == 1)
         {
-            if (is_hex(argv[i][j]))
-            {
-                if (i == 1)
-                {
-                    if (j < 2)
-                    {
-                        id <<= 4;
-                        id |= char_to_hex(argv[i][j]);
-                    }
-                    else
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
-                else if (i == 2)
-                {
-                    if (j < 4)
-                    {
-                        address <<= 4;
-                        address |= char_to_hex(argv[i][j]);
-                    }
-                    else
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
-                else if (i == 3)
-                {
-                    size <<= 4;
-                    size |= char_to_hex(argv[i][j]);
-                }
-                else
-                {
-                    valid = false;
-                    break;
-                }
-                j++;
-            }
-            else
-            {
-                valid = false;
-                break;
-            }
+            id = str_to_8(argv[i]);
+        }
+        else if (i == 2)
+        {  
+            address = str_to_16(argv[i]);
+        }
+        else
+        {
+            size = str_to_16(argv[i]);
         }
 
         /*
          * 3 args max.
          */
-        if (i >= MAX_SIZE + 1)
+        if (i >= MAX_I2CR_SIZE + 1)
         {
             break;
         }
