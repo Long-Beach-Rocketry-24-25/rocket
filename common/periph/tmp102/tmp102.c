@@ -1,8 +1,8 @@
 
 #include "tmp102.h"
 
-static const max_addr = 3;
-static const addr_base = 0x48;
+static const uint8_t max_addr = 3;
+static const uint8_t addr_base = 0x48;
 
 bool Tmp102_Init(Tmp102 *dev, I2c *bus, uint8_t dev_addr)
 {

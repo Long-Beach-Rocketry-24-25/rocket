@@ -5,10 +5,12 @@
 #include "bsp.h"
 
 #include "i2c.h"
+#include "i2c_access.h"
 #include "usart.h"
 #include "usart_cli.h"
 
 #include "tmp102.h"
+#include "bno055.h"
 
 #include "string_hex.h"
 
@@ -16,13 +18,13 @@
 
 void blink(int argc, char* argv[]);
 void read_temp(int argc, char* argv[]);
-void write_i2c(int argc, char* argv[]);
-void read_i2c(int argc, char* argv[]);
+void read_imu(int argc, char* argv[]);
 
 Usart usart;
 I2c i2c;
 
 Tmp102 tmp;
+Bno055 bno;
 
 int main(void)
 {
@@ -31,13 +33,19 @@ int main(void)
 
     Tmp102_Init(&tmp, &i2c, TMP102_ADDR_GND);
 
-    Command commands[4] = { 
+    Bno055_Init(&bno, &i2c);
+    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
+
+    init_i2c_access(&i2c);
+
+    Command commands[5] = { 
         {"Blink", blink, "Blinks LED."},
         {"Temp", read_temp, "Reads temperature."},
+        {"Imu", read_imu, "Reads IMU accel/gyro."},
         {"IWrite", write_i2c, "Writes I2c."},
         {"IRead", read_i2c, "Reads I2c."}
     };
-    create_cli_task(&usart, commands, 4);
+    create_cli_task(&usart, commands, 5);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
@@ -51,8 +59,8 @@ int main(void)
 
 void blink(int argc, char* argv[])
 {
-    GPIOA->ODR ^= GPIO_ODR_OD5;
-    cli_write("Blink - %d", !!(GPIOA->ODR & GPIO_ODR_OD5));
+    GPIOB->ODR ^= GPIO_ODR_OD0;
+    cli_write("Blink - %d", GPIOB->ODR & GPIO_ODR_OD0);
 }
 
 void read_temp(int argc, char* argv[])
@@ -61,81 +69,12 @@ void read_temp(int argc, char* argv[])
     cli_write("Temp: %dC", (int) x);
 }
 
-void write_i2c(int argc, char* argv[])
+void read_imu(int argc, char* argv[])
 {
-    #define MAX_I2CW_SIZE 16
-    size_t count = 0;
-    bool valid = true;
-    uint8_t id = 0;
-    uint16_t address = 0;
-    uint8_t data[MAX_I2CW_SIZE] = {0};
+    EulerVec vec;
+    bno.get_euler(&bno, &vec);
+    uint8_t temp = bno.get_temp_c(&bno);
 
-    for (int i = 1; i < argc && valid; ++i)
-    {
-        if (i == 1)
-        {
-            id = str_to_8(argv[i]);
-        }
-        else if (i == 2)
-        {
-            address = str_to_16(argv[i]);
-        }
-        else
-        {
-            data[i - 3] = str_to_8(argv[i]);
-            count++;
-        }
-
-        /*
-         * i >= ( (max_size - 1) + 2 ), because
-         * address takes up 1 argument, id takes up 1.
-         */
-        if (i >= MAX_I2CW_SIZE)
-        {
-            break;
-        }
-    }
-
-    cli_write("Writing: %x %x %x %x... s%d", id, address, data[0], data[1], count);
-    i2c.set_target(&i2c, id << 1);
-    i2c.write(&i2c, address, data, count);
-}
-
-void read_i2c(int argc, char *argv[])
-{
-    #define MAX_I2CR_SIZE 3
-    bool valid = true;
-    uint8_t id = 0;
-    uint16_t address = 0;
-    uint16_t size = 0;
-    uint8_t data[MAX_I2CR_SIZE] = {0};
-
-    for (int i = 1; i < argc && valid; ++i)
-    {
-        if (i == 1)
-        {
-            id = str_to_8(argv[i]);
-        }
-        else if (i == 2)
-        {  
-            address = str_to_16(argv[i]);
-        }
-        else
-        {
-            size = str_to_16(argv[i]);
-        }
-
-        /*
-         * 3 args max.
-         */
-        if (i >= MAX_I2CR_SIZE + 1)
-        {
-            break;
-        }
-    }
-
-    cli_write("Reading: %x %x %x ", id, address, size);
-    i2c.set_target(&i2c, id << 1);
-    i2c.read(&i2c, address, data, size);
-    cli_write("Received: %x %x", data[0], data[1]);
+    cli_write("Eul x: %d y: %d z: %d", vec.x, vec.y, vec.z);
+    cli_write("Temp: %d C", temp);
 }

@@ -23,9 +23,9 @@ target_link_options(${EXECUTABLE} PRIVATE
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
     usart_cli
-    usart
     tmp102
-    str_util
+    bno055
+    i2c_access
 )
 
 add_custom_command(TARGET ${EXECUTABLE}
