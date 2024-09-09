@@ -27,6 +27,7 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     i2c_access
     i2c
     tmp102
+    bno055
 )
 
 add_custom_command(TARGET ${EXECUTABLE}

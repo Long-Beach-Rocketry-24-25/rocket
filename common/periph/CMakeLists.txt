@@ -1,1 +1,2 @@
+add_subdirectory(bno055)
 add_subdirectory(tmp102)

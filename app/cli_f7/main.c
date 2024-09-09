@@ -10,6 +10,7 @@
 #include "usart_cli.h"
 
 #include "tmp102.h"
+#include "bno055.h"
 
 #include "string_hex.h"
 
@@ -23,6 +24,7 @@ Usart usart;
 I2c i2c;
 
 Tmp102 tmp;
+Bno055 bno;
 
 int main(void)
 {
@@ -30,6 +32,9 @@ int main(void)
     BSP_Init(&usart, &i2c);
 
     Tmp102_Init(&tmp, &i2c, TMP102_ADDR_GND);
+
+    Bno055_Init(&bno, &i2c);
+    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
 
     init_i2c_access(&i2c);
 
@@ -66,16 +71,10 @@ void read_temp(int argc, char* argv[])
 
 void read_imu(int argc, char* argv[])
 {
-    uint8_t imu_mode = 0x8;
-    uint8_t eul_data[6] = {0};
-    i2c.set_target(&i2c, 0x28 << 1);
-    i2c.write(&i2c, 0x3d, &imu_mode, 1);
+    EulerVec vec;
+    bno.get_euler(&bno, &vec);
+    uint8_t temp = bno.get_temp_c(&bno);
 
-    i2c.read(&i2c, 0x1A, eul_data, 6);
-
-    cli_write("Eul x: %d y: %d z: %d",
-        (((int16_t) (eul_data[1] << 8)) | ((int16_t) eul_data[0])) >> 4,
-        (((int16_t) (eul_data[3] << 8)) | ((int16_t) eul_data[2])) >> 4,
-        (((int16_t) (eul_data[5] << 8)) | ((int16_t) eul_data[4])) >> 4
-    );
+    cli_write("Eul x: %d y: %d z: %d", vec.x, vec.y, vec.z);
+    cli_write("Temp: %d C", temp);
 }
