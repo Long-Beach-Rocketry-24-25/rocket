@@ -71,10 +71,18 @@ void read_temp(int argc, char* argv[])
 
 void read_imu(int argc, char* argv[])
 {
-    EulerVec vec;
-    bno.get_euler(&bno, &vec);
+    EulerVec e_vec;
+    QuaternionVec q_vec;
+    bno.get_euler(&bno, &e_vec);
+    bno.get_quaternion(&bno, &q_vec);
     uint8_t temp = bno.get_temp_c(&bno);
 
-    cli_write("Eul x: %d y: %d z: %d", vec.x, vec.y, vec.z);
+    cli_write("Eul x: %d y: %d z: %d", e_vec.x, e_vec.y, e_vec.z);
+    cli_write("Quat w: %f x: %f y: %f z: %f",
+        q_vec.w,
+        q_vec.x,
+        q_vec.y,
+        q_vec.z
+    );
     cli_write("Temp: %d C", temp);
 }
