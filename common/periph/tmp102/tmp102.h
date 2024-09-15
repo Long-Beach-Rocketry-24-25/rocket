@@ -22,5 +22,9 @@ struct Tmp102
     float (*get_temp_c) (Tmp102 *tmp);
 };
 
+/**
+ * You MUST call init for a given device before using any
+ * other functions.
+ */
 bool Tmp102_Init(Tmp102 *dev, I2c *bus, uint8_t dev_addr);
 float Tmp102_Get_Temp_C(Tmp102 *dev);

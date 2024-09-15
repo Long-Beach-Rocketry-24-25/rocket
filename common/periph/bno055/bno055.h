@@ -32,7 +32,6 @@ typedef struct
     double z;
 } QuaternionVec;
 
-
 struct Bno055
 {
     I2c *bus;
@@ -43,7 +42,11 @@ struct Bno055
     uint8_t (*get_temp_c) (Bno055 *dev);
 };
 
-bool Bno055_Init(Bno055 *dev, I2c *bus);
+/**
+ * You MUST call init/set mode for a given device before using any
+ * other functions.
+ */
+bool Bno055_Init(Bno055 *dev, I2c *bus, uint8_t addr);
 void Bno055_Set_Mode(Bno055 *dev, uint8_t mode);
 void Bno055_Get_Euler(Bno055 *dev, EulerVec *vec);
 void Bno055_Get_Quaternion(Bno055 *dev, QuaternionVec *vec);

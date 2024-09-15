@@ -4,12 +4,13 @@
 
 static inline int16_t form_signed16(uint8_t msb, uint8_t lsb)
 {
-    return ((int16_t) (msb << 8)) | ((int16_t) lsb);
+    return ((int16_t) msb << 8) | lsb;
 }
 
-bool Bno055_Init(Bno055 *dev, I2c *bus)
+bool Bno055_Init(Bno055 *dev, I2c *bus, uint8_t addr)
 {
     dev->bus = bus;
+    dev->addr = addr;
     dev->get_euler = Bno055_Get_Euler;
     dev->get_quaternion = Bno055_Get_Quaternion;
     dev->get_temp_c = Bno055_Get_Temp_C;
@@ -20,14 +21,14 @@ bool Bno055_Init(Bno055 *dev, I2c *bus)
 
 void Bno055_Set_Mode(Bno055 *dev, uint8_t mode)
 {
-    dev->status = dev->bus->set_target(dev->bus, BNO055_DEV_ADDR);
+    dev->status = dev->bus->set_target(dev->bus, dev->addr);
     dev->status = dev->bus->write(dev->bus, BNO055_OPR_MODE_REG, &mode, 1);
 }
 
 void Bno055_Get_Euler(Bno055 *dev, EulerVec *vec)
 {
     uint8_t data[6] = {0};
-    dev->status = dev->bus->set_target(dev->bus, BNO055_DEV_ADDR);
+    dev->status = dev->bus->set_target(dev->bus, dev->addr);
     dev->status = dev->bus->read(dev->bus, BNO055_EULER_START_REG, data, 6);
 
     vec->x = form_signed16(data[1], data[0]) >> 4;
@@ -38,7 +39,7 @@ void Bno055_Get_Euler(Bno055 *dev, EulerVec *vec)
 void Bno055_Get_Quaternion(Bno055 *dev, QuaternionVec *vec)
 {
     uint8_t data[8] = {0};
-    dev->status = dev->bus->set_target(dev->bus, BNO055_DEV_ADDR);
+    dev->status = dev->bus->set_target(dev->bus, dev->addr);
     dev->status = dev->bus->read(dev->bus, BNO055_QUATERNION_START_REG, data, 8);
 
     double quat_fact = 1. / (1 << 14);
@@ -51,7 +52,7 @@ void Bno055_Get_Quaternion(Bno055 *dev, QuaternionVec *vec)
 uint8_t Bno055_Get_Temp_C(Bno055 *dev)
 {
     uint8_t data = 0;
-    dev->status = dev->bus->set_target(dev->bus, BNO055_DEV_ADDR);
+    dev->status = dev->bus->set_target(dev->bus, dev->addr);
     dev->status = dev->bus->read(dev->bus, BNO055_TEMP_REG, &data, 1);
 
     return data;

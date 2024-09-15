@@ -33,7 +33,7 @@ int main(void)
 
     Tmp102_Init(&tmp, &i2c, TMP102_ADDR_GND);
 
-    Bno055_Init(&bno, &i2c);
+    Bno055_Init(&bno, &i2c, BNO055_DEV_ADDR);
     Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
 
     init_i2c_access(&i2c);
