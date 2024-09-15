@@ -9,7 +9,7 @@ void retry_timer_start(void * data)
 bool retry_timer_tick(void * data)
 {
     RetryData* retry_data = (RetryData *) data;
-    if (retry_data->counter - 1 <= 0)
+    if (retry_data->counter - 1 >= 0)
     {
         retry_data->counter--;
         return false;

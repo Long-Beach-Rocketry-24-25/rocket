@@ -97,19 +97,10 @@ void read_imu(int argc, char* argv[])
 
 void read_baro(int argc, char* argv[])
 {
-
-    // uint8_t conf = 0x33; // 31
-    // uint8_t data[6] = {0};
-    // i2c.write(&i2c, 0x1B, &conf, 1);
-    // i2c.read(&i2c, 0x4, data, 3);
-    // uint32_t res = ((data[0] << 16) | (data[1] << 8) | data[2]);
-    // float atmos = res / 2.64;
-
     Bmp390_Config(&bmp);
 
     float press_pa = bmp.get_pressure_pa(&bmp);
     float temp_c = bmp.get_temp_c(&bmp);
 
     cli_write("Pressure: %f Pa, Temp: %f C", press_pa, temp_c);
-    // cli_write("Pressure: %f Pa", 44331.0 * (1.0 - pow((atmos / 101325.0), 0.1903)));
 }

@@ -15,7 +15,9 @@
         "iomanip": "c",
         "xlocmon": "c",
         "xlocnum": "c",
-        "i2c.h": "c"
+        "i2c.h": "c",
+        "freertos_timer.h": "c",
+        "freertos.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

@@ -17,6 +17,7 @@ target_link_libraries(bsp
         st_f7_support
         usart
         i2c
+        timeout
     INTERFACE
         freertos_kernel
 )

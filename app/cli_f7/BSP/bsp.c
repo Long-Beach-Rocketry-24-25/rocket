@@ -4,9 +4,9 @@
 static StPrivUsart st_usart;
 static StPrivI2c st_i2c;
 static Timeout usart_time;
-static RetryData usart_rd;
+static FrtTimerData usart_frt;
 static Timeout i2c_time;
-static RetryData i2c_rd;
+static FrtTimerData i2c_frt;
 
 void BSP_Init(Usart *usart, I2c *i2c)
 {
@@ -45,11 +45,11 @@ void BSP_Init(Usart *usart, I2c *i2c)
     NVIC_SetPriority( USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
-    retry_timer_init(&usart_time, &usart_rd, 100);
+    frt_timer_init(&usart_time, &usart_frt, 500);
     St_Usart_Init(usart, &st_usart, USART3_BASE, &usart_time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
-    retry_timer_init(&i2c_time, &i2c_rd, 100);
+    frt_timer_init(&i2c_time, &i2c_frt, 100);
     St_I2c_Init(i2c, &st_i2c, I2C1_BASE, &i2c_time);
     St_I2c_Config(i2c, 0x20B);
 

@@ -13,7 +13,7 @@
 #define BMP390_DEV_ADDR                     (0x76 << 1)
 
 #define BMP390_CALIB_REG_START              (0x31)
-#define BMP390_CALIB_REG_LEN                (0x45 - 0x31)
+#define BMP390_CALIB_REG_LEN                (21)
 
 #define BMP390_PWR_CTRL_REG                 (0x1B)
 #define BMP390_PWR_CTRL_PRESS_EN            (0x1)
