@@ -1,5 +1,5 @@
 
-#include "bmp390.h"
+#include "bmp390_i2c.h"
 
 
 static inline uint16_t combine_16u(uint8_t msb, uint8_t lsb)
@@ -12,16 +12,18 @@ static inline int16_t combine_16i(int16_t msb, int16_t lsb)
     return (int16_t) msb << 8 | lsb;
 }
 
-void Bmp390_Init(Bmp390* dev, I2c* i2c, uint8_t addr)
+void Bmp390_I2c_Init(Bmp390* dev, Bmp390I2cPriv* priv, I2c* i2c, uint8_t addr)
 {
-    dev->bus = i2c;
-    dev->addr = addr;
-    dev->status = true;
-    dev->get_pressure_pa = Bmp390_Get_Pressure;
-    dev->get_temp_c = Bmp390_Get_Temp_C;
+    priv->bus = i2c;
+    priv->addr = addr;
+    priv->status = true;
+
+    dev->priv = (void *) priv;
+    dev->get_pressure_pa = Bmp390_I2c_Get_Pressure;
+    dev->get_temp_c = Bmp390_I2c_Get_Temp_C;
 }
 
-static void Bmp390_Get_Calib(Bmp390* dev)
+static void Bmp390_Get_Calib(Bmp390I2cPriv* dev)
 {
     uint8_t data[BMP390_CALIB_REG_LEN] = {0};
     dev->status = dev->bus->set_target(dev->bus, dev->addr);
@@ -43,14 +45,16 @@ static void Bmp390_Get_Calib(Bmp390* dev)
     dev->cal.p11 = (int8_t) data[20];
 }
 
-void Bmp390_Config(Bmp390* dev)
+void Bmp390_I2c_Config(Bmp390* dev)
 {
-    Bmp390_Get_Calib(dev);
+    Bmp390I2cPriv *priv = (Bmp390I2cPriv *) dev->priv;
+
+    Bmp390_Get_Calib(priv);
     uint8_t conf = BMP390_PWR_CTRL_MODE | BMP390_PWR_CTRL_PRESS_EN | BMP390_PWR_CTRL_TEMP_EN;
-    dev->status = dev->bus->write(dev->bus, BMP390_PWR_CTRL_REG, &conf, 1);
+    priv->status = priv->bus->write(priv->bus, BMP390_PWR_CTRL_REG, &conf, 1);
 }
 
-static int64_t Bmp390_Compensate_Temperature(Bmp390 *dev, uint32_t data)
+static int64_t Bmp390_Compensate_Temperature(Bmp390I2cPriv *dev, uint32_t data)
 { 
     uint64_t partial_data1;
     uint64_t partial_data2;
@@ -73,7 +77,7 @@ static int64_t Bmp390_Compensate_Temperature(Bmp390 *dev, uint32_t data)
     return comp_temp;
 }
 
-static int64_t Bmp390_Compensate_Pressure(Bmp390* dev, uint32_t data)
+static int64_t Bmp390_Compensate_Pressure(Bmp390I2cPriv* dev, uint32_t data)
 {
     int64_t partial_data1;
     int64_t partial_data2;
@@ -111,7 +115,7 @@ static int64_t Bmp390_Compensate_Pressure(Bmp390* dev, uint32_t data)
     return comp_press;
 }
 
-static void Bmp390_Get_Data(Bmp390* dev)
+static void Bmp390_Get_Data(Bmp390I2cPriv* dev)
 {
     uint8_t data[6] = {0};
     dev->status = dev->bus->set_target(dev->bus, dev->addr);
@@ -125,14 +129,18 @@ static void Bmp390_Get_Data(Bmp390* dev)
     dev->last_press = Bmp390_Compensate_Pressure(dev, press) / 100.0;
 }
 
-float Bmp390_Get_Pressure(Bmp390* dev)
+float Bmp390_I2c_Get_Pressure(Bmp390* dev)
 {
-    Bmp390_Get_Data(dev);
-    return dev->last_press;
+    Bmp390I2cPriv *priv = (Bmp390I2cPriv *) dev->priv;
+
+    Bmp390_Get_Data(priv);
+    return priv->last_press;
 }
 
-float Bmp390_Get_Temp_C(Bmp390* dev)
+float Bmp390_I2c_Get_Temp_C(Bmp390* dev)
 {
-    Bmp390_Get_Data(dev);
-    return dev->last_temp;
+    Bmp390I2cPriv *priv = (Bmp390I2cPriv *) dev->priv;
+
+    Bmp390_Get_Data(priv);
+    return priv->last_temp;
 }

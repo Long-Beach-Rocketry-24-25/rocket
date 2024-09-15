@@ -13,6 +13,8 @@
 #include "bno055.h"
 #include "bmp390.h"
 
+#include "bmp390_i2c.h"
+
 #include <math.h>
 
 /*-----------------------------------------------------------*/
@@ -29,16 +31,19 @@ Tmp102 tmp;
 Bno055 bno;
 Bmp390 bmp;
 
+// Specific stuff for now.
+Bmp390I2cPriv bmp_priv;
+
 int main(void)
 {
 
-    BSP_Init(&usart, &i2c);
+    BSP_Init(&usart, &i2c, &tmp, &bno, &bmp);
 
     Tmp102_Init(&tmp, &i2c, TMP102_ADDR_GND);
 
     Bno055_Init(&bno, &i2c, BNO055_DEV_ADDR);
 
-    Bmp390_Init(&bmp, &i2c, BMP390_DEV_ADDR);
+    Bmp390_I2c_Init(&bmp, &bmp_priv, &i2c, BMP390_DEV_ADDR);
 
     init_i2c_access(&i2c);
 

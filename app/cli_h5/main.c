@@ -13,6 +13,8 @@
 #include "bno055.h"
 #include "bmp390.h"
 
+#include "bmp390_i2c.h"
+
 /*-----------------------------------------------------------*/
 
 void blink(int argc, char* argv[]);
@@ -27,6 +29,9 @@ Tmp102 tmp;
 Bno055 bno;
 Bmp390 bmp;
 
+// Specific stuff for now.
+Bmp390I2cPriv bmp_priv;
+
 int main(void)
 {
 
@@ -36,9 +41,7 @@ int main(void)
 
     Bno055_Init(&bno, &i2c, BNO055_DEV_ADDR);
 
-    Bmp390_Init(&bmp, &i2c, BMP390_DEV_ADDR);
-
-    init_i2c_access(&i2c);
+    Bmp390_I2c_Init(&bmp, &bmp_priv, &i2c, BMP390_DEV_ADDR);
 
     Command commands[6] = { 
         {"Blink", blink, "Blinks LED."},
@@ -96,7 +99,7 @@ void read_imu(int argc, char* argv[])
 
 void read_baro(int argc, char* argv[])
 {
-    Bmp390_Config(&bmp);
+    Bmp390_I2c_Config(&bmp);
 
     float press_pa = bmp.get_pressure_pa(&bmp);
     float temp_c = bmp.get_temp_c(&bmp);

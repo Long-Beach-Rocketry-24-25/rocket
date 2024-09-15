@@ -1,6 +1,6 @@
 
 add_library(bmp390 STATIC
-    bmp390.c
+    bmp390_i2c.c
 )
 
 target_include_directories(bmp390 PUBLIC .)
