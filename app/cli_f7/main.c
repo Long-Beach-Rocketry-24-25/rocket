@@ -13,8 +13,6 @@
 #include "bno055.h"
 #include "bmp390.h"
 
-#include "string_hex.h"
-
 #include <math.h>
 
 /*-----------------------------------------------------------*/

@@ -36,5 +36,5 @@ float Tmp102_Get_Temp_C(Tmp102 *dev)
         temp = -((~(temp & max_12bit) & max_12bit) + 1);
     }
 
-    return (float) temp / 16;
+    return temp / 16.0;
 }

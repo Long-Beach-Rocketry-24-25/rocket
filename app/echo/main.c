@@ -6,7 +6,7 @@
 
 #include "cli.h"
 #include "st_usart.h"
-#include "retry_timer.h"
+#include "forever_timer.h"
 #include "ring_buffer.h"
 
 /* The task functions. */
@@ -26,7 +26,6 @@ RingBuffer usart1_buf;
 uint8_t usart1_data[256] = {0};
 
 Timeout time;
-RetryData rd;
 StPrivUsart st_usart;
 
 Usart usart1;
@@ -35,7 +34,7 @@ int main(void)
 {
 
     BSP_Init();
-    retry_timer_init(&time, &rd, 1000);
+    forever_timer_init(&time);
     ring_buffer_init(&usart1_buf, &usart1_data, sizeof(usart1_data));
     St_Usart_Init(&usart1, &st_usart, USART1_BASE, &time);
     St_Usart_Config(&usart1, SystemCoreClock, 115200);

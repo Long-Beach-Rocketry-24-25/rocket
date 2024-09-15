@@ -25,6 +25,7 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     usart_cli
     tmp102
     bno055
+    bmp390
     i2c_access
 )
 

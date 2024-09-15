@@ -3,8 +3,10 @@
 
 static StPrivUsart st_usart;
 static StPrivI2c st_i2c;
-static Timeout time;
-static RetryData rd;
+static Timeout usart_time;
+static FrtTimerData usart_frt;
+static Timeout i2c_time;
+static FrtTimerData i2c_frt;
 
 void BSP_Init(Usart *usart, I2c *i2c)
 {
@@ -47,11 +49,12 @@ void BSP_Init(Usart *usart, I2c *i2c)
     GPIOC->AFR[1] &= ~(GPIO_AFRH_AFSEL8 | GPIO_AFRH_AFSEL9);
     GPIOC->AFR[1] |= (0x4 << GPIO_AFRH_AFSEL8_Pos) | (0x4 << GPIO_AFRH_AFSEL9_Pos);
 
-    retry_timer_init(&time, &rd, 10);
-    St_Usart_Init(usart, &st_usart, USART1_BASE, &time);
+    frt_timer_init(&usart_time, &usart_frt, 500);
+    St_Usart_Init(usart, &st_usart, USART1_BASE, &usart_time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
-    St_I2c_Init(i2c, &st_i2c, I2C1_BASE, &time);
+    frt_timer_init(&i2c_time, &i2c_frt, 100);
+    St_I2c_Init(i2c, &st_i2c, I2C1_BASE, &i2c_time);
     St_I2c_Config(i2c, 0x60808CD3);
 
 }
