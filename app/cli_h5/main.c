@@ -13,6 +13,8 @@
 #include "bno055.h"
 #include "bmp390.h"
 
+#include "gnc.h"
+
 /*-----------------------------------------------------------*/
 
 void blink(int argc, char* argv[]);
@@ -102,5 +104,6 @@ void read_baro(int argc, char* argv[])
     float temp_c = bmp.get_temp_c(&bmp);
 
     cli_write("Pressure: %f Pa, Temp: %f C", press_pa, temp_c);
+    cli_write("Altitude: %f m", altitude(press_pa, 101325.0));
 }
 

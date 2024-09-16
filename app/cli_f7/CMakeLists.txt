@@ -29,6 +29,7 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     tmp102
     bno055
     bmp390
+    gnc
 )
 
 add_custom_command(TARGET ${EXECUTABLE}

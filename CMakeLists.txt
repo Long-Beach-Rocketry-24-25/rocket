@@ -4,10 +4,16 @@ project(myapp
     LANGUAGES CXX C ASM
 )
 
-add_compile_definitions(
-    ${MCU_NAME}=TRUE
-    USE_HAL_DRIVER=TRUE
-)
+if (${SIM_PLATFORM})
+    add_compile_definitions(
+        SIM_PLATFORM=TRUE
+    )
+else()
+    add_compile_definitions(
+        ${MCU_NAME}=TRUE
+        USE_HAL_DRIVER=TRUE
+    )
+endif()
 
 if (MCU_NAME MATCHES "^(STM32H5)[0-9]+xx")
     add_subdirectory(mcu_support/stm32/h5xx)
@@ -25,6 +31,8 @@ elseif (BUILD_TARGET STREQUAL "cli_f7")
     add_subdirectory(app/cli_f7)
 elseif (BUILD_TARGET STREQUAL "cli_h5")
     add_subdirectory(app/cli_h5)
+elseif (BUILD_TARGET STREQUAL "sim")
+    add_subdirectory(app/sim)
 endif()
 
 add_subdirectory(mcu_support/cmsis)

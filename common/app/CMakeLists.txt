@@ -1,1 +1,1 @@
-add_subdirectory(i2c_access)
+# WARNING: THIS IS A HARDWARE AGNOSTIC FOLDER - DO NOT ADD MCU CODE.
