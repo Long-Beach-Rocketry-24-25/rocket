@@ -7,19 +7,24 @@ static Timeout usart_time;
 static FrtTimerData usart_frt;
 static Timeout i2c_time;
 static FrtTimerData i2c_frt;
+static StPrivGpio st_gpio;
 
-void BSP_Init(Usart *usart, I2c *i2c)
+void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
 {
     HAL_InitTick(0);
     SystemClock_Config();
 
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    GPIOA->MODER &= ~(GPIO_MODER_MODE5
-                    | GPIO_MODER_MODE0);
-    GPIOA->MODER |= (GPIO_MODER_MODE5_0
-                    | GPIO_MODER_MODE0_0);
-    
-    GPIOA->MODER |= 1 << GPIO_MODER_MODE0_Pos;
+    St_Gpio_Init(led_gpio, &st_gpio, GPIOA_BASE, 5);
+
+    StGpioConfig conf = {
+        1,
+        0,
+        0,
+        0,
+        0
+    };
+    St_Gpio_Config(led_gpio, &conf);
 
     // Usart 1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
