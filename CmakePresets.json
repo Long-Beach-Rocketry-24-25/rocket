@@ -17,7 +17,8 @@
             "hidden": true,
             "toolchainFile": "cmake/gcc-m7.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM7"
+                "FREERTOS_PORT": "GCC_ARM_CM7",
+                "SIM_PLATFORM": false
             }
         },
         {
@@ -35,7 +36,8 @@
             "hidden": true,
             "toolchainFile": "cmake/gcc-m33.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE"
+                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE",
+                "SIM_PLATFORM": false
             }
         },
         {

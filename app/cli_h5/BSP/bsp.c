@@ -7,7 +7,17 @@ static Timeout usart_time;
 static FrtTimerData usart_frt;
 static Timeout i2c_time;
 static FrtTimerData i2c_frt;
-static StPrivGpio st_gpio;
+static StPrivGpio led_stgpio;
+
+static Gpio uart_1_gpio;
+static Gpio uart_2_gpio;
+static StPrivGpio uart_1_stgpio;
+static StPrivGpio uart_2_stgpio;
+
+static Gpio i2c_1_gpio;
+static Gpio i2c_2_gpio;
+static StPrivGpio i2c_1_stgpio;
+static StPrivGpio i2c_2_stgpio;
 
 void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
 {
@@ -15,23 +25,32 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     SystemClock_Config();
 
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    St_Gpio_Init(led_gpio, &st_gpio, GPIOA_BASE, 5);
+    St_Gpio_Init(led_gpio, &led_stgpio, GPIOA_BASE, 5);
 
-    StGpioConfig conf = {
+    StGpioConfig led_conf = {
         1,
         0,
         0,
         0,
         0
     };
-    St_Gpio_Config(led_gpio, &conf);
+    St_Gpio_Config(led_gpio, &led_conf);
 
     // Usart 1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
-    GPIOB->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE7);
-    GPIOB->MODER |= (0x2 << GPIO_MODER_MODE6_Pos) | (0x2 << GPIO_MODER_MODE7_Pos);
-    GPIOB->AFR[0] &= ~(GPIO_AFRL_AFSEL6 | GPIO_AFRL_AFSEL7);
-    GPIOB->AFR[0] |= (0x7 << GPIO_AFRL_AFSEL6_Pos) | (0x7 << GPIO_AFRL_AFSEL7_Pos);
+
+    St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOB_BASE, 6);
+    St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOB_BASE, 7);
+
+    StGpioConfig uart_io_conf = {
+        ALT_FUNC,
+        0,
+        0,
+        0,
+        0x7
+    };
+    St_Gpio_Config(&uart_1_gpio, &uart_io_conf);
+    St_Gpio_Config(&uart_2_gpio, &uart_io_conf);
 
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
@@ -40,19 +59,22 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     NVIC_EnableIRQ(USART1_IRQn);
 
     // I2c 1 PC8 PC9
+
     RCC->APB1LENR |= RCC_APB1LENR_I2C1EN;
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
 
-    GPIOC->MODER &= ~(GPIO_MODER_MODE8 | GPIO_MODER_MODE9);
-    GPIOC->MODER |= (0x2 << GPIO_MODER_MODE8_Pos) | (0x2 << GPIO_MODER_MODE9_Pos);
+    St_Gpio_Init(&i2c_1_gpio, &i2c_1_stgpio, GPIOC_BASE, 8);
+    St_Gpio_Init(&i2c_2_gpio, &i2c_2_stgpio, GPIOC_BASE, 9);
 
-    GPIOC->OTYPER |= (GPIO_OTYPER_OT8 | GPIO_OTYPER_OT9);
-
-    GPIOC->PUPDR &= ~(GPIO_PUPDR_PUPD8 | GPIO_PUPDR_PUPD9);
-    GPIOC->PUPDR |= (0x1 << GPIO_PUPDR_PUPD8_Pos) | (0x1 << GPIO_PUPDR_PUPD9_Pos);
-
-    GPIOC->AFR[1] &= ~(GPIO_AFRH_AFSEL8 | GPIO_AFRH_AFSEL9);
-    GPIOC->AFR[1] |= (0x4 << GPIO_AFRH_AFSEL8_Pos) | (0x4 << GPIO_AFRH_AFSEL9_Pos);
+    StGpioConfig i2c_io_conf = {
+        ALT_FUNC,
+        OPEN_DRAIN,
+        0,
+        PULL_UP,
+        0x4
+    };
+    St_Gpio_Config(&i2c_1_gpio, &i2c_io_conf);
+    St_Gpio_Config(&i2c_2_gpio, &i2c_io_conf);
 
     frt_timer_init(&usart_time, &usart_frt, 500);
     St_Usart_Init(usart, &st_usart, USART1_BASE, &usart_time);

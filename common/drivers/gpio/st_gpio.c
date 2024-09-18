@@ -36,13 +36,15 @@ void St_Gpio_Config(Gpio* gpio, StGpioConfig* config)
 
     /*
      * Pins >= 8 use AFR[1], pins < 8 use AFR[0].
+     * For AF High, use index 'pin_num' - 8.
      */
     uint8_t afr_section = dev->pin_num / 8;
+    uint8_t af_index = (afr_section == 1) ? dev->pin_num - 8 : dev->pin_num;
 
     set_field(&dev->instance->MODER, config->mode, dev->pin_num, 2);
     set_field(&dev->instance->OTYPER, config->otype, dev->pin_num, 1);
     set_field(&dev->instance->PUPDR, config->pupd, dev->pin_num, 2);
-    set_field(&dev->instance->AFR[afr_section], config->af, dev->pin_num, 4);
+    set_field(&dev->instance->AFR[afr_section], config->af, af_index, 4);
 }
 
 static bool St_Gpio_Out_Status(Gpio* gpio)
