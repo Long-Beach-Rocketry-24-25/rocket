@@ -38,35 +38,36 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     St_Gpio_Config(led_gpio, &led_conf);
 
     // Usart 1
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 
-    St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOB_BASE, 6);
-    St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOB_BASE, 7);
+    // St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOB_BASE, 6);
+    // St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOB_BASE, 7);
 
     // UART4
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
-    // St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOA_BASE, 0);
-    // St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOA_BASE, 1);
+    St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOA_BASE, 0);
+    St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOA_BASE, 1);
 
     StGpioConfig uart_io_conf = {
         ALT_FUNC,
         0,
         0,
         0,
-        0x7
+        // 0x7 // USART1
+        0x8 // UART4
     };
     St_Gpio_Config(&uart_1_gpio, &uart_io_conf);
     St_Gpio_Config(&uart_2_gpio, &uart_io_conf);
 
-    // RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
-    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
+    // RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
     NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
-    NVIC_EnableIRQ(USART1_IRQn);
-    // NVIC_SetPriority(UART4_IRQn, NVIC_EncodePriority(0, 6, 0));
-    // NVIC_EnableIRQ(UART4_IRQn);
+    // NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
+    // NVIC_EnableIRQ(USART1_IRQn);
+    NVIC_SetPriority(UART4_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_EnableIRQ(UART4_IRQn);
 
     // I2c 1 PC8 PC9
 
@@ -89,8 +90,8 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     SystemCoreClockUpdate();
 
     frt_timer_init(&usart_time, &usart_frt, 500);
-    St_Usart_Init(usart, &st_usart, USART1_BASE, &usart_time);
-    // St_Usart_Init(usart, &st_usart, UART4_BASE, &usart_time);
+    // St_Usart_Init(usart, &st_usart, USART1_BASE, &usart_time);
+    St_Usart_Init(usart, &st_usart, UART4_BASE, &usart_time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
     frt_timer_init(&i2c_time, &i2c_frt, 100);
