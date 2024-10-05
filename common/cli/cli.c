@@ -29,7 +29,8 @@ bool cli_write(const char *data, ...)
 
 bool cli_register_command(const Command *cmd)
 {
-    if (num_commands < MAX_ARGS) {
+    if (num_commands < MAX_ARGS)
+    {
         commands[num_commands++] = *cmd;
         return true;
     }
@@ -39,9 +40,19 @@ bool cli_register_command(const Command *cmd)
 static void parse_command(char *input, int *argc, char *argv[]) {
     *argc = 0;
     char *token = strtok(input, " ");
-    while (token != NULL && *argc < MAX_ARGS) {
+    while (token != NULL && *argc < MAX_ARGS)
+    {
         argv[(*argc)++] = token;
         token = strtok(NULL, " ");
+    }
+}
+
+static void help()
+{
+    cli_write("Available commands:");
+    for (int i = 0; i < num_commands; i++)
+    {
+        cli_write("%s - %s", commands[i].name, commands[i].help);
     }
 }
 
@@ -69,17 +80,25 @@ bool cli_process(const char * message)
     parse_command(input, &argc, argv);
 
     if (argc > 0) {
-        for (int i = 0; i < num_commands; i++) {
-            if (strcmp(argv[0], commands[i].name) == 0) {
+        for (int i = 0; i < num_commands; i++)
+        {
+            if (strcmp(argv[0], commands[i].name) == 0)
+            {
                 commands[i].handler(argc, argv);
                 return true;
             }
         }
+
+        if (strcmp(argv[0], "help") == 0)
+        {
+            help();
+            return true;
+        } 
         
         /*
          * Unknown command parsed.
          */
-        comm->write_str("Unknown command!");
+        cli_write("Unknown command!");
         return false;
     }
 }

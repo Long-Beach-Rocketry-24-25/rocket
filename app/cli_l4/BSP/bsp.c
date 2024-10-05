@@ -59,7 +59,8 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     St_Gpio_Config(&uart_1_gpio, &uart_io_conf);
     St_Gpio_Config(&uart_2_gpio, &uart_io_conf);
 
-    RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
+    // RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
@@ -69,11 +70,11 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
 
     // I2c 1 PC8 PC9
 
-    RCC->APB1ENR1 |= RCC_APB1ENR1_I2C3EN;
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_I2C2EN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 
-    St_Gpio_Init(&i2c_1_gpio, &i2c_1_stgpio, GPIOC_BASE, 0);
-    St_Gpio_Init(&i2c_2_gpio, &i2c_2_stgpio, GPIOC_BASE, 1);
+    St_Gpio_Init(&i2c_1_gpio, &i2c_1_stgpio, GPIOB_BASE, 10);
+    St_Gpio_Init(&i2c_2_gpio, &i2c_2_stgpio, GPIOB_BASE, 11);
 
     StGpioConfig i2c_io_conf = {
         ALT_FUNC,
@@ -93,7 +94,7 @@ void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
     frt_timer_init(&i2c_time, &i2c_frt, 100);
-    St_I2c_Init(i2c, &st_i2c, I2C3_BASE, &i2c_time);
+    St_I2c_Init(i2c, &st_i2c, I2C2_BASE, &i2c_time);
     St_I2c_Config(i2c, 0x20B);
 
 }
