@@ -32,6 +32,25 @@
             }
         },
         {
+            "name": "stm32l4",
+            "hidden": true,
+            "toolchainFile": "cmake/gcc-m4f.cmake",
+            "cacheVariables": {
+                "FREERTOS_PORT": "GCC_ARM_CM4F",
+                "SIM_PLATFORM": false
+            }
+        },
+        {
+            "name": "stm32l452",
+            "hidden": true,
+            "inherits": "stm32l4",
+            "cacheVariables": {
+                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l452/STM32L452RCTX_FLASH.ld",
+                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l452/startup_stm32l452rctx.s",
+                "MCU_NAME": "STM32L452xx"
+            }
+        },
+        {
             "name": "stm32h5",
             "hidden": true,
             "toolchainFile": "cmake/gcc-m33.cmake",
@@ -91,6 +110,17 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "BUILD_TARGET": "cli_f7"
+            }
+        },
+        {
+            "name": "cli_l4",
+            "description": "Compiler settings for cli example",
+            "inherits": "stm32l452",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/app/cli_l4/Build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "BUILD_TARGET": "cli_l4"
             }
         },
         {

@@ -138,7 +138,7 @@ static void cli_process_task(void * params)
 
 void usart_rx_callback()
 {
-    if (usart.rx_ready(&usart))
+    if (usart.rx_ready != NULL && usart.rx_ready(&usart))
     {
         usart.clear_errors(&usart);
         BaseType_t higher_prio_task_woken = pdFALSE;
