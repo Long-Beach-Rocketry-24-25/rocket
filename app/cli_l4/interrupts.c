@@ -5,15 +5,15 @@
 
 extern TIM_HandleTypeDef htim1;
 
-// void UART4_IRQHandler(void)
-// {
-//     usart_rx_callback();
-// }
-
-void USART1_IRQHandler(void)
+void UART4_IRQHandler(void)
 {
     usart_rx_callback();
 }
+
+// void USART1_IRQHandler(void)
+// {
+//     usart_rx_callback();
+// }
 
 void TIM1_UP_TIM16_IRQHandler(void)
 {

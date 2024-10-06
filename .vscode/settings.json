@@ -18,7 +18,8 @@
         "i2c.h": "c",
         "freertos_timer.h": "c",
         "freertos.h": "c",
-        "bmp390.h": "c"
+        "bmp390.h": "c",
+        "usart_cli.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

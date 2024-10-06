@@ -53,6 +53,32 @@
                 "monitor reset"
             ],
             "showDevDebugOutput": true,
+        },
+        {
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceRoot}/app/cli_l4/build/app/cli_l4/cli_l4",
+            "name": "JTAG DEBUG CLI L4",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "STM32L452",
+            "svdFile": "${workspaceRoot}/external/cortex-debug-dp-stm32l4/data/STM32L4x2.svd",
+            "runToMain": true,
+            "configFiles": [
+                "${workspaceRoot}/mcu_support/stm32/stlink.cfg",
+                "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
+            ],
+            "debuggerArgs": [
+                "-d",
+                "${workspaceRoot}",
+            ],
+            "preRestartCommands": [
+                "add-symbol-file app/cli_l4/build/app/cli_l4/cli_l4",
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": true,
         }
     ]
 }
