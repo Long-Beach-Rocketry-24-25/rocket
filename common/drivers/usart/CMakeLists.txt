@@ -5,5 +5,6 @@ add_library(usart STATIC
 
 target_include_directories(usart PUBLIC .)
 target_link_libraries(usart PUBLIC
+    gpio
     timeout
 )

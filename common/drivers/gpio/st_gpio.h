@@ -69,11 +69,20 @@ typedef struct
 typedef struct
 {
     uint8_t pin_num;
+    StGpioConfig *config;
     ST_GPIO_TypeDef * instance;
 } StPrivGpio;
 
-bool St_Gpio_Init(Gpio* gpio, StPrivGpio* st_gpio, uint32_t base_addr, uint8_t pin_num);
-void St_Gpio_Config(Gpio* gpio, StGpioConfig* config);
+typedef struct
+{
+    StPrivGpio priv;
+    uint32_t base_addr;
+    uint8_t pin_num;
+    StGpioConfig conf;
+} StGpioParams;
+
+bool St_Gpio_Init(Gpio* gpio, StGpioParams *params);
+void St_Gpio_Config(Gpio* gpio);
 bool St_Gpio_Toggle(Gpio* gpio);
 void St_Gpio_Set(Gpio* gpio, bool active);
 bool St_Gpio_Read(Gpio* gpio);

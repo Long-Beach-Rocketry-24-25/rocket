@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "gpio.h"
 #include "usart.h"
 #include "st_usart_def.h"
 #include "timeout.h"
@@ -35,6 +36,8 @@ typedef struct
 typedef struct
 {
     ST_USART_TypeDef * instance;
+    Gpio rx;
+    Gpio tx;
     Timeout * timer;
 } StPrivUsart;
 

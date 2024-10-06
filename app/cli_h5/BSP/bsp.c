@@ -3,89 +3,63 @@
 
 static StPrivUsart st_usart;
 static StPrivI2c st_i2c;
-static Timeout usart_time;
-static FrtTimerData usart_frt;
-static Timeout i2c_time;
-static FrtTimerData i2c_frt;
-static StPrivGpio led_stgpio;
+static StGpioParams led_stgpio = {{ 0 }, GPIOA_BASE, 5, {1, 0, 0, 0, 0}};
 
-static Gpio uart_1_gpio;
-static Gpio uart_2_gpio;
-static StPrivGpio uart_1_stgpio;
-static StPrivGpio uart_2_stgpio;
+// Sequential use of these, so using one is fine. Not thread safe.
+static Timeout time;
+static FrtTimerData frt;
 
-static Gpio i2c_1_gpio;
-static Gpio i2c_2_gpio;
-static StPrivGpio i2c_1_stgpio;
-static StPrivGpio i2c_2_stgpio;
+static StGpioParams uart_io1 = {{ 0 }, GPIOB_BASE, 6, 
+                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART1 AF 7
+static StGpioParams uart_io2 = {{ 0 }, GPIOB_BASE, 7,
+                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART1 AF 7
 
-void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio)
+const StGpioConfig i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
+
+static StGpioParams i2c1_io1 = {{ 0 }, GPIOC_BASE, 8, i2c_io_conf};
+static StGpioParams i2c1_io2 = {{ 0 }, GPIOC_BASE, 9, i2c_io_conf};
+
+void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
 {
+
     HAL_InitTick(0);
     SystemClock_Config();
 
+    // LED GPIO
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    St_Gpio_Init(led_gpio, &led_stgpio, GPIOA_BASE, 5);
 
-    StGpioConfig led_conf = {
-        1,
-        0,
-        0,
-        0,
-        0
-    };
-    St_Gpio_Config(led_gpio, &led_conf);
+    St_Gpio_Init(led_gpio, &led_stgpio);
+    St_Gpio_Config(led_gpio);
 
-    // Usart 1
+    // Single FreeRTOS timer
+    frt_timer_init(&time, &frt, 100);
+
+    // UART1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 
-    St_Gpio_Init(&uart_1_gpio, &uart_1_stgpio, GPIOB_BASE, 6);
-    St_Gpio_Init(&uart_2_gpio, &uart_2_stgpio, GPIOB_BASE, 7);
-
-    StGpioConfig uart_io_conf = {
-        ALT_FUNC,
-        0,
-        0,
-        0,
-        0x7
-    };
-    St_Gpio_Config(&uart_1_gpio, &uart_io_conf);
-    St_Gpio_Config(&uart_2_gpio, &uart_io_conf);
+    St_Gpio_Init(&st_usart.rx, &uart_io1);
+    St_Gpio_Init(&st_usart.tx, &uart_io2);
 
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
     NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority( USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART1_IRQn);
 
-    // I2c 1 PC8 PC9
-
-    RCC->APB1LENR |= RCC_APB1LENR_I2C1EN;
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
-
-    St_Gpio_Init(&i2c_1_gpio, &i2c_1_stgpio, GPIOC_BASE, 8);
-    St_Gpio_Init(&i2c_2_gpio, &i2c_2_stgpio, GPIOC_BASE, 9);
-
-    StGpioConfig i2c_io_conf = {
-        ALT_FUNC,
-        OPEN_DRAIN,
-        0,
-        PULL_UP,
-        0x4
-    };
-    St_Gpio_Config(&i2c_1_gpio, &i2c_io_conf);
-    St_Gpio_Config(&i2c_2_gpio, &i2c_io_conf);
-
-    frt_timer_init(&usart_time, &usart_frt, 500);
-    St_Usart_Init(usart, &st_usart, USART1_BASE, &usart_time);
+    St_Usart_Init(usart, &st_usart, USART1_BASE, &time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
-    frt_timer_init(&i2c_time, &i2c_frt, 100);
-    St_I2c_Init(i2c, &st_i2c, I2C1_BASE, &i2c_time);
-    St_I2c_Config(i2c, 0x60808CD3);
+    // I2c1 PC8, PC9
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
 
+    St_Gpio_Init(&st_i2c.scl, &i2c1_io1);
+    St_Gpio_Init(&st_i2c.sda, &i2c1_io2);
+
+    RCC->APB1LENR |= RCC_APB1LENR_I2C1EN;
+
+    St_I2c_Init(temp_i2c, &st_i2c, I2C1_BASE, &time);
+    St_I2c_Config(temp_i2c, 0x60808CD3);
 }
-
 
 void SystemClock_Config(void)
 {

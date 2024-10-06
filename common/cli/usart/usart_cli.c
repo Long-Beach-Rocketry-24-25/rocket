@@ -82,8 +82,9 @@ static void boot_msg()
         "                  ..",
         "",
         "",
+        "Type 'help' to see available commands.",
     };
-    for (int i = 0; i < 21; ++i)
+    for (int i = 0; i < 22; ++i)
     {
         cli_write(logo[i]);
     }

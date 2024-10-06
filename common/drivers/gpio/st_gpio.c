@@ -13,16 +13,18 @@ static inline void set_field(volatile uint32_t* field, uint32_t val,
     *field |= ((val & mask) << (pos * bits));
 }
 
-bool St_Gpio_Init(Gpio* gpio, StPrivGpio* st_gpio, uint32_t base_addr, uint8_t pin_num)
+bool St_Gpio_Init(Gpio* gpio, StGpioParams* params)
 {
-    if (pin_num >= ST_GPIO_MAX_PINS)
+    if (params->pin_num >= ST_GPIO_MAX_PINS)
     {
         return false;
     }
 
-    st_gpio->instance = (ST_GPIO_TypeDef *) base_addr;
-    st_gpio->pin_num = pin_num;
-    gpio->priv = (void *) st_gpio;
+    params->priv.instance = (ST_GPIO_TypeDef *) params->base_addr;
+    params->priv.pin_num = params->pin_num;
+    params->priv.config = &params->conf;
+    gpio->priv = (void *) &params->priv;
+    gpio->config = St_Gpio_Config;
     gpio->toggle = St_Gpio_Toggle;
     gpio->set = St_Gpio_Set;
     gpio->read = St_Gpio_Read;
@@ -30,7 +32,7 @@ bool St_Gpio_Init(Gpio* gpio, StPrivGpio* st_gpio, uint32_t base_addr, uint8_t p
     return true;
 }
 
-void St_Gpio_Config(Gpio* gpio, StGpioConfig* config)
+void St_Gpio_Config(Gpio* gpio)
 {
     StPrivGpio *dev = (StPrivGpio *) gpio->priv;
 
@@ -41,10 +43,10 @@ void St_Gpio_Config(Gpio* gpio, StGpioConfig* config)
     uint8_t afr_section = dev->pin_num / 8;
     uint8_t af_index = (afr_section == 1) ? dev->pin_num - 8 : dev->pin_num;
 
-    set_field(&dev->instance->MODER, config->mode, dev->pin_num, 2);
-    set_field(&dev->instance->OTYPER, config->otype, dev->pin_num, 1);
-    set_field(&dev->instance->PUPDR, config->pupd, dev->pin_num, 2);
-    set_field(&dev->instance->AFR[afr_section], config->af, af_index, 4);
+    set_field(&dev->instance->MODER, dev->config->mode, dev->pin_num, 2);
+    set_field(&dev->instance->OTYPER, dev->config->otype, dev->pin_num, 1);
+    set_field(&dev->instance->PUPDR, dev->config->pupd, dev->pin_num, 2);
+    set_field(&dev->instance->AFR[afr_section], dev->config->af, af_index, 4);
 }
 
 static bool St_Gpio_Out_Status(Gpio* gpio)

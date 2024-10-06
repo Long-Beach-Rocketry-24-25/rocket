@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "gpio.h"
 #include "i2c.h"
 #include "st_i2c_def.h"
 #include "timeout.h"
@@ -31,6 +32,8 @@ typedef struct
 typedef struct
 {
     ST_I2C_TypeDef * instance;
+    Gpio sda;
+    Gpio scl;
     Timeout * timer;
 } StPrivI2c;
 
