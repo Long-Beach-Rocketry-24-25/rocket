@@ -24,11 +24,9 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
     usart_cli
     usart
-    i2c_access
     i2c
     tmp102
-    bno055
-    bmp390
+    ads111x
     gnc
 )
 

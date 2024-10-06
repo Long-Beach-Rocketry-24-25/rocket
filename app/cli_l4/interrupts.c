@@ -10,11 +10,6 @@ void UART4_IRQHandler(void)
     usart_rx_callback();
 }
 
-// void USART1_IRQHandler(void)
-// {
-//     usart_rx_callback();
-// }
-
 void TIM1_UP_TIM16_IRQHandler(void)
 {
 	HAL_TIM_IRQHandler(&htim1);
