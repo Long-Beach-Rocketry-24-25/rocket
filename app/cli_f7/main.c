@@ -54,6 +54,7 @@ int main(void)
         {"IRead", read_i2c, "Reads I2c."}
     };
     create_cli_task(&usart, commands, 6);
+    cli_write("USING HW: STM32F746");
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
