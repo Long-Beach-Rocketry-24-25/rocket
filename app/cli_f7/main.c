@@ -45,7 +45,6 @@ int main(void)
 
     init_i2c_access(&i2c);
 
-    cli_write("USING HW: STM32F746");
     Command commands[6] = { 
         {"Blink", blink, "Blinks LED."},
         {"Temp", read_temp, "Reads temperature."},
@@ -55,6 +54,7 @@ int main(void)
         {"IRead", read_i2c, "Reads I2c."}
     };
     create_cli_task(&usart, commands, 6);
+    cli_write("USING HW: STM32F746");
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

@@ -51,14 +51,13 @@ int main(void)
     can.send(&can, cdat, 8);
     can.recv(&can, rdat, 8);
 
-    cli_write("USING HW: STM32L452");
-
     Command commands[3] = { 
         {"Blink", blink, "Blinks LED."},
         {"Temp", read_temp, "Reads temperature."},
         {"Adc", read_adc, "Reads all ADC channels."}
     };
     create_cli_task(&usart, commands, 3);
+    cli_write("USING HW: STM32L452");
 
     Tmp102_Init(&tmp, &temp_i2c, TMP102_ADDR_GND);
 
