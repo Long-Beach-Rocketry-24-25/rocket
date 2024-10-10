@@ -6,7 +6,7 @@
 extern TIM_HandleTypeDef htim1;
 
 
-void USART2_IRQHandler(void)
+void UART4_IRQHandler(void)
 {
     usart_rx_callback();
 }

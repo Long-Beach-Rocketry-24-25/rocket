@@ -6,10 +6,10 @@ param (
 if ( $c )
 {
     echo "Performing clean build..."
-    rm -R -Force app/$t/build
+    rm -R -Force app/$t/build/
 }
 
 cmake --preset=$t
-pushd app/$t/build
+pushd app/$t/build/
 make
 popd

@@ -1,4 +1,4 @@
-set(EXECUTABLE cli_l4)
+set(EXECUTABLE minerva)
 
 add_subdirectory(BSP)
 
@@ -23,11 +23,9 @@ target_link_options(${EXECUTABLE} PRIVATE
 target_link_libraries(${EXECUTABLE} PRIVATE
     bsp
     usart
-    i2c_access
     i2c
     tmp102
-    bno055
-    bmp390
+    ads111x
     gnc
 )
 
