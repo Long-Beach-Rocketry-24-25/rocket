@@ -11,5 +11,5 @@ if ( $c )
 
 cmake --preset=$t
 pushd app/$t/build/
-make
+cmake --build .
 popd

@@ -93,7 +93,7 @@
             "name": "Demo",
             "description": "Compiler settings for Demo",
             "inherits": "stm32h503",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/Demo/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -104,7 +104,7 @@
             "name": "echo",
             "description": "Compiler settings for echo example",
             "inherits": "stm32h503",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/echo/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -115,7 +115,7 @@
             "name": "cli_f7",
             "description": "Compiler settings for cli example",
             "inherits": "stm32f746",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/cli_f7/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -126,7 +126,7 @@
             "name": "minerva",
             "description": "Compiler settings for cli example",
             "inherits": "stm32l452",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/minerva/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -137,7 +137,7 @@
             "name": "cli_l4",
             "description": "Compiler settings for cli example",
             "inherits": "stm32l476",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/cli_l4/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -148,7 +148,7 @@
             "name": "cli_h5",
             "description": "Compiler settings for cli example",
             "inherits": "stm32h503",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/cli_h5/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
@@ -159,7 +159,7 @@
             "name": "sim",
             "description": "Compiler settings for sim",
             "inherits": "native",
-            "generator": "MinGW Makefiles",
+            "generator": "Ninja",
             "binaryDir": "${sourceDir}/app/sim/build",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
