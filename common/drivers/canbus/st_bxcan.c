@@ -172,8 +172,8 @@ void St_BxCan_Config(CanBus *can)
 {
     StPrivBxCan *dev = (StPrivBxCan *) can->priv;
 
-    dev->rx.config(&dev->rx);
-    dev->tx.config(&dev->tx);
+    // dev->rx.config(&dev->rx);
+    // dev->tx.config(&dev->tx);
 
     enter_init_mode(dev);
     set_mode(dev);

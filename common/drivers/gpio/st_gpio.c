@@ -45,6 +45,7 @@ void St_Gpio_Config(Gpio* gpio)
 
     set_field(&dev->instance->MODER, dev->config->mode, dev->pin_num, 2);
     set_field(&dev->instance->OTYPER, dev->config->otype, dev->pin_num, 1);
+    set_field(&dev->instance->OSPEEDR, dev->config->ospeed, dev->pin_num, 2);
     set_field(&dev->instance->PUPDR, dev->config->pupd, dev->pin_num, 2);
     set_field(&dev->instance->AFR[afr_section], dev->config->af, af_index, 4);
 }

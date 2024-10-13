@@ -19,6 +19,7 @@ target_link_libraries(bsp
         usart_cli
         usart
         i2c
+        canbus
         gpio
         timeout
     INTERFACE

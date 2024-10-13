@@ -24,6 +24,7 @@ Usart usart;
 I2c temp_i2c;
 I2c an1_i2c;
 I2c an2_i2c;
+CanBus can;
 Gpio led_gpio;
 
 Tmp102 tmp;
@@ -42,8 +43,11 @@ volatile int16_t ad_readings[NUM_ADC][MAX_ADC_CHANNELS] = {0};
 int main(void)
 {
 
-    BSP_Init(&usart, &temp_i2c, &an1_i2c, &an2_i2c, &led_gpio);
+    BSP_Init(&usart, &temp_i2c, &an1_i2c, &an2_i2c, &can, &led_gpio);
     led_gpio.set(&led_gpio, true);
+
+    uint8_t cdat[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    can.send(&can, cdat, 8);
 
     Command commands[3] = { 
         {"Blink", blink, "Blinks LED."},

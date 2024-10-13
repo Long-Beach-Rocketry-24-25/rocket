@@ -5,6 +5,7 @@ static StPrivUsart st_usart;
 static StPrivI2c st_i2c1;
 static StPrivI2c st_i2c2;
 static StPrivI2c st_i2c3;
+static StPrivBxCan st_bxcan = {{ 0 }, CAN1_BASE, 2, { 1, 15, 2, 4 }, { CAN_STANDARD_ID, 0x1 }};
 static StGpioParams led_stgpio = {{ 0 }, GPIOH_BASE, 3, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
@@ -15,6 +16,11 @@ static StGpioParams uart_io1 = {{ 0 }, GPIOA_BASE, 0,
                                 {ALT_FUNC, 0, 0, 0, 0x8}}; // UART4 AF 8
 static StGpioParams uart_io2 = {{ 0 }, GPIOA_BASE, 1,
                                 {ALT_FUNC, 0, 0, 0, 0x8}}; // UART4 AF 8
+
+static StGpioParams can_io1 = {{ 0 }, GPIOB_BASE, 12, 
+                              {ALT_FUNC, 0, VERY_HIGH, PULL_UP, 0xA}}; // CAN1 AF 10
+static StGpioParams can_io2 = {{ 0 }, GPIOB_BASE, 13,
+                              {ALT_FUNC, 0, VERY_HIGH, PULL_UP, 0xA}}; // CAN1 AF 10
 
 const StGpioConfig i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
@@ -27,7 +33,7 @@ static StGpioParams i2c2_io2 = {{ 0 }, GPIOB_BASE, 11, i2c_io_conf};
 static StGpioParams i2c3_io1 = {{ 0 }, GPIOC_BASE, 0, i2c_io_conf};
 static StGpioParams i2c3_io2 = {{ 0 }, GPIOC_BASE, 1, i2c_io_conf};
 
-void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, Gpio *led_gpio)
+void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, CanBus *can, Gpio *led_gpio)
 {
 
     HAL_InitTick(0);
@@ -56,6 +62,40 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, Gpio *led
 
     St_Usart_Init(usart, &st_usart, UART4_BASE, &time);
     St_Usart_Config(usart, SystemCoreClock, 115200);
+
+    // CAN1
+    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+
+    // St_Gpio_Init(&st_bxcan.rx, &can_io1);
+    // St_Gpio_Init(&st_bxcan.tx, &can_io2);
+
+    // RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
+
+    // St_BxCan_Init(can, &st_bxcan, &time);
+    // St_BxCan_Config(can);
+    RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+
+    // AF mode.
+    GPIOA->MODER &= ~(GPIO_MODER_MODE11 | GPIO_MODER_MODE12);
+    GPIOA->MODER |= (0x2 << GPIO_MODER_MODE11_Pos)
+				 | (0x2 << GPIO_MODER_MODE12_Pos);
+
+    // Pull up.
+    GPIOA->PUPDR |= (0x1 << GPIO_PUPDR_PUPD11_Pos)
+            	 | (0x1 << GPIO_PUPDR_PUPD12_Pos);
+
+    // Very high speed.
+    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR11
+                   | GPIO_OSPEEDER_OSPEEDR12;
+
+    // AF9.
+    GPIOA->AFR[1] |= (0x9 << GPIO_AFRH_AFSEL11_Pos)
+                  | (0x9 << GPIO_AFRH_AFSEL12_Pos);
+
+    st_bxcan.timer = &time;
+    can->priv = (void*) &st_bxcan;
+    St_BxCan_Config(can);
 
     // I2c1 PB8, PB9
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
@@ -93,47 +133,91 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, Gpio *led
 
 void SystemClock_Config(void)
 {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-    /** Configure the main internal regulator output voltage
-     */
-    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
-    {
-        Error_Handler();
-    }
+	/** Configure the main internal regulator output voltage
+	*/
+	if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+	{
+		Error_Handler();
+	}
 
-    /** Initializes the RCC Oscillators according to the specified parameters
-     * in the RCC_OscInitTypeDef structure.
-     */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 1;
-    RCC_OscInitStruct.PLL.PLLN = 8;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-    RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-    RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV8;
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-    {
-        Error_Handler();
-    }
+	/** Initializes the RCC Oscillators according to the specified parameters
+	* in the RCC_OscInitTypeDef structure.
+	*/
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLM = 1;
+	RCC_OscInitStruct.PLL.PLLN = 20;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+	RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+	RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	{
+		Error_Handler();
+	}
 
-    /** Initializes the CPU, AHB and APB buses clocks
-     */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                                |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	/** Initializes the CPU, AHB and APB buses clocks
+	*/
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+							|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-    {
-        Error_Handler();
-    }
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+	{
+		Error_Handler();
+	}
 }
+
+// void SystemClock_Config(void)
+// {
+//     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+//     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+//     /** Configure the main internal regulator output voltage
+//      */
+//     if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+//     {
+//         Error_Handler();
+//     }
+
+//     /** Initializes the RCC Oscillators according to the specified parameters
+//      * in the RCC_OscInitTypeDef structure.
+//      */
+//     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+//     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+//     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+//     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+//     RCC_OscInitStruct.PLL.PLLM = 1;
+//     RCC_OscInitStruct.PLL.PLLN = 8;
+//     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+//     RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+//     RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV8;
+//     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+//     {
+//         Error_Handler();
+//     }
+
+//     /** Initializes the CPU, AHB and APB buses clocks
+//      */
+//     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+//                                 |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+//     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+//     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+//     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+//     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+//     if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+//     {
+//         Error_Handler();
+//     }
+// }
 
 void Error_Handler(void)
 {
