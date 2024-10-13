@@ -5,7 +5,7 @@ static StPrivUsart st_usart;
 static StPrivI2c st_i2c1;
 static StPrivI2c st_i2c2;
 static StPrivI2c st_i2c3;
-static StPrivBxCan st_bxcan = {{ 0 }, CAN1_BASE, 2, { 1, 15, 2, 4 }, { CAN_STANDARD_ID, 0x1 }};
+static StBxCanParams st_bxcan = {{ 0 }, CAN1_BASE, 0, 0, { 1, 15, 2, 4 }, { CAN_STANDARD_ID, 0x1 }};
 static StGpioParams led_stgpio = {{ 0 }, GPIOH_BASE, 3, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
@@ -64,37 +64,14 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, CanBus *c
     St_Usart_Config(usart, SystemCoreClock, 115200);
 
     // CAN1
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
 
-    // St_Gpio_Init(&st_bxcan.rx, &can_io1);
-    // St_Gpio_Init(&st_bxcan.tx, &can_io2);
+    St_Gpio_Init(&st_bxcan.priv.rx, &can_io1);
+    St_Gpio_Init(&st_bxcan.priv.tx, &can_io2);
 
-    // RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
-
-    // St_BxCan_Init(can, &st_bxcan, &time);
-    // St_BxCan_Config(can);
     RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
-    // AF mode.
-    GPIOA->MODER &= ~(GPIO_MODER_MODE11 | GPIO_MODER_MODE12);
-    GPIOA->MODER |= (0x2 << GPIO_MODER_MODE11_Pos)
-				 | (0x2 << GPIO_MODER_MODE12_Pos);
-
-    // Pull up.
-    GPIOA->PUPDR |= (0x1 << GPIO_PUPDR_PUPD11_Pos)
-            	 | (0x1 << GPIO_PUPDR_PUPD12_Pos);
-
-    // Very high speed.
-    GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR11
-                   | GPIO_OSPEEDER_OSPEEDR12;
-
-    // AF9.
-    GPIOA->AFR[1] |= (0x9 << GPIO_AFRH_AFSEL11_Pos)
-                  | (0x9 << GPIO_AFRH_AFSEL12_Pos);
-
-    st_bxcan.timer = &time;
-    can->priv = (void*) &st_bxcan;
+    St_BxCan_Init(can, &st_bxcan, &time);
     St_BxCan_Config(can);
 
     // I2c1 PB8, PB9

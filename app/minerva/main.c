@@ -47,14 +47,18 @@ int main(void)
     led_gpio.set(&led_gpio, true);
 
     uint8_t cdat[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+    uint8_t rdat[8] = { 0 };
     can.send(&can, cdat, 8);
+    can.recv(&can, rdat, 8);
+
+    cli_write("USING HW: STM32L452");
 
     Command commands[3] = { 
         {"Blink", blink, "Blinks LED."},
         {"Temp", read_temp, "Reads temperature."},
         {"Adc", read_adc, "Reads all ADC channels."}
     };
-    create_cli_task(&usart, commands, 6);
+    create_cli_task(&usart, commands, 3);
 
     Tmp102_Init(&tmp, &temp_i2c, TMP102_ADDR_GND);
 

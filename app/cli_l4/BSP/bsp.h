@@ -9,7 +9,6 @@
 #include "st_usart.h"
 #include "st_i2c.h"
 #include "st_gpio.h"
-#include "st_bxcan.h"
 #include "freertos_timer.h"
 
 void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio);

@@ -44,8 +44,7 @@ int main(void)
 
     init_i2c_access(&i2c);
 
-    uint8_t cdat[8] = {1, 2, 3, 4, 5, 6, 7, 8};
-    can.send(&can, cdat, 8);
+    cli_write("USING HW: STM32L476");
 
     Command commands[6] = { 
         {"Blink", blink, "Blinks LED."},
@@ -56,7 +55,6 @@ int main(void)
         {"IRead", read_i2c, "Reads I2c."}
     };
     create_cli_task(&usart, commands, 6);
-    cli_write("USING HW: STM32L452");
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

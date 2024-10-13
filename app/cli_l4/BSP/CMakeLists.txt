@@ -20,7 +20,6 @@ target_link_libraries(bsp
         usart
         i2c
         gpio
-        canbus
         timeout
     INTERFACE
         freertos_kernel

@@ -87,6 +87,7 @@ typedef struct
     ST_CAN_TypeDef* instance;
     CanId id;
     uint8_t tx_box;
+    uint8_t rx_box;
     Timeout* timer;
     Gpio rx;
     Gpio tx;
@@ -98,11 +99,12 @@ typedef struct
     StPrivBxCan priv;
     uint32_t base_addr;
     uint8_t tx_box;
+    uint8_t rx_box;
     CanBitTiming timing;
     CanId id;
 } StBxCanParams;
 
-void St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer);
+bool St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer);
 
 void St_BxCan_Config(CanBus *can);
 

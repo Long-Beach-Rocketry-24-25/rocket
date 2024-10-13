@@ -154,12 +154,19 @@ static bool set_mode(StPrivBxCan *can)
     return true;
 }
 
-void St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer)
+bool St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer)
 {
+    if (params->tx_box >= CAN_NUM_TX_MAILBOXES ||
+        params->rx_box >= CAN_NUM_RX_MAILBOXES)
+    {
+        return false;
+    }
+
     params->priv.id = params->id;
     params->priv.instance = (ST_CAN_TypeDef *) params->base_addr;
     params->priv.timer = timer;
     params->priv.tx_box = params->tx_box;
+    params->priv.rx_box = params->rx_box;
     params->priv.remote = false;
 
     can->priv = (void *) &params->priv;
@@ -172,8 +179,8 @@ void St_BxCan_Config(CanBus *can)
 {
     StPrivBxCan *dev = (StPrivBxCan *) can->priv;
 
-    // dev->rx.config(&dev->rx);
-    // dev->tx.config(&dev->tx);
+    dev->rx.config(&dev->rx);
+    dev->tx.config(&dev->tx);
 
     enter_init_mode(dev);
     set_mode(dev);
@@ -217,7 +224,7 @@ bool St_BxCan_Send(CanBus* can, uint8_t *data, size_t size)
     uint32_t low = 0;
     uint32_t high = 0;
 
-    for (uint8_t i = 0; i < size; ++i)
+    for (uint8_t i = 0; i < size && i < CAN_MAX_DATA_BYTES; ++i)
     {
         if (i < 4)
         {
@@ -265,12 +272,40 @@ bool St_BxCan_Send(CanBus* can, uint8_t *data, size_t size)
 
 bool St_BxCan_Recv(CanBus *can, uint8_t *data, size_t size)
 {
-    // if FMP > 0
     StPrivBxCan *dev = (StPrivBxCan *) can->priv;
 
-    // Read mailbox content
+    /*
+     * No data ready.
+     */
+    if (!(dev->instance->RF0R & CAN_RF0R_FMP0))
+    {
+        return false;
+    }
 
-    // Set RFOM = 1 to release mailbox
+    ST_CAN_TxMailBox_TypeDef *box = &dev->instance->sFIFOMailBox[dev->rx_box];
+
+    uint32_t low = box->TDLR;
+    uint32_t high = box->TDHR;
+
+    /*
+     * Read mailbox content.
+     */
+    for (size_t i = 0; i < size && i < CAN_MAX_DATA_BYTES; ++i)
+    {
+        if (i < 4)
+        {
+            data[i] = (low >> (i * 8)) & 0xF;
+        }
+        else
+        {
+            data[i] = (high >> ((i - 4) * 8)) & 0xF;
+        }
+    }
+
+    /*
+     * Set RFOM = 1 to release mailbox.
+     */
+    dev->instance->RF0R |= CAN_RF0R_RFOM0;
 
     return true;
 }
