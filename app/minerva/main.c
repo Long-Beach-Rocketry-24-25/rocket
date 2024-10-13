@@ -12,12 +12,13 @@
 #include "tmp102.h"
 #include "ads111x.h"
 
+#include "blink.h"
+#include "read_tmp102.h"
+
 #include "gnc.h"
 
 /*-----------------------------------------------------------*/
 
-void blink(int argc, char* argv[]);
-void read_temp(int argc, char* argv[]);
 void read_adc(int argc, char* argv[]);
 
 Usart usart;
@@ -26,6 +27,8 @@ I2c an1_i2c;
 I2c an2_i2c;
 CanBus can;
 Gpio led_gpio;
+
+volatile bool can_data_rdy = false;
 
 Tmp102 tmp;
 #define NUM_ADC 4
@@ -40,20 +43,24 @@ uint8_t channels[NUM_ADC][MAX_ADC_CHANNELS] = {
 
 volatile int16_t ad_readings[NUM_ADC][MAX_ADC_CHANNELS] = {0};
 
+uint8_t cdat[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+uint8_t rdat[8] = { 0 };
+
 int main(void)
 {
 
     BSP_Init(&usart, &temp_i2c, &an1_i2c, &an2_i2c, &can, &led_gpio);
     led_gpio.set(&led_gpio, true);
 
-    uint8_t cdat[8] = {1, 2, 3, 4, 5, 6, 7, 8};
-    uint8_t rdat[8] = { 0 };
     can.send(&can, cdat, 8);
-    can.recv(&can, rdat, 8);
+    while (!can_data_rdy);
+
+    init_blink(&led_gpio);
+    init_read_tmp102(&tmp);
 
     Command commands[3] = { 
         {"Blink", blink, "Blinks LED."},
-        {"Temp", read_temp, "Reads temperature."},
+        {"Temp", read_tmp102, "Reads temperature."},
         {"Adc", read_adc, "Reads all ADC channels."}
     };
     create_cli_task(&usart, commands, 3);
@@ -79,17 +86,6 @@ int main(void)
     }
 
     return 0;
-}
-
-void blink(int argc, char* argv[])
-{
-    cli_write("Blink - %d", led_gpio.toggle(&led_gpio));
-}
-
-void read_temp(int argc, char* argv[])
-{
-    float x = tmp.get_temp_c(&tmp);
-    cli_write("Temp: %fC", x);
 }
 
 void read_adc(int argc, char* argv[])
@@ -120,4 +116,10 @@ void read_adc(int argc, char* argv[])
     tick_e = xTaskGetTickCount();
     cli_write("Time: %dms", tick_e - tick_s);
 
+}
+
+void CAN1_RX0_IRQHandler(void)
+{
+	can_data_rdy = true;
+    can.recv(&can, rdat, 8);
 }

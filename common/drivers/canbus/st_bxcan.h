@@ -89,6 +89,7 @@ typedef struct
     uint8_t tx_box;
     uint8_t rx_box;
     Timeout* timer;
+    CanBitTiming bit_timing;
     Gpio rx;
     Gpio tx;
     bool remote;

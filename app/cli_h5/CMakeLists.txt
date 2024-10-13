@@ -27,6 +27,10 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     bno055
     bmp390
     i2c_access
+    blink
+    read_bmp390
+    read_bno055
+    read_tmp102
     gnc
 )
 

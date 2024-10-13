@@ -70,6 +70,8 @@ bool St_Usart_Clear_Errors(Usart *usart)
     {
         dev->instance->ICR |= USART_ICR_ORECF;
     }
+    
+    return true;
 }
 
 bool St_Usart_Isr_Set(Usart *usart, uint32_t mask)

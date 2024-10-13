@@ -71,6 +71,10 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, I2c *an1_i2c, I2c *an2_i2c, CanBus *c
 
     RCC->APB1ENR1 |= RCC_APB1ENR1_CAN1EN;
 
+    NVIC_SetPriorityGrouping(0);
+    NVIC_SetPriority(CAN1_RX0_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_EnableIRQ(CAN1_RX0_IRQn);
+
     St_BxCan_Init(can, &st_bxcan, &time);
     St_BxCan_Config(can);
 

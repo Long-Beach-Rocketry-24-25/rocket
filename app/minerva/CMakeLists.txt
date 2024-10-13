@@ -26,6 +26,8 @@ target_link_libraries(${EXECUTABLE} PRIVATE
     i2c
     tmp102
     ads111x
+    blink
+    read_tmp102
     gnc
 )
 

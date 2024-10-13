@@ -167,6 +167,7 @@ bool St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer)
     params->priv.timer = timer;
     params->priv.tx_box = params->tx_box;
     params->priv.rx_box = params->rx_box;
+    params->priv.bit_timing = params->timing;
     params->priv.remote = false;
 
     can->priv = (void *) &params->priv;
@@ -186,10 +187,14 @@ void St_BxCan_Config(CanBus *can)
 
     enter_init_mode(dev);
     set_mode(dev);
-    set_bit_timing(dev, 1, 15, 2, 4);
+    set_bit_timing(dev, dev->bit_timing.sjw,
+                        dev->bit_timing.ts1,
+                        dev->bit_timing.ts2,
+                        dev->bit_timing.brp);
     set_filters(dev);
     enter_normal_mode(dev);
 
+    dev->instance->IER |= CAN_IER_FMPIE0 | CAN_IER_FMPIE1;
 }
 
 void St_BxCan_Set_Id(CanBus *can, CanId new_id)

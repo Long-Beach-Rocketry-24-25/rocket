@@ -14,14 +14,14 @@
 #include "bno055.h"
 #include "bmp390.h"
 
+#include "blink.h"
+#include "read_tmp102.h"
+#include "read_bmp390.h"
+#include "read_bno055.h"
+
 #include "gnc.h"
 
 /*-----------------------------------------------------------*/
-
-void blink(int argc, char* argv[]);
-void read_temp(int argc, char* argv[]);
-void read_imu(int argc, char* argv[]);
-void read_baro(int argc, char* argv[]);
 
 Usart usart;
 I2c i2c;
@@ -44,11 +44,16 @@ int main(void)
 
     init_i2c_access(&i2c);
 
+    init_blink(&led_gpio);
+    init_read_tmp102(&tmp);
+    init_read_bno055(&bno);
+    init_read_bmp390(&bmp);
+
     Command commands[6] = { 
         {"Blink", blink, "Blinks LED."},
-        {"Temp", read_temp, "Reads temperature."},
-        {"Imu", read_imu, "Reads IMU accel/gyro."},
-        {"Baro", read_baro, "Reads Barometer Pressure."},
+        {"Temp", read_tmp102, "Reads temperature."},
+        {"Imu", read_bno055, "Reads IMU accel/gyro."},
+        {"Baro", read_bmp390, "Reads Barometer Pressure."},
         {"IWrite", write_i2c, "Writes I2c."},
         {"IRead", read_i2c, "Reads I2c."}
     };
@@ -64,48 +69,3 @@ int main(void)
 
     return 0;
 }
-
-void blink(int argc, char* argv[])
-{
-    cli_write("Blink - %d", led_gpio.toggle(&led_gpio));
-}
-
-void read_temp(int argc, char* argv[])
-{
-    float x = tmp.get_temp_c(&tmp);
-    cli_write("Temp: %fC", x);
-}
-
-void read_imu(int argc, char* argv[])
-{
-    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
-    EulerVec e_vec;
-    QuaternionVec q_vec;
-    ThreeAxisVec accel;
-    bno.get_accel(&bno, &accel);
-    bno.get_euler(&bno, &e_vec);
-    bno.get_quaternion(&bno, &q_vec);
-    uint8_t temp = bno.get_temp_c(&bno);
-
-    cli_write("Accel x: %f y: %f z: %f", accel.x, accel.y, accel.z);
-    cli_write("Eul x: %d y: %d z: %d", e_vec.x, e_vec.y, e_vec.z);
-    cli_write("Quat w: %f x: %f y: %f z: %f",
-        q_vec.w,
-        q_vec.x,
-        q_vec.y,
-        q_vec.z
-    );
-    cli_write("Temp: %d C", temp);
-}
-
-void read_baro(int argc, char* argv[])
-{
-    Bmp390_Config(&bmp);
-
-    float press_pa = bmp.get_pressure_pa(&bmp);
-    float temp_c = bmp.get_temp_c(&bmp);
-
-    cli_write("Pressure: %f Pa, Temp: %f C", press_pa, temp_c);
-    cli_write("Altitude: %f m", altitude(press_pa, 101325.0));
-}
-
