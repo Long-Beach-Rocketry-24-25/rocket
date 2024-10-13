@@ -173,6 +173,8 @@ bool St_BxCan_Init(CanBus *can, StBxCanParams *params, Timeout *timer)
     can->send = St_BxCan_Send;
     can->recv = St_BxCan_Recv;
     can->set_id = St_BxCan_Set_Id;
+
+    return true;
 }
 
 void St_BxCan_Config(CanBus *can)
@@ -282,10 +284,10 @@ bool St_BxCan_Recv(CanBus *can, uint8_t *data, size_t size)
         return false;
     }
 
-    ST_CAN_TxMailBox_TypeDef *box = &dev->instance->sFIFOMailBox[dev->rx_box];
+    ST_CAN_FIFOMailBox_TypeDef *box = &dev->instance->sFIFOMailBox[dev->rx_box];
 
-    uint32_t low = box->TDLR;
-    uint32_t high = box->TDHR;
+    uint32_t low = box->RDLR;
+    uint32_t high = box->RDHR;
 
     /*
      * Read mailbox content.
