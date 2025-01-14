@@ -1,11 +1,12 @@
-#include "stm32f7xx.h"
-
+#include "bsp.h"
 #include "usart_cli.h"
 
-void USART3_IRQHandler(void)
+USART_HANDLER_FUNC
 {
     usart_rx_callback();
 }
+
+ADDITIONAL_HANDLER_FUNCS
 
 /**
   * @brief This function handles Non maskable interrupt.
