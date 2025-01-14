@@ -1,24 +1,25 @@
 #!/bin/bash
 
-# OUT OF DATE NEEDS TO BE UPDATED
-echo "Script out of date!"
-exit()
-
 # Function to display usage
 usage() {
-  echo "Usage: $0 -t <target_name> [-c]"
+  echo "Usage: $0 -t <target_name> [-a <app_name>] [-r] [-c]"
   exit 1
 }
 
 # Initialize variables
 TARGET=""
+APP=""
+MODE="Debug"
 CLEAN=0
 
 # Parse command-line arguments
-while getopts ":t:c:" opt; do
+while getopts ":t:a:r:c:" opt; do
   case ${opt} in
     ( t )
       TARGET="$OPTARG"
+      ;;
+    ( a )
+      APP="$OPTARG"
       ;;
     ( \? )
       echo "Invalid option: -$OPTARG" 1>&2
@@ -27,6 +28,8 @@ while getopts ":t:c:" opt; do
     ( : )
       if [[ "$OPTARG" == "c" ]]; then
         CLEAN=1
+      elif [[ "$OPTARG" == "r" ]]; then
+        MODE="Release"
       else
         echo "Option -$OPTARG requires an argument." 1>&2
         usage
@@ -42,10 +45,10 @@ fi
 
 if [ "$CLEAN" == 1 ]; then
     echo "Performing clean build..."
-    rm -rf app/$TARGET/build/
+    rm -rf build/
 fi
 
-cmake --preset=$TARGET
-pushd app/$TARGET/build/
+cmake --preset=$TARGET -DTARGET_APP=$APP -DCMAKE_BUILD_TYPE=$MODE
+pushd build/
 cmake --build .
 popd

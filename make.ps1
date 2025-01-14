@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$true)][string]$t,
-    [Parameter(Mandatory=$true)][string]$a,
+    [Parameter(Mandatory=$false)][string]$a,
     [switch]$c=$false,
     [switch]$r=$false
 )

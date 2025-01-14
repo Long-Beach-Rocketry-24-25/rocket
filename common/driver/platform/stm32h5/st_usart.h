@@ -3,7 +3,6 @@
 #pragma once
 
 #include "stm32h5xx.h"
-#include "stm32h503xx.h"
 
 #include "gpio.h"
 #include "usart.h"

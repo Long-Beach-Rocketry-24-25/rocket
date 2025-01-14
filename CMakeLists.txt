@@ -19,7 +19,11 @@ if(MCU_NAME MATCHES "^(STM32).*")
     )
 endif()
 
-add_subdirectory(app/${TARGET_APP})
+if ("${TARGET_APP}" STREQUAL "")
+    add_subdirectory(app)
+else()
+    add_subdirectory(app/${TARGET_APP})
+endif()
 
 add_subdirectory(common)
 add_subdirectory(mcu_support)

@@ -59,6 +59,35 @@
                 "monitor reset"
             ],
             "showDevDebugOutput": true,
+        },
+        {
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceRoot}/build/app/cli_app/cli_app",
+            "name": "DEBUG CLI H563",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "device": "STM32H563",
+            // "svdFile": "${workspaceRoot}/mcu_support/h5xx/h563/STM32H563.svd",
+            "searchDir": [
+                "${workspaceRoot}/mcu_support/stm32"
+            ],
+            "runToMain": true,
+            "configFiles": [
+                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
+                "${workspaceRoot}/mcu_support/stm32/h5xx/stm32h5x.cfg"
+            ],
+            "debuggerArgs": [
+                "-d",
+                "${workspaceRoot}",
+            ],
+            "preRestartCommands": [
+                "add-symbol-file build/app/cli_app/cli_app",
+                "load",
+                "enable breakpoint",
+                "monitor reset"
+            ],
+            "showDevDebugOutput": true,
         }
     ]
 }

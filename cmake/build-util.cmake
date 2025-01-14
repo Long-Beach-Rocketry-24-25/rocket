@@ -5,7 +5,7 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
         message("Target: ${DEVICE}")
         add_executable(${EXECUTABLE} ${ARGN})
 
-        if (NOT ${DEVICE} MATCHES "NATIVE")
+        if (NOT "${DEVICE}" MATCHES "NATIVE")
             message("Selecting linker opts for ARM MCU")
             target_link_options(${EXECUTABLE} PRIVATE
                 -T${LINKER_SCRIPT}

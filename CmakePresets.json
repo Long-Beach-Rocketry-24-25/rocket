@@ -15,7 +15,8 @@
             "name": "native",
             "inherits": "build",
             "cacheVariables": {
-                "TARGET_DEVICE": "NATIVE"
+                "TARGET_DEVICE": "NATIVE",
+                "NATIVE": true
             }
         },
         {

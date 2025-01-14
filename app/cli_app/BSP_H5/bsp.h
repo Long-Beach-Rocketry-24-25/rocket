@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include "stm32h503xx.h"
-#include "stm32h5xx_hal.h"
+#include "stm32h5xx.h"
 #include "st_usart.h"
 #include "st_i2c.h"
 #include "st_gpio.h"
 #include "freertos_timer.h"
 
-#define USART_HANDLER_FUNC void USART1_IRQHandler(void)
+#define USART_HANDLER_FUNC void USART3_IRQHandler(void)
 
 #define ADDITIONAL_HANDLER_FUNCS
 
