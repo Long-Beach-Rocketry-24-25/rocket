@@ -1,10 +1,2 @@
-add_subdirectory(app)
-add_subdirectory(gnc)
-
-if (NOT ${SIM_PLATFORM})
-    message("Not sim platform! Adding hardware support...")
-    add_subdirectory(cli)
-    add_subdirectory(drivers)
-    add_subdirectory(periph)
-    add_subdirectory(util)
-endif()
+add_subdirectory(driver)
+add_subdirectory(core)

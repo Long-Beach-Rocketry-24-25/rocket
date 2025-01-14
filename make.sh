@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# OUT OF DATE NEEDS TO BE UPDATED
+echo "Script out of date!"
+exit()
+
 # Function to display usage
 usage() {
   echo "Usage: $0 -t <target_name> [-c]"

@@ -7,23 +7,30 @@
     },
     "configurePresets": [
         {
+            "name": "build",
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Ninja"
+        },
+        {
             "name": "native",
+            "inherits": "build",
             "cacheVariables": {
-                "SIM_PLATFORM": true
+                "TARGET_DEVICE": "NATIVE"
             }
         },
         {
             "name": "stm32f7",
             "hidden": true,
+            "inherits": "build",
             "toolchainFile": "cmake/gcc-m7.cmake",
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM7",
-                "SIM_PLATFORM": false
+                "TARGET_DEVICE": "STM32F7",
+                "STM32F7": true
             }
         },
         {
             "name": "stm32f746",
-            "hidden": true,
             "inherits": "stm32f7",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746zgtx_FLASH.ld",
@@ -34,15 +41,16 @@
         {
             "name": "stm32l4",
             "hidden": true,
+            "inherits": "build",
             "toolchainFile": "cmake/gcc-m4f.cmake",
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM4F",
-                "SIM_PLATFORM": false
+                "TARGET_DEVICE": "STM32L4",
+                "STM32L4": true
             }
         },
         {
             "name": "stm32l452",
-            "hidden": true,
             "inherits": "stm32l4",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l452/STM32L452RCTX_FLASH.ld",
@@ -52,7 +60,6 @@
         },
         {
             "name": "stm32l476",
-            "hidden": true,
             "inherits": "stm32l4",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l476/STM32L476RGTX_FLASH.ld",
@@ -63,15 +70,16 @@
         {
             "name": "stm32h5",
             "hidden": true,
+            "inherits": "build",
             "toolchainFile": "cmake/gcc-m33.cmake",
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE",
-                "SIM_PLATFORM": false
+                "TARGET_DEVICE": "STM32H5",
+                "STM32H5": true
             }
         },
         {
             "name": "stm32h503",
-            "hidden": true,
             "inherits": "stm32h5",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h503/STM32H503xx_FLASH.ld",
@@ -81,89 +89,11 @@
         },
         {
             "name": "stm32h563",
-            "hidden": true,
             "inherits": "stm32h5",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h563/STM32H563xx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h563/startup_stm32h563xx.s",
                 "MCU_NAME": "STM32H563xx"
-            }
-        },
-        {
-            "name": "Demo",
-            "description": "Compiler settings for Demo",
-            "inherits": "stm32h503",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/Demo/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "Demo"
-            }
-        },
-        {
-            "name": "echo",
-            "description": "Compiler settings for echo example",
-            "inherits": "stm32h503",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/echo/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "echo"
-            }
-        },
-        {
-            "name": "cli_f7",
-            "description": "Compiler settings for cli example",
-            "inherits": "stm32f746",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/cli_f7/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "cli_f7"
-            }
-        },
-        {
-            "name": "minerva",
-            "description": "Compiler settings for cli example",
-            "inherits": "stm32l452",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/minerva/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "minerva"
-            }
-        },
-        {
-            "name": "cli_l4",
-            "description": "Compiler settings for cli example",
-            "inherits": "stm32l476",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/cli_l4/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "cli_l4"
-            }
-        },
-        {
-            "name": "cli_h5",
-            "description": "Compiler settings for cli example",
-            "inherits": "stm32h503",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/cli_h5/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "cli_h5"
-            }
-        },
-        {
-            "name": "sim",
-            "description": "Compiler settings for sim",
-            "inherits": "native",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/app/sim/build",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TARGET": "sim"
             }
         }
     ]

@@ -4,42 +4,19 @@
     "configurations": [
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/app/usart/build/app/usart/usart",
-            "name": "JTAG DEBUG USART",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32H503",
-            "svdFile": "${workspaceRoot}/mcu_support/stm32/h5xx/h503/STM32H503.svd",
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
-                "${workspaceRoot}/mcu_support/stm32/h5xx/stm32h5x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file app/usart/build/app/usart/usart",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/app/cli_f7/build/app/cli_f7/cli_f7",
-            "name": "JTAG DEBUG CLI F7",
+            "executable": "${workspaceRoot}/build/app/cli_f7/cli_f7",
+            "name": "DEBUG CLI F7",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
             "device": "STM32F746",
             "svdFile": "${workspaceRoot}/mcu_support/stm32/f7xx/f746/STM32F746.svd",
+            "searchDir": [
+                "${workspaceRoot}/mcu_support/stm32"
+            ],
             "runToMain": true,
             "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink.cfg",
+                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
                 "${workspaceRoot}/mcu_support/stm32/f7xx/stm32f7x.cfg"
             ],
             "debuggerArgs": [
@@ -47,7 +24,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file app/frtest/build/app/frtest/frtest",
+                "add-symbol-file /build/app/cli_f7/cli_f7",
                 "load",
                 "enable breakpoint",
                 "monitor reset"
@@ -56,42 +33,19 @@
         },
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/app/minerva/build/app/minerva/minerva",
-            "name": "JTAG DEBUG MINERVA",
-            "request": "launch",
-            "type": "cortex-debug",
-            "servertype": "openocd",
-            "device": "STM32L452",
-            "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
-            "runToMain": true,
-            "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink.cfg",
-                "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
-            ],
-            "debuggerArgs": [
-                "-d",
-                "${workspaceRoot}",
-            ],
-            "preRestartCommands": [
-                "add-symbol-file app/minerva/build/app/minerva/minerva",
-                "load",
-                "enable breakpoint",
-                "monitor reset"
-            ],
-            "showDevDebugOutput": true,
-        },
-        {
-            "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/app/cli_l4/build/app/cli_l4/cli_l4",
-            "name": "JTAG DEBUG CLI L4",
+            "executable": "${workspaceRoot}/build/app/cli_l4/cli_l4",
+            "name": "DEBUG CLI L4",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
             "device": "STM32L476",
             "svdFile": "${workspaceRoot}/mcu_support/l4xx/STM32L4x2.svd",
+            "searchDir": [
+                "${workspaceRoot}/mcu_support/stm32"
+            ],
             "runToMain": true,
             "configFiles": [
-                "${workspaceRoot}/mcu_support/stm32/stlink.cfg",
+                "${workspaceRoot}/mcu_support/stm32/stlink-dap.cfg",
                 "${workspaceRoot}/mcu_support/stm32/l4xx/stm32l4x.cfg"
             ],
             "debuggerArgs": [
@@ -99,7 +53,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file app/cli_l4/build/app/cli_l4/cli_l4",
+                "add-symbol-file build/app/cli_l4/cli_l4",
                 "load",
                 "enable breakpoint",
                 "monitor reset"

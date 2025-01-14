@@ -6,5 +6,6 @@ add_executable(${EXECUTABLE}
 
 target_link_libraries(${EXECUTABLE}
     PRIVATE
-        gnc
+        core
+        driver
 )

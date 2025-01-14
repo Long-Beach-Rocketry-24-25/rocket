@@ -1,42 +1,23 @@
 set(EXECUTABLE cli_h5)
 
-add_subdirectory(BSP)
+set(LDF ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE}.ld)
 
-add_executable(${EXECUTABLE}
+set(PREPROCESS_DEFS
+    -DDEF_FLASH_START_ADDR=0x8000000
+    -DDEF_FLASH_SIZE=1024K
+)
+
+add_subdirectory_for(STM32H5 BSP)
+
+add_executable_for(STM32H5 ${EXECUTABLE} ${LDF}
     main.c
     freertos.c
     interrupts.c
     ${STARTUP_FILE}
 )
 
-target_link_options(${EXECUTABLE} PRIVATE
-    -T${LINKER_SCRIPT}
-    -specs=nosys.specs
-    -lc
-    -lm
-    -lnosys
-    -Wl,-Map=${EXECUTABLE}.map,--cref
-    -Wl,--gc-sections
-    # -Wl, --print-memory-usage
-)
-
-target_link_libraries(${EXECUTABLE} PRIVATE
+target_link_libraries_for(STM32H5 ${EXECUTABLE} PRIVATE
     bsp
-    usart_cli
-    tmp102
-    bno055
-    bmp390
-    i2c_access
-    blink
-    read_bmp390
-    read_bno055
-    read_tmp102
-    gnc
 )
 
-add_custom_command(TARGET ${EXECUTABLE}
-    POST_BUILD
-    COMMAND arm-none-eabi-objcopy -O ihex ${EXECUTABLE} ${EXECUTABLE}.hex
-    COMMAND arm-none-eabi-objcopy -O binary ${EXECUTABLE} ${EXECUTABLE}.bin
-    COMMAND arm-none-eabi-objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.elf
-)
+target_preprocess_for(STM32H5 ${EXECUTABLE} ${LINKER_SCRIPT} ${LDF} ${PREPROCESS_DEFS})

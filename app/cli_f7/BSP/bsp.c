@@ -14,7 +14,7 @@ static StGpioParams uart_io1 = {{ 0 }, GPIOD_BASE, 8,
 static StGpioParams uart_io2 = {{ 0 }, GPIOD_BASE, 9,
                                 {ALT_FUNC, 0, 0, 0, 0x7}}; // USART3 AF 7
 
-const StGpioConfig i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
+const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
 static StGpioParams i2c1_io1 = {{ 0 }, GPIOB_BASE, 8, i2c_io_conf};
 static StGpioParams i2c1_io2 = {{ 0 }, GPIOB_BASE, 9, i2c_io_conf};
@@ -25,8 +25,8 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     // LED GPIO
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-    St_Gpio_Init(led_gpio, &led_stgpio);
-    St_Gpio_Config(led_gpio);
+    StGpioInit(led_gpio, &led_stgpio);
+    StGpioConfig(led_gpio);
 
     // Single FreeRTOS timer
     frt_timer_init(&time, &frt, 100);
@@ -34,8 +34,8 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     // USART3
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
 
-    St_Gpio_Init(&st_usart.rx, &uart_io1);
-    St_Gpio_Init(&st_usart.tx, &uart_io2);
+    StGpioInit(&st_usart.rx, &uart_io1);
+    StGpioInit(&st_usart.tx, &uart_io2);
 
     RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
 
@@ -43,19 +43,19 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
-    St_Usart_Init(usart, &st_usart, USART3_BASE, &time);
-    St_Usart_Config(usart, SystemCoreClock, 115200);
+    StUsartInit(usart, &st_usart, USART3_BASE, &time);
+    StUsartConfig(usart, SystemCoreClock, 115200);
 
     // I2c1 PC8, PC9
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-    St_Gpio_Init(&st_i2c.scl, &i2c1_io1);
-    St_Gpio_Init(&st_i2c.sda, &i2c1_io2);
+    StGpioInit(&st_i2c.scl, &i2c1_io1);
+    StGpioInit(&st_i2c.sda, &i2c1_io2);
 
     RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
 
-    St_I2c_Init(temp_i2c, &st_i2c, I2C1_BASE, &time);
-    St_I2c_Config(temp_i2c, 0x20B);
+    StI2cInit(temp_i2c, &st_i2c, I2C1_BASE, &time);
+    StI2cConfig(temp_i2c, 0x20B);
 }
 
 void SystemClock_Config(void)

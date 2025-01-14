@@ -1,5 +1,4 @@
 
-#include "gnc.h"
 #include "matrix.h"
 
 

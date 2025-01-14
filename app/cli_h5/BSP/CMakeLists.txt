@@ -5,7 +5,8 @@ target_compile_definitions(freertos_config INTERFACE
     ${definitions}
 )
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/external/FreeRTOS-Kernel ../build)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/FreeRTOS-Kernel ${CMAKE_SOURCE_DIR}/build/FreeRTOS)
+add_subdirectory(${CMAKE_SOURCE_DIR}/common/app/freertos ${CMAKE_SOURCE_DIR}/build/freertos_app)
 
 add_library(bsp STATIC
     bsp.c
@@ -14,10 +15,10 @@ add_library(bsp STATIC
 target_include_directories(bsp PUBLIC .)
 target_link_libraries(bsp
     PUBLIC
+        freertos_app
+        core
+        driver
         st_h5_support
-        usart
-        i2c
-        gpio
     INTERFACE
         freertos_kernel
 )
