@@ -20,6 +20,15 @@
             }
         },
         {
+            "name": "arm32",
+            "inherits": "build",
+            "toolchainFile": "cmake/arm-linux-gnueabihf.cmake",
+            "cacheVariables": {
+                "TARGET_DEVICE": "ARM32",
+                "ARM32": true
+            }
+        },
+        {
             "name": "stm32f7",
             "hidden": true,
             "inherits": "build",

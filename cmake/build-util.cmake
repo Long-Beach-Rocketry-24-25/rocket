@@ -5,7 +5,7 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
         message("Target: ${DEVICE}")
         add_executable(${EXECUTABLE} ${ARGN})
 
-        if (NOT "${DEVICE}" MATCHES "NATIVE")
+        if (NOT "${DEVICE}" MATCHES "(NATIVE|LINUX)")
             message("Selecting linker opts for ARM MCU")
             target_link_options(${EXECUTABLE} PRIVATE
                 -T${LINKER_SCRIPT}
@@ -20,10 +20,10 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
 
             add_custom_command(TARGET ${EXECUTABLE}
                 POST_BUILD
-                COMMAND arm-none-eabi-objcopy -O ihex ${EXECUTABLE} ${EXECUTABLE}.hex
-                COMMAND arm-none-eabi-objcopy -O binary ${EXECUTABLE} ${EXECUTABLE}.bin
-                COMMAND arm-none-eabi-objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.elf
-                COMMAND arm-none-eabi-size --format=berkeley ${EXECUTABLE}.elf
+                COMMAND ${TOOLCHAIN_PREFIX}objcopy -O ihex ${EXECUTABLE} ${EXECUTABLE}.hex
+                COMMAND ${TOOLCHAIN_PREFIX}objcopy -O binary ${EXECUTABLE} ${EXECUTABLE}.bin
+                COMMAND ${TOOLCHAIN_PREFIX}objcopy -O srec ${EXECUTABLE} ${EXECUTABLE}.elf
+                COMMAND ${TOOLCHAIN_PREFIX}size --format=berkeley ${EXECUTABLE}.elf
             )
         endif()
     endif()

@@ -53,7 +53,6 @@ void matrix_subtract(double *A, double *B, double *C, int m, int n)
     }
 }
 
-#ifdef NATIVE
 char* matrix_to_string(double* matrix, int rows, int cols)
 {
 
@@ -89,4 +88,3 @@ char* matrix_to_string(double* matrix, int rows, int cols)
 
     return str;
 }
-#endif

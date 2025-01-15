@@ -6,11 +6,6 @@ project(myapp
 
 include(cmake/build-util.cmake)
 
-if (TARGET_DEVICE MATCHES "NATIVE")
-    add_compile_definitions(
-        NATIVE=TRUE
-    )
-endif()
 if(MCU_NAME MATCHES "^(STM32).*")
     message("Found STM32 Device!")
     add_compile_definitions(

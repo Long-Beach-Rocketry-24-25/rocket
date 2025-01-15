@@ -9,3 +9,13 @@ target_link_libraries_for(NATIVE ${EXECUTABLE}
         core
         driver
 )
+
+add_executable_for(ARM_LINUX_GHF ${EXECUTABLE} ""
+    main.c
+)
+
+target_link_libraries_for(ARM_LINUX_GHF ${EXECUTABLE}
+    PRIVATE
+        core
+        driver
+)

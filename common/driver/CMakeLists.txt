@@ -1,8 +1,7 @@
 if (TARGET_DEVICE MATCHES "NATIVE")
-    add_compile_definitions(
-        NATIVE=TRUE
-    )
     add_subdirectory(platform/native)
+elseif(TARGET_DEVICE MATCHES "ARM32")
+    add_subdirectory(platform/arm32)
 elseif (MCU_NAME MATCHES "^(STM32F7)[0-9]+xx")
     add_subdirectory(platform/stm32f7)
 elseif (MCU_NAME MATCHES "^(STM32H5)[0-9]+xx")
@@ -15,7 +14,6 @@ add_library(driver INTERFACE)
 
 target_include_directories(driver INTERFACE
     bus
-    ota
     memory
 )
 
