@@ -139,17 +139,15 @@ static void cli_process_task(void * params)
 
 void usart_rx_callback()
 {
-    if (usart.rx_ready != NULL && usart.rx_ready(&usart))
+    uint8_t data = 0;
+    if (usart.recv(&usart, &data, 1))
     {
-        usart.clear_errors(&usart);
         BaseType_t higher_prio_task_woken = pdFALSE;
-        uint8_t data = 0;
-        usart.recv(&usart, &data, 1);
         ring_buffer_insert(&usart_buf, data);
         if (data == CLI_TERMINATION_CHAR)
         {
             xTaskNotifyFromISR(cli_task, 0, eNoAction,
-                               &higher_prio_task_woken);
+                                &higher_prio_task_woken);
         }
         portYIELD_FROM_ISR(higher_prio_task_woken);
     }

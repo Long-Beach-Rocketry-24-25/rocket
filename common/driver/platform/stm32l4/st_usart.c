@@ -1,6 +1,21 @@
 
 #include "st_usart.h"
 
+static bool StUsartClearErrors(StPrivUsart *dev)
+{
+    if (dev->instance->ISR & USART_ISR_ORE)
+    {
+        dev->instance->ICR |= USART_ICR_ORECF;
+    }
+    
+    return true;
+}
+
+static bool StUsartIsrSet(StPrivUsart *dev, uint32_t mask)
+{
+    return dev->instance->ISR & mask;
+}
+
 
 void StUsartInit(Usart *usart, StPrivUsart *st_usart, uint32_t base_addr, Timeout* timer)
 {
@@ -10,10 +25,7 @@ void StUsartInit(Usart *usart, StPrivUsart *st_usart, uint32_t base_addr, Timeou
     usart->priv = (void *) st_usart;
     usart->send = StUsartSend;
     usart->recv = StUsartRecv;
-    usart->clear_errors = StUsartClearErrors;
-    usart->rx_ready = StUsartRxReady;
 }
-
 
 void StUsartConfig(Usart *usart, uint32_t system_core_clk, uint32_t baudrate)
 {
@@ -52,6 +64,14 @@ bool StUsartSend(Usart *usart, uint8_t *data, size_t size)
 bool StUsartRecv(Usart *usart, uint8_t *data, size_t size)
 {
     StPrivUsart * dev = (StPrivUsart*) usart->priv;
+
+    StUsartClearErrors(dev);
+
+    if (!StUsartIsrSet(dev, USART_ISR_RXNE))
+    {
+        return false;
+    }
+
     size_t count = 0;
     while (count < size)
     {
@@ -60,26 +80,4 @@ bool StUsartRecv(Usart *usart, uint8_t *data, size_t size)
     }
 
     return true;
-}
-
-bool StUsartClearErrors(Usart *usart)
-{
-    StPrivUsart * dev = (StPrivUsart*) usart->priv;
-    if (dev->instance->ISR & USART_ISR_ORE)
-    {
-        dev->instance->ICR |= USART_ICR_ORECF;
-    }
-    
-    return true;
-}
-
-bool StUsartIsrSet(Usart *usart, uint32_t mask)
-{
-    StPrivUsart * dev = (StPrivUsart*) usart->priv;
-    return dev->instance->ISR & mask;
-}
-
-bool StUsartRxReady(Usart *usart)
-{
-    return StUsartIsrSet(usart, USART_ISR_RXNE);
 }

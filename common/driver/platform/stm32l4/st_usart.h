@@ -27,9 +27,3 @@ void StUsartConfig(Usart *usart, uint32_t system_core_clk, uint32_t baudrate);
 bool StUsartSend(Usart *usart, uint8_t *data, size_t size);
 
 bool StUsartRecv(Usart *usart, uint8_t *data, size_t size);
-
-bool StUsartClearErrors(Usart *usart);
-
-bool StUsartRxReady(Usart* usart);
-
-bool StUsartIsrSet(Usart *usart, uint32_t mask);
