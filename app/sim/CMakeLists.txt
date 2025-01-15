@@ -10,11 +10,11 @@ target_link_libraries_for(NATIVE ${EXECUTABLE}
         driver
 )
 
-add_executable_for(ARM_LINUX_GHF ${EXECUTABLE} ""
+add_executable_for(ARM32 ${EXECUTABLE} ""
     main.c
 )
 
-target_link_libraries_for(ARM_LINUX_GHF ${EXECUTABLE}
+target_link_libraries_for(ARM32 ${EXECUTABLE}
     PRIVATE
         core
         driver
