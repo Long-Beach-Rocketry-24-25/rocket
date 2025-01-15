@@ -26,7 +26,15 @@ Lastly, pull in external dependencies:
 To build:
 ```./make.ps1 -t <name of preset>```
 for example,
-```./make.ps1 -t cli_h5``` (see CMakePresets.json)
+```./make.ps1 -t stm32f746``` (see CMakePresets.json)
+It's also possible to specify a target application rather than building all available apps (which is the default), by using the -a parameter: ```./make.ps1 -t stm32f746 -a cli_app```. 
 
 for a clean build, do
 ```./make.ps1 -t <name of preset> -c```
+
+builds are by default done in Debug mode, but Release mode can be selected with the -r parameter: ```./make.ps1 -t stm32f746 -r```
+
+## Debugging
+To debug, make sure you have openocd installed ```sudo apt-get install openocd```
+On Windows, try [here](https://openocd.org/pages/getting-openocd.html). Also may have to add to path.
+There are reference launch.json files found in the repository already under .vscode.
