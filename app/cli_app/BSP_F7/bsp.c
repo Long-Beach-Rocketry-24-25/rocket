@@ -57,3 +57,8 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     StI2cInit(temp_i2c, &st_i2c, I2C1_BASE, &time);
     StI2cConfig(temp_i2c, 0x20B);
 }
+
+void USART3_IRQHandler(void)
+{
+	usart_rx_callback();
+}

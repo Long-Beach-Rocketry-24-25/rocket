@@ -61,6 +61,16 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     StI2cConfig(temp_i2c, 0x10909CEC);
 }
 
+void USART2_IRQHandler(void)
+{
+	usart_rx_callback();
+}
+
+void TIM1_UP_TIM16_IRQHandler(void)
+{                                  
+	HAL_TIM_IRQHandler(&htim1);    
+}                                  
+
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};

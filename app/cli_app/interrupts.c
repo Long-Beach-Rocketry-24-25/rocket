@@ -1,12 +1,4 @@
 #include "bsp.h"
-#include "usart_cli.h"
-
-USART_HANDLER_FUNC
-{
-    usart_rx_callback();
-}
-
-ADDITIONAL_HANDLER_FUNCS
 
 /**
   * @brief This function handles Non maskable interrupt.
