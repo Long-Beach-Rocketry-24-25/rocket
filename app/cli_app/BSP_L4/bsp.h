@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "stm32l476xx.h"
 #include "stm32l4xx_hal.h"
 #include "st_usart.h"
 #include "st_i2c.h"

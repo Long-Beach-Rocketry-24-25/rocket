@@ -34,7 +34,7 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
     // Single FreeRTOS timer
     frt_timer_init(&time, &frt, 100);
 
-    // UART4
+    // USART2
     // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
     StGpioInit(&st_usart.rx, &uart_io1);

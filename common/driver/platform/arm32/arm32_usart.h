@@ -3,7 +3,10 @@
 #pragma once
 
 #include "usart.h"
-#include "timeout.h"
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <termios.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -11,7 +14,10 @@
 
 typedef struct
 {
-    Timeout * timer;
+    int file_handle;
 } Arm32PrivUsart;
 
-void Arm32UsartInit(Usart *usart, Arm32PrivUsart *st_usart, Timeout* timer);
+bool Arm32UsartInit(Usart *usart, Arm32PrivUsart *arm32_usart, const char* path);
+void Arm32UsartClose(Usart *usart);
+bool Arm32UsartSend(Usart *usart, uint8_t *data, size_t size);
+bool Arm32UsartRecv(Usart *usart, uint8_t *data, size_t size);
