@@ -21,4 +21,5 @@ else()
 endif()
 
 add_subdirectory(common)
+add_subdirectory(external)
 add_subdirectory(mcu_support)

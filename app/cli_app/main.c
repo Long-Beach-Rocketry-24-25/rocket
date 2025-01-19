@@ -2,7 +2,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "bsp.h"
+#include "cli_app_bsp.h"
 
 #include "i2c.h"
 #include "usart.h"

@@ -3,6 +3,7 @@ add_library(hal STATIC
     st_gpio.c
     st_flash.c
     st_i2c.c
+    st_spi.c
     st_usart.c
 )
 

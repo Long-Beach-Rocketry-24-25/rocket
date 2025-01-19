@@ -1,6 +1,9 @@
 
 #include "st_usart.h"
 
+#define ST_USART_BRR_MANTISSA_Pos (4U)
+#define ST_USART_BRR_FRACTION_Pos (0U)
+
 static bool StUsartClearErrors(StPrivUsart *dev)
 {
     if (dev->instance->ISR & USART_ISR_ORE)
@@ -38,8 +41,8 @@ void StUsartConfig(Usart *usart, uint32_t system_core_clk, uint32_t baudrate)
     dev->tx.config(&dev->tx);
 
     uint16_t uartdiv = system_core_clk / baudrate;
-    dev->instance->BRR = (((uartdiv / 16) << USART_BRR_DIV_MANTISSA_Pos)
-                | ((uartdiv % 16) << USART_BRR_DIV_FRACTION_Pos));
+    dev->instance->BRR = (((uartdiv / 16) << ST_USART_BRR_MANTISSA_Pos)
+                | ((uartdiv % 16) << ST_USART_BRR_FRACTION_Pos));
     dev->instance->CR1 |= USART_CR1_UE
                 | USART_CR1_RE
                 | USART_CR1_TE;

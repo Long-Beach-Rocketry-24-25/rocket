@@ -1,4 +1,4 @@
-set(EXECUTABLE cli_app)
+set(EXECUTABLE subscale)
 set(LDF ${CMAKE_CURRENT_BINARY_DIR}/${EXECUTABLE}.ld)
 
 set(PREPROCESS_DEFS
@@ -7,10 +7,8 @@ set(PREPROCESS_DEFS
 )
 
 add_subdirectory_for(STM32F7 BSP_F7)
-add_subdirectory_for(STM32L4 BSP_L4)
-add_subdirectory_for(STM32H5 BSP_H5)
 
-if (TARGET cli_app_bsp)
+if (TARGET subscale_bsp)
 
     add_executable_for(${TARGET_DEVICE} ${EXECUTABLE} ${LDF}
         main.c
@@ -20,7 +18,7 @@ if (TARGET cli_app_bsp)
     )
 
     target_link_libraries_for(${TARGET_DEVICE} ${EXECUTABLE} PRIVATE
-        cli_app_bsp
+        subscale_bsp
     )
 
     target_preprocess_for(${TARGET_DEVICE} ${EXECUTABLE} ${LINKER_SCRIPT} ${LDF} ${PREPROCESS_DEFS})

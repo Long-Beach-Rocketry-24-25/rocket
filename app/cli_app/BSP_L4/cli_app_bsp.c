@@ -1,5 +1,5 @@
 
-#include "bsp.h"
+#include "cli_app_bsp.h"
 
 static StPrivUsart st_usart;
 static StPrivI2c st_i2c1;
