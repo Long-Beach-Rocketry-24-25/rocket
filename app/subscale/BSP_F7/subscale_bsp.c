@@ -61,9 +61,9 @@ void BSP_Init(Usart *usart, Spi *spi, I2c *temp_i2c, Gpio *led_gpio)
     StGpioInit(&st_spi.miso, &spi_io2);
     StGpioInit(&st_spi.mosi, &spi_io3);
     StGpioInit(&st_spi_cs.pin, &spi_cs_io);
-    GpioCsInit(&st_spi.cs, &st_spi_cs, true);
-    GpioCsConfig(&st_spi.cs);
 
+    GpioCsInit(&spi->cs, &st_spi_cs, true);
+    GpioCsConfig(&spi->cs);
     StSpiInit(spi, &st_spi, SPI1_BASE, &time);
     StSpiConfig(spi);
 

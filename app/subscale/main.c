@@ -33,7 +33,9 @@ int main(void)
 
     while(1)
     {
-        volatile bool success = spi.transact(&spi, tx, rx, 6);
+        spi.cs.select(&spi.cs);
+        spi.transact(&spi, tx, rx, 6);
+        spi.cs.deselect(&spi.cs);
     }
 
     return 0;

@@ -13,6 +13,7 @@ void GpioCsConfig(ChipSelect *cs)
 {
     GpioChipSelect * dev = (GpioChipSelect *) cs->priv;
     dev->pin.config(&dev->pin);
+    GpioCsDeselect(cs);
 }
 
 bool GpioCsSelect(ChipSelect *cs)

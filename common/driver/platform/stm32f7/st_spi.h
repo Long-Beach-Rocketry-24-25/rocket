@@ -14,7 +14,6 @@ typedef struct
     Gpio mosi;
     Gpio miso;
     Gpio scl;
-    ChipSelect cs;
     Timeout * timer;
 } StPrivSpi;
 

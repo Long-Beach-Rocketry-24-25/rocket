@@ -8,6 +8,8 @@ void StSpiInit(Spi *spi, StPrivSpi *st_spi, uint32_t base_addr, Timeout *timer)
     st_spi->instance = (SPI_TypeDef *) base_addr;
     st_spi->timer = timer;
     spi->priv = (void *) st_spi;
+    spi->send = StSpiSend;
+    spi->read = StSpiRead;
     spi->transact = StSpiTransact;
 }
 
@@ -44,12 +46,96 @@ void StSpiConfig(Spi * spi)
 
     // Enable SPI
     dev->instance->CR1 |= SPI_CR1_SPE;
-
-    dev->cs.deselect(&dev->cs);
 }
 
-static inline bool transfer(StPrivSpi *dev, uint8_t *txdata, uint8_t *rxdata, size_t size)
+bool StSpiSend(Spi * spi, uint8_t *data, size_t size)
 {
+    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+
+	// Check if line is busy, or if CS fails
+	if (dev->instance->SR & SPI_SR_BSY)
+    {
+		return false;
+	}
+
+    uint8_t dummy = 0;
+    for (size_t i = 0; i < size;)
+    {
+        // Wait for space in TX FIFO
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXE, false);
+
+		/**
+         * Send: Fill TXFIFO (by writing to SPI_DR)
+         * When transmission is enabled, seq begins and continues
+         * while data present in FIFO. CLK ends when FIFO becomes empty
+         */
+        *(DataReg)&dev->instance->DR = data[i++];
+
+        // Wait for RX FIFO to fill
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXNE, false);
+
+		/** 
+         * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
+         * Write access to SPI_DR stores data in TXFIFO at end of queue
+         * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
+         */
+		dummy = *(DataReg)&dev->instance->DR;
+	}
+
+    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+
+    return true;
+}
+
+bool StSpiRead(Spi * spi, uint8_t *data, size_t size)
+{
+    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+
+	// Check if line is busy, or if CS fails
+	if (dev->instance->SR & SPI_SR_BSY)
+    {
+		return false;
+	}
+
+    uint8_t dummy = 0;
+    for (size_t i = 0; i < size;)
+    {
+        // Wait for space in TX FIFO
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXE, false);
+
+		/**
+         * Send: Fill TXFIFO (by writing to SPI_DR)
+         * When transmission is enabled, seq begins and continues
+         * while data present in FIFO. CLK ends when FIFO becomes empty
+         */
+        *(DataReg)&dev->instance->DR = dummy;
+
+        // Wait for RX FIFO to fill
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXNE, false);
+
+		/** 
+         * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
+         * Write access to SPI_DR stores data in TXFIFO at end of queue
+         * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
+         */
+		data[i++] = *(DataReg)&dev->instance->DR;
+	}
+
+    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+
+    return true;
+}
+
+bool StSpiTransact(Spi * spi, uint8_t *txdata, uint8_t *rxdata, size_t size)
+{
+    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+
+	// Check if line is busy, or if CS fails
+	if (dev->instance->SR & SPI_SR_BSY)
+    {
+		return false;
+	}
+
     for (size_t i = 0; i < size;)
     {
         // Wait for space in TX FIFO
@@ -73,21 +159,7 @@ static inline bool transfer(StPrivSpi *dev, uint8_t *txdata, uint8_t *rxdata, si
 		rxdata[i++] = *(DataReg)&dev->instance->DR;
 	}
 
+    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+
     return true;
-}
-
-bool StSpiTransact(Spi * spi, uint8_t *txdata, uint8_t *rxdata, size_t size)
-{
-    StPrivSpi * dev = (StPrivSpi *) spi->priv;
-
-	// Check if line is busy, or if CS fails
-	if (dev->instance->SR & SPI_SR_BSY || !dev->cs.select(&dev->cs))
-    {
-		return false;
-	}
-
-    bool success = transfer(dev, txdata, rxdata, size);
-
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY),
-         dev->cs.deselect(&dev->cs) && success);
 }
