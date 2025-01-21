@@ -1,16 +1,9 @@
 
 #include "w25q.h"
 
-// static inline getpageaddr and getsectoraddr
-
-static inline size_t get_page_addr(size_t address, size_t page_size)
+size_t get_section_addr(size_t address, size_t section_size)
 {
-    return address - (address % page_size);
-}
-
-static inline size_t get_sector_addr(size_t address, size_t sector_size)
-{
-    return address - (address % sector_size);
+    return address - (address % section_size);
 }
 
 static bool mask_status(W25q *flash, uint8_t cmd, uint8_t mask)
@@ -49,7 +42,11 @@ void W25qInit(W25q *flash, Spi *spi)
 
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size)
 {
-    // Enforce start addr + size < getpageaddr + 256
+    // Enforce start addr + size < next sector addr, so no wrap around happens.
+    if ((address + size) <= (get_section_addr(address, 256) + 256))
+    {
+        return false;
+    }
 
     write_enable(flash);
 
@@ -89,7 +86,7 @@ bool W25qRead(W25q *flash, size_t address, uint8_t *data, size_t size)
 
 bool W25qSectorErase(W25q *flash, size_t address)
 {
-    address = get_sector_addr(address, 4096);
+    address = get_section_addr(address, 4096);
 
     write_enable(flash);
 

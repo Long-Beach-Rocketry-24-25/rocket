@@ -5,33 +5,22 @@
 
 #include "cli.h"
 
-static Send *comm;
-static Command commands[MAX_ARGS];
-static uint32_t num_commands = 0;
-
-void cli_init(Send *driver)
+void cli_init(Cli *cli, Send *driver)
 {
-    comm = driver;
+    cli->comm = driver;
+    cli->num_commands = 0;
 }
 
-bool cli_write(const char *data, ...)
+Send *cli_get_sender(Cli *cli)
 {
-    char buf[MAX_RSP_LENGTH] = { 0 };
-    va_list vl;
-    va_start(vl, data);
-    vsprintf(buf, data, vl);
-    va_end(vl);
-
-    buf[MAX_RSP_LENGTH - 1] = '\0';
-
-    return comm->write_str(buf); 
+    return cli->comm;
 }
 
-bool cli_register_command(const Command *cmd)
+bool cli_register_command(Cli *cli, const Command *cmd)
 {
-    if (num_commands < MAX_ARGS)
+    if (cli->num_commands < MAX_ARGS)
     {
-        commands[num_commands++] = *cmd;
+        cli->commands[cli->num_commands++] = *cmd;
         return true;
     }
     return false;
@@ -47,16 +36,16 @@ static void parse_command(char *input, int *argc, char *argv[]) {
     }
 }
 
-static void help()
+static void help(Cli *cli)
 {
-    cli_write("Available commands:");
-    for (int i = 0; i < num_commands; i++)
+    cli->comm->fwrite(cli->comm, "Available commands:");
+    for (int i = 0; i < cli->num_commands; i++)
     {
-        cli_write("%s - %s", commands[i].name, commands[i].help);
+        cli->comm->fwrite(cli->comm, "%s - %s", cli->commands[i].name, cli->commands[i].help);
     }
 }
 
-bool cli_process(const char * message)
+bool cli_process(Cli *cli, const char * message)
 {
     char input[MAX_CMD_LENGTH];
     bool found = false;
@@ -80,25 +69,25 @@ bool cli_process(const char * message)
     parse_command(input, &argc, argv);
 
     if (argc > 0) {
-        for (int i = 0; i < num_commands; i++)
+        for (int i = 0; i < cli->num_commands; i++)
         {
-            if (strcmp(argv[0], commands[i].name) == 0)
+            if (strcmp(argv[0], cli->commands[i].name) == 0)
             {
-                commands[i].handler(argc, argv);
+                cli->commands[i].handler(argc, argv);
                 return true;
             }
         }
 
         if (strcmp(argv[0], "help") == 0)
         {
-            help();
+            help(cli);
             return true;
         } 
         
         /*
          * Unknown command parsed.
          */
-        cli_write("Unknown command!");
+        cli->comm->fwrite(cli->comm, "Unknown command!");
         return false;
     }
 

@@ -6,7 +6,7 @@ add_library(cli_app_bsp STATIC
 target_include_directories(cli_app_bsp PUBLIC .)
 target_link_libraries(cli_app_bsp
     PUBLIC
-        freertos_app
+        app
         core
         driver
         st_l4_support

@@ -12,5 +12,6 @@ target_include_directories(freertos_app PUBLIC
 target_link_libraries(freertos_app PUBLIC
     core
     driver
+    generic_app
     freertos_kernel
 )

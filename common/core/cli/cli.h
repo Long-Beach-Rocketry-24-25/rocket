@@ -8,11 +8,11 @@
 
 #include "send.h"
 
-#include "stdio.h"
-#include "stdarg.h"
-#include "stdint.h"
-#include "stdbool.h"
-#include "string.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 
 #define MAX_CMD_LENGTH 64
@@ -27,7 +27,16 @@ typedef struct {
     const char *help;
 } Command;
 
-void cli_init(Send *comm);
-bool cli_write(const char* data, ...);
-bool cli_process(const char * message);
-bool cli_register_command(const Command *cmd);
+typedef struct Cli Cli;
+
+struct Cli
+{
+    Send *comm;
+    Command commands[MAX_ARGS];
+    uint32_t num_commands;
+};
+
+void cli_init(Cli *cli, Send *comm);
+Send *cli_get_sender(Cli *cli);
+bool cli_process(Cli *cli, const char * message);
+bool cli_register_command(Cli *cli, const Command *cmd);

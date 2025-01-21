@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "cli.h"
+#include "send.h"
 #include "gpio.h"
 
-void init_blink(Gpio * pin);
+void init_blink(Send *sender, Gpio * pin);
 void blink(int argc, char* argv[]);

@@ -31,6 +31,7 @@ void usart_rx_callback();
  * clock frequency. A list of commands can be registered to add
  * functionality to the command line.
  * 
+ * @param cmdline the command line instance to initialize and use.
  * @param cli_usart the usart driver to use.
  * @param commands a list of commands to register.
  * @param num_commands the size of the command list.
@@ -38,5 +39,5 @@ void usart_rx_callback();
  * @returns True if all commands are registered and the task is created,
  *          otherwise false.
  */
-bool create_cli_task(Usart* cli_usart,
+bool create_cli_task(Cli *cmdline, Usart* cli_usart,
                      Command * commands, size_t num_commands);

@@ -1,11 +1,13 @@
 
 #include "i2c_access.h"
 
+static Send *send;
 static I2c *i2c;
 
-void init_i2c_access(I2c *i2c_dev)
+void init_i2c_access(Send *sender, I2c *i2c_dev)
 {
     i2c = i2c_dev;
+    send = sender;
 }
 
 void write_i2c(int argc, char* argv[])
@@ -42,7 +44,7 @@ void write_i2c(int argc, char* argv[])
         }
     }
 
-    cli_write("Writing: %x %x %x %x... s%d", id, address, data[0], data[1], count);
+    send->fwrite(send, "Writing: %x %x %x %x... s%d", id, address, data[0], data[1], count);
     i2c->set_target(i2c, id << 1);
     i2c->write(i2c, address, data, count);
 }
@@ -79,9 +81,8 @@ void read_i2c(int argc, char *argv[])
         }
     }
 
-    cli_write("Reading: %x %x %x ", id, address, size);
+    send->fwrite(send, "Reading: %x %x %x ", id, address, size);
     i2c->set_target(i2c, id << 1);
     i2c->read(i2c, address, data, size);
-    cli_write("Received: %x %x", data[0], data[1]);
+    send->fwrite(send, "Received: %x %x", data[0], data[1]);
 }
-

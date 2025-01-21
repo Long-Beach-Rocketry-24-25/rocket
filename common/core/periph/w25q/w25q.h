@@ -17,3 +17,4 @@ void W25qInit(W25q *flash, Spi *spi);
 bool W25qRead(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qSectorErase(W25q *flash, size_t address);
+size_t get_section_addr(size_t address, size_t section_size);

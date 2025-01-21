@@ -5,7 +5,7 @@ add_library(subscale_bsp STATIC
 target_include_directories(subscale_bsp PUBLIC .)
 target_link_libraries(subscale_bsp
     PUBLIC
-        freertos_app
+        app
         core
         driver
         st_f7_support
