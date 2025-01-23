@@ -38,6 +38,8 @@ void W25qInit(W25q *flash, Spi *spi)
     flash->page_write = W25qPageWrite;
     flash->read = W25qRead;
     flash->erase_sector = W25qSectorErase;
+    flash->page_size = W25Q_PAGE_SIZE_BYTES;
+    flash->sector_size = W25Q_SECTOR_SIZE_BYTES;
 }
 
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size)

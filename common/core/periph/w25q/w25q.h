@@ -3,6 +3,9 @@
 
 #include "spi.h"
 
+#define W25Q_PAGE_SIZE_BYTES 256
+#define W25Q_SECTOR_SIZE_BYTES 4096
+
 typedef struct W25q W25q;
 
 struct W25q
@@ -11,6 +14,8 @@ struct W25q
     bool (*page_write) (W25q* flash, size_t address, uint8_t *data, size_t size);
     bool (*read) (W25q *flash, size_t address, uint8_t *data, size_t size);
     bool (*erase_sector) (W25q *flash, size_t address);
+    size_t page_size;
+    size_t sector_size;
 };
 
 void W25qInit(W25q *flash, Spi *spi);
