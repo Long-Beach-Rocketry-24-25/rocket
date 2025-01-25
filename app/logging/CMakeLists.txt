@@ -10,3 +10,5 @@ target_link_libraries_for(NATIVE ${EXECUTABLE}
         core
         driver
 )
+
+configure_file(navdata.log navdata.log COPYONLY)

@@ -6,8 +6,8 @@
 
 #include <string.h>
 
-#define MOCK_PAGE_SIZE_BYTES 8
-#define MOCK_SECTOR_SIZE_BYTES 64
+#define MOCK_PAGE_SIZE_BYTES 256
+#define MOCK_SECTOR_SIZE_BYTES 4096
 #define MOCK_W25Q_MEM_SIZE MOCK_SECTOR_SIZE_BYTES * 2
 
 void MockW25qInit(W25q *flash);

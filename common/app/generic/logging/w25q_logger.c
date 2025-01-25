@@ -35,6 +35,12 @@ bool W25qLoggerWrite(LogSubscriber *sub, const uint8_t *data, size_t size)
 {
     W25qLogger * f_log = (W25qLogger *) sub->priv;
 
+    // Leave 1 byte to indicate end of record.
+    if (size > f_log->flash->page_size - 1)
+    {
+        return false;
+    }
+
     if (f_log->allow_wrap)
     {
         f_log->index = (f_log->index >= f_log->max_index) ? 0 : f_log->index;
@@ -73,7 +79,7 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
     {
         uint8_t buf[W25Q_MAX_PAGE_SIZE] = {0};
         f_log->flash->read(f_log->flash, page * f_log->flash->page_size, buf, f_log->flash->page_size);
-        if (buf[0] == 0xFF)
+        if (buf[0] == f_log->end_char)
         {
             if (!eof)
             {
@@ -84,7 +90,7 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
         }
         for (size_t byte = 0; byte < W25Q_MAX_PAGE_SIZE; ++byte)
         {
-            if (buf[byte] == 0xFF)
+            if (buf[byte] == f_log->end_char)
             {
                 buf[byte] = '\0';
                 break;

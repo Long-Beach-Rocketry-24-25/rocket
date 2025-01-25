@@ -2,6 +2,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -31,9 +32,9 @@ typedef struct NavData NavData;
 struct NavData
 {
     float pressure;
-    float temperature;
     ThreeAxisVec accel;
     EulerVec euler;
+    float temperature;
     bool (*update) (NavData *data);
     void *priv;
 };
