@@ -34,7 +34,7 @@ int main(void)
     spi.cs.select(&spi.cs);
     spi.send(&spi, tx, 1);
     spi.read(&spi, rx, 3);
-    W25qInit(&flash, &spi);
+    W25qInit(&flash, &spi, 0xFFFFFF);
 
     flash.read(&flash, 0, rx, 6);
     if (rx[0] != 0xDE)
@@ -44,9 +44,9 @@ int main(void)
     else
     {
         flash.read(&flash, 0, rx, 5);
-        volatile s = flash.erase_sector(&flash, 0);
+        volatile bool s = flash.erase_sector(&flash, 0);
     }
-    volatile c = flash.read(&flash, 0, rx, 6);
+    volatile bool c = flash.read(&flash, 0, rx, 6);
 
     // DebugAppCreate(&usart, &i2c, &led_gpio);
 

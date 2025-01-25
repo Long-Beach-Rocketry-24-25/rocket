@@ -16,9 +16,10 @@ struct W25q
     bool (*erase_sector) (W25q *flash, size_t address);
     size_t page_size;
     size_t sector_size;
+    size_t mem_size;
 };
 
-void W25qInit(W25q *flash, Spi *spi);
+void W25qInit(W25q *flash, Spi *spi, size_t mem_size);
 bool W25qRead(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qSectorErase(W25q *flash, size_t address);

@@ -87,7 +87,7 @@ static void boot_msg()
     };
     for (int i = 0; i < 22; ++i)
     {
-        cli_write(cli, logo[i]);
+        cli->comm->fwrite(cli->comm, logo[i]);
     }
 }
 
@@ -100,7 +100,7 @@ static void cli_process_task(void * params)
     const TickType_t max_block_time = pdMS_TO_TICKS(UINT32_MAX);
     BaseType_t rx_cplt;
 
-    cli_write(cli, "enter pass: ");
+    cli->comm->fwrite(cli->comm, "enter pass: ");
 
     for ( ;; )
     {
@@ -117,21 +117,21 @@ static void cli_process_task(void * params)
             if (active)
             {
                 cli_process(cli, command);
-                cli_write(cli, "root:~$: ");
+                cli->comm->fwrite(cli->comm, "root:~$: ");
             }
             else
             {
                 if (strcmp(command, PASSWORD) == 0)
                 {
                     active = true;
-                    cli_write(cli, "Password accepted, booting...");
+                    cli->comm->fwrite(cli->comm, "Password accepted, booting...");
                     boot_msg();
-                    cli_write(cli, "root:~$: ");
+                    cli->comm->fwrite(cli->comm, "root:~$: ");
                 }
                 else
                 {
-                    cli_write(cli, "Bad password, try again.");
-                    cli_write(cli, "enter pass: ");
+                    cli->comm->fwrite(cli->comm, "Bad password, try again.");
+                    cli->comm->fwrite(cli->comm, "enter pass: ");
                 }
             }
         }

@@ -32,7 +32,7 @@ static void write_enable(W25q *flash)
     flash->bus->cs.deselect(&flash->bus->cs);
 }
 
-void W25qInit(W25q *flash, Spi *spi)
+void W25qInit(W25q *flash, Spi *spi, size_t mem_size)
 {
     flash->bus = spi;
     flash->page_write = W25qPageWrite;
@@ -40,12 +40,13 @@ void W25qInit(W25q *flash, Spi *spi)
     flash->erase_sector = W25qSectorErase;
     flash->page_size = W25Q_PAGE_SIZE_BYTES;
     flash->sector_size = W25Q_SECTOR_SIZE_BYTES;
+    flash->mem_size = mem_size;
 }
 
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size)
 {
     // Enforce start addr + size < next sector addr, so no wrap around happens.
-    if ((address + size) <= (get_section_addr(address, 256) + 256))
+    if ((address + size) > (get_section_addr(address, flash->page_size) + flash->page_size))
     {
         return false;
     }
@@ -88,7 +89,7 @@ bool W25qRead(W25q *flash, size_t address, uint8_t *data, size_t size)
 
 bool W25qSectorErase(W25q *flash, size_t address)
 {
-    address = get_section_addr(address, 4096);
+    address = get_section_addr(address, flash->sector_size);
 
     write_enable(flash);
 

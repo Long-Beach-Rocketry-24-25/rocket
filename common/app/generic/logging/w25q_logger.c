@@ -1,5 +1,5 @@
 
-#include "w25qlogger.h"
+#include "w25q_logger.h"
 
 void W25qLoggerInit(LogSubscriber *sub, W25qLogger *flash_log, W25q *flash, size_t max_index)
 {
@@ -15,7 +15,7 @@ void W25qLoggerInit(LogSubscriber *sub, W25qLogger *flash_log, W25q *flash, size
     sub->retrieve_all = W25qLoggerRetrieve;
 }
 
-void W251LoggerWrapAround(LogSubscriber *sub, bool enable)
+void W25qLoggerWrapAround(LogSubscriber *sub, bool enable)
 {
     W25qLogger * f_log = (W25qLogger *) sub->priv;
     f_log->allow_wrap = enable;
@@ -27,6 +27,8 @@ bool W25qLoggerClear(LogSubscriber *sub)
 
     f_log->index = 0;
     // f_log->flash-> erase chip
+
+    return true;
 }
 
 bool W25qLoggerWrite(LogSubscriber *sub, const uint8_t *data, size_t size)
@@ -36,10 +38,12 @@ bool W25qLoggerWrite(LogSubscriber *sub, const uint8_t *data, size_t size)
     if (f_log->allow_wrap)
     {
         f_log->index = (f_log->index >= f_log->max_index) ? 0 : f_log->index;
-        if (!((f_log->index * f_log->flash->page_size) % f_log->flash->sector_size))
-        {
-            f_log->flash->erase_sector(f_log->flash, f_log->index * f_log->flash->page_size);
-        }
+    }
+
+    // If sector boundary start, erase sector.
+    if (!((f_log->index * f_log->flash->page_size) % f_log->flash->sector_size))
+    {
+        f_log->flash->erase_sector(f_log->flash, f_log->index * f_log->flash->page_size);
     }
 
     if (f_log->index < f_log->max_index)
@@ -58,6 +62,8 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
 {
     W25qLogger * f_log = (W25qLogger *) sub->priv;
 
+    static bool eof = false;
+
     if (f_log->flash->page_size > W25Q_MAX_PAGE_SIZE)
     {
         return false;
@@ -69,7 +75,12 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
         f_log->flash->read(f_log->flash, page * f_log->flash->page_size, buf, f_log->flash->page_size);
         if (buf[0] == 0xFF)
         {
-            break;
+            if (!eof)
+            {
+                sender->fwrite(sender, "EOF\n");
+                eof = true;
+            }
+            continue;
         }
         for (size_t byte = 0; byte < W25Q_MAX_PAGE_SIZE; ++byte)
         {
@@ -81,4 +92,6 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
         }
         sender->fwrite(sender, "%s\n", buf);
     }
+
+    eof = false;
 }

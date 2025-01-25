@@ -6,6 +6,7 @@
 #pragma once
 
 #include "i2c.h"
+#include "nav_data.h"
 
 #define BNO055_DEV_ADDR                 (0x28 << 1)
 #define BNO055_IMU_MODE                 0x8
@@ -17,28 +18,6 @@
 #define BNO055_ACCEL_START_REG          0x8
 
 typedef struct Bno055 Bno055;
-
-typedef struct
-{
-    float x;
-    float y;
-    float z;
-} ThreeAxisVec;
-
-typedef struct
-{
-    int16_t x;
-    int16_t y;
-    int16_t z;
-} EulerVec;
-
-typedef struct
-{
-    double w;
-    double x;
-    double y;
-    double z;
-} QuaternionVec;
 
 struct Bno055
 {

@@ -4,7 +4,7 @@
     "configurations": [
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/app/cli_app/cli_app",
+            "executable": "${workspaceRoot}/build/app/subscale/subscale",
             "name": "DEBUG CLI F7",
             "request": "launch",
             "type": "cortex-debug",
@@ -24,7 +24,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file /build/app/cli_app/cli_app",
+                "add-symbol-file /build/app/subscale/subscale",
                 "load",
                 "enable breakpoint",
                 "monitor reset"

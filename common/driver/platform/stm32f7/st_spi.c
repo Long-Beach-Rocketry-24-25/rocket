@@ -33,9 +33,8 @@ void StSpiConfig(Spi * spi)
 
     /** 
      * Set bitrate: freq pclk / 2 ^ (BR + 1)
-     * 72/32 = 2.25MHz, 84/32 = 2.625MHz
      */
-    dev->instance->CR1 |= SPI_CR1_BR;
+    dev->instance->CR1 |= 0;
 
     dev->instance->CR1 |= SPI_CR1_MSTR; // Master mode
 

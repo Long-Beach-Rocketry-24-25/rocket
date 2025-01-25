@@ -1,0 +1,39 @@
+
+#pragma once
+
+#include <stdint.h>
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} ThreeAxisVec;
+
+typedef struct
+{
+    int16_t x;
+    int16_t y;
+    int16_t z;
+} EulerVec;
+
+typedef struct
+{
+    double w;
+    double x;
+    double y;
+    double z;
+} QuaternionVec;
+
+
+typedef struct NavData NavData;
+
+struct NavData
+{
+    float pressure;
+    float temperature;
+    ThreeAxisVec accel;
+    EulerVec euler;
+    bool (*update) (NavData *data);
+    void *priv;
+};

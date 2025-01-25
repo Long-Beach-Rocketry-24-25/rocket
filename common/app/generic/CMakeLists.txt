@@ -7,6 +7,7 @@ add_library(generic_app STATIC
 target_include_directories(generic_app PUBLIC
     commands
     logging
+    logging/w25q
 )
 
 target_link_libraries(generic_app PUBLIC
