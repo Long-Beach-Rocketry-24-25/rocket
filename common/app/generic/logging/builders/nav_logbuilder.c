@@ -15,7 +15,7 @@ void NavDataLogBuilderInit(LogBuilder *builder, NavDataLogBuilder *nav_builder, 
 bool NavDataLogBuilderBuildNew(LogBuilder *builder)
 {
     NavDataLogBuilder *nav_builder = (NavDataLogBuilder *) builder->priv;
-    nav_builder->size = (size_t) sprintf(nav_builder->buffer, "%f,%f,%f,%f,%d,%d,%d",
+    nav_builder->size = (size_t) sprintf((char *) nav_builder->buffer, "%f,%f,%f,%f,%d,%d,%d",
         nav_builder->data->pressure,
         nav_builder->data->accel.x,
         nav_builder->data->accel.y,

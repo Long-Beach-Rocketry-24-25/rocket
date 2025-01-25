@@ -24,11 +24,7 @@ void W25qLoggerWrapAround(LogSubscriber *sub, bool enable)
 bool W25qLoggerClear(LogSubscriber *sub)
 {
     W25qLogger * f_log = (W25qLogger *) sub->priv;
-
-    f_log->index = 0;
-    // f_log->flash-> erase chip
-
-    return true;
+    return f_log->flash->chip_erase(f_log->flash);
 }
 
 bool W25qLoggerWrite(LogSubscriber *sub, const uint8_t *data, size_t size)

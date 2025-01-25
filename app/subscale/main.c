@@ -22,43 +22,15 @@ Gpio led_gpio;
 
 W25q flash;
 
-uint8_t tx[6] = {0x9F, 0, 0, 0, 0, 0};
-uint8_t db[5] = {0xDE, 0xCA, 0xFE, 0xCA, 0xFE};
-uint8_t rx[6] = {0};
-
 int main(void)
 {
 
     BSP_Init(&usart, &spi, &i2c, &led_gpio);
 
-    spi.cs.select(&spi.cs);
-    spi.send(&spi, tx, 1);
-    spi.read(&spi, rx, 3);
     W25qInit(&flash, &spi, 0xFFFFFF);
 
-    flash.read(&flash, 0, rx, 6);
-    if (rx[0] != 0xDE)
-    {
-        flash.page_write(&flash, 0, db, 5);
-    }
-    else
-    {
-        flash.read(&flash, 0, rx, 5);
-        volatile bool s = flash.erase_sector(&flash, 0);
-    }
-    volatile bool c = flash.read(&flash, 0, rx, 6);
 
-    // DebugAppCreate(&usart, &i2c, &led_gpio);
-
-    // /* Start the scheduler to start the tasks executing. */
-    // vTaskStartScheduler();
-
-    while(1)
-    {
-        spi.cs.select(&spi.cs);
-        spi.transact(&spi, tx, rx, 6);
-        spi.cs.deselect(&spi.cs);
-    }
+    while (1);
 
     return 0;
 }

@@ -45,6 +45,12 @@ bool MockW25qSectorErase(W25q *flash, size_t address)
     return true;
 }
 
+bool MockW25qChipErase(W25q *flash)
+{
+    memset(memory, 0xFF, flash->mem_size);
+    return true;
+}
+
 void MockW25qDumpMem(Send *sender)
 {
     sender->fwrite(sender, "Mock W25Q Dump:\n");
