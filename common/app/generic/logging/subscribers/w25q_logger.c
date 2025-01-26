@@ -80,7 +80,7 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
         {
             if (!eof)
             {
-                sender->fwrite(sender, "EOF\n");
+                sender->fwrite(sender, "EOF");
                 if (!f_log->allow_wrap)
                 {
                     break;
@@ -97,7 +97,7 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
                 break;
             }
         }
-        sender->fwrite(sender, "%s\n", buf);
+        sender->fwrite(sender, "%s", buf);
     }
 
     eof = false;

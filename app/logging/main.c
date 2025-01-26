@@ -18,7 +18,7 @@ MockNavData mock_nav;
 
 bool logprint(const char * msg)
 {
-    printf(msg);
+    printf("%s\n", msg);
     return true;
 }
 

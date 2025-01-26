@@ -53,9 +53,9 @@ bool logger_retrieve(Logger *log)
 {
     for (size_t i = 0; i < log->num_subs; ++i)
     {
-        log->comm->fwrite(log->comm, "Start %zu:\n", i);
+        log->comm->fwrite(log->comm, "Start %zu:", i);
         log->subs[i].retrieve_all(&log->subs[i], log->comm);
-        log->comm->fwrite(log->comm, "\nEnd %zu\n", i);
+        log->comm->fwrite(log->comm, "\nEnd %zu", i);
     }
     return true;
 }
