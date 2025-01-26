@@ -24,7 +24,8 @@ void W25qLoggerWrapAround(LogSubscriber *sub, bool enable)
 bool W25qLoggerClear(LogSubscriber *sub)
 {
     W25qLogger * f_log = (W25qLogger *) sub->priv;
-    return f_log->flash->chip_erase(f_log->flash);
+    f_log->index = 0;
+    return true;
 }
 
 bool W25qLoggerWrite(LogSubscriber *sub, const uint8_t *data, size_t size)
@@ -80,6 +81,10 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
             if (!eof)
             {
                 sender->fwrite(sender, "EOF\n");
+                if (!f_log->allow_wrap)
+                {
+                    break;
+                }
                 eof = true;
             }
             continue;
@@ -96,4 +101,5 @@ bool W25qLoggerRetrieve(LogSubscriber *sub, Send *sender)
     }
 
     eof = false;
+    return true;
 }

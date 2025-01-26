@@ -20,7 +20,7 @@ bool logger_update(Logger *log)
                 log->enabled = true;
                 for (size_t i = 0; i < log->num_subs; ++i)
                 {
-                    // log->subs[i].clear(&log->subs[i]);
+                    log->subs[i].clear(&log->subs[i]);
                 }
             }
             break;

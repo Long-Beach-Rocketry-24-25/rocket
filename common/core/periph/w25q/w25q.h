@@ -14,7 +14,6 @@ struct W25q
     bool (*page_write) (W25q* flash, size_t address, uint8_t *data, size_t size);
     bool (*read) (W25q *flash, size_t address, uint8_t *data, size_t size);
     bool (*erase_sector) (W25q *flash, size_t address);
-    bool (*chip_erase) (W25q *flash);
     size_t page_size;
     size_t sector_size;
     size_t mem_size;
@@ -24,5 +23,4 @@ void W25qInit(W25q *flash, Spi *spi, size_t mem_size);
 bool W25qRead(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qPageWrite(W25q *flash, size_t address, uint8_t *data, size_t size);
 bool W25qSectorErase(W25q *flash, size_t address);
-bool W25qChipErase(W25q *flash);
 size_t get_section_addr(size_t address, size_t section_size);
