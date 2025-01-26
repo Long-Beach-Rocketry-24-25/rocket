@@ -170,6 +170,6 @@ bool create_cli_task(Cli *cmdline, Usart *cli_usart, Command * commands, size_t 
             return false;
         }
     }
-    cli_task = xTaskCreateStatic(cli_process_task, "CLI", 1024, NULL, 1, cli_task_stack, &cli_task_buffer);
+    cli_task = xTaskCreateStatic(cli_process_task, "CLI", 1024, NULL, 2, cli_task_stack, &cli_task_buffer);
     return true;
 }
