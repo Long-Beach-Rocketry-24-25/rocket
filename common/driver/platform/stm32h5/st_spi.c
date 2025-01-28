@@ -21,66 +21,60 @@ void StSpiConfig(Spi * spi)
     dev->miso.config(&dev->miso);
     dev->scl.config(&dev->scl);
 
-    // Disable SPI and turn off: Bidirectional mode, CRC, RX only
-    // set CPOL/CPHA = 0, 8-bit
-    dev->instance->CR1 &= 0;
-
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
     // SSI bit usage off
-    dev->instance->CR1 |= (SPI_CR1_SSM | SPI_CR1_SSI); 
+    dev->instance->CR1 = SPI_CR1_SSI;
 
-    // 0 = MSB first 1 = LSB first
-    dev->instance->CR1 &= ~SPI_CR1_LSBFIRST;
+    /**
+     * Disable SPI and turn off: CRC, DMA, FTHLVL = 1-data
+     * 8 bit frames
+	 * Set bitrate: freq pclk / 2 ^ (BR + 1)
+	 */
+    dev->instance->CFG1 = (0x7 << SPI_CFG1_DSIZE_Pos) | (0x7 << SPI_CFG1_CRCSIZE_Pos) | SPI_CFG1_MBR;
 
-    /** 
-     * Set bitrate: freq pclk / 2 ^ (BR + 1)
-     */
-    dev->instance->CR1 |= 0;
+    // CPOL/CPHA = 0, full-duplex,
+    dev->instance->CFG2 = SPI_CFG2_SSM | SPI_CFG2_MASTER;
 
-    dev->instance->CR1 |= SPI_CR1_MSTR; // Master mode
+    dev->instance->I2SCFGR &= ~SPI_I2SCFGR_I2SMOD;
 
-    // Reset reg to set motorola mode, disable SS
-    dev->instance->CR2 &= 0;
-    dev->instance->CR2 |= SPI_CR2_FRXTH; // 0 = 16 bit 1 = 8bit
-    dev->instance->CR2 |= (SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2); // 8bit, 0111
-
-    // Enable SPI
-    dev->instance->CR1 |= SPI_CR1_SPE;
+    dev->instance->CFG2 |= SPI_CFG2_AFCNTR;
 }
 
 bool StSpiSend(Spi * spi, uint8_t *data, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-	// Check if line is busy, or if CS fails
-	if (dev->instance->SR & SPI_SR_BSY)
-    {
-		return false;
-	}
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
+    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
+    dev->instance->CR1 |= SPI_CR1_SPE;
+    dev->instance->CR1 |= SPI_CR1_CSTART;
 
     for (size_t i = 0; i < size;)
     {
         // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
 
 		/**
          * Send: Fill TXFIFO (by writing to SPI_DR)
          * When transmission is enabled, seq begins and continues
          * while data present in FIFO. CLK ends when FIFO becomes empty
          */
-        *(DataReg)&dev->instance->DR = data[i++];
+        *(DataReg)&dev->instance->TXDR = data[i++];
 
         // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXNE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
 
-		/** 
+		/**
          * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
          * Write access to SPI_DR stores data in TXFIFO at end of queue
          * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
          */
-		uint8_t dummy = *(DataReg)&dev->instance->DR;
+		uint8_t dummy = *(DataReg)&dev->instance->RXDR;
 	}
 
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_EOT), false);
+
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
 
     return true;
 }
@@ -89,36 +83,37 @@ bool StSpiRead(Spi * spi, uint8_t *data, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-	// Check if line is busy, or if CS fails
-	if (dev->instance->SR & SPI_SR_BSY)
-    {
-		return false;
-	}
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
+    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
+    dev->instance->CR1 |= SPI_CR1_SPE;
+    dev->instance->CR1 |= SPI_CR1_CSTART;
 
     for (size_t i = 0; i < size;)
     {
         // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
 
 		/**
          * Send: Fill TXFIFO (by writing to SPI_DR)
          * When transmission is enabled, seq begins and continues
          * while data present in FIFO. CLK ends when FIFO becomes empty
          */
-        *(DataReg)&dev->instance->DR = 0;
+        *(DataReg)&dev->instance->TXDR = 0;
 
         // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXNE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
 
-		/** 
+		/**
          * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
          * Write access to SPI_DR stores data in TXFIFO at end of queue
          * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
          */
-		data[i++] = *(DataReg)&dev->instance->DR;
+		data[i++] = *(DataReg)&dev->instance->RXDR;
 	}
 
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_EOT), false);
+
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
 
     return true;
 }
@@ -127,36 +122,37 @@ bool StSpiTransact(Spi * spi, uint8_t *txdata, uint8_t *rxdata, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-	// Check if line is busy, or if CS fails
-	if (dev->instance->SR & SPI_SR_BSY)
-    {
-		return false;
-	}
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
+    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
+    dev->instance->CR1 |= SPI_CR1_SPE;
+    dev->instance->CR1 |= SPI_CR1_CSTART;
 
     for (size_t i = 0; i < size;)
     {
         // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
 
 		/**
          * Send: Fill TXFIFO (by writing to SPI_DR)
          * When transmission is enabled, seq begins and continues
          * while data present in FIFO. CLK ends when FIFO becomes empty
          */
-        *(DataReg)&dev->instance->DR = txdata[i];
+        *(DataReg)&dev->instance->TXDR = txdata[i];
 
         // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXNE, false);
+		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
 
-		/** 
+		/**
          * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
          * Write access to SPI_DR stores data in TXFIFO at end of queue
          * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
          */
-		rxdata[i++] = *(DataReg)&dev->instance->DR;
+		rxdata[i++] = *(DataReg)&dev->instance->RXDR;
 	}
 
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
+    WAIT(dev->timer, dev->instance->SR & SPI_SR_EOT, false);
+
+    dev->instance->CR1 &= ~SPI_CR1_SPE;
 
     return true;
 }

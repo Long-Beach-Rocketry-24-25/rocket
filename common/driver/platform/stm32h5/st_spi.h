@@ -1,7 +1,8 @@
 
 #pragma once
 
-#include "stm32f7xx.h"
+#include "stm32h563xx.h"
+#include "stm32h5xx.h"
 
 #include "spi.h"
 #include "gpio.h"

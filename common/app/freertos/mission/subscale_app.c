@@ -20,6 +20,7 @@ static Gpio *led;
 static void loop_func(void)
 {
     nav.update(&nav);
+    nav.tick = xTaskGetTickCount();
     logger_update(&logger);
     led->toggle(led);
 }
@@ -48,6 +49,16 @@ void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
     init_blink(cli.comm, led_gpio);
     init_read_bno055(cli.comm, &bno);
     init_read_bmp390(cli.comm, &bmp);
+
+    uint8_t tx[6] = {0x9F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    uint8_t db[5] = {0xDE, 0xCA, 0xFE, 0xCA, 0xFE};
+    uint8_t rx[6] = {0};
+
+    spi->cs.select(&spi->cs);
+    spi->transact(spi, tx, rx, 4);
+    spi->cs.deselect(&spi->cs);
+
+    cli.comm->fwrite(cli.comm, "%x %x %x", rx[1], rx[2], rx[3]);
 
     create_main_loop(loop_func, 2);
 }

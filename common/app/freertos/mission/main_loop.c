@@ -25,10 +25,17 @@ static void loop_func(void * params)
     }
 }
 
-void create_main_loop(void (*func) (void), size_t frequency_hz)
+size_t create_main_loop(void (*func) (void), size_t frequency_hz)
 {
     callback = func;
-    target_loop_ms = 1000 / frequency_hz;
     main_loop = xTaskCreateStatic(loop_func, "Main Loop", MAIN_LOOP_STACK_SIZE_BYTES, NULL, 1,
                                      main_loop_stack, &main_loop_buffer);
+    return set_frequency(frequency_hz);
+}
+
+size_t set_frequency(size_t frequency_hz)
+{
+    frequency_hz = (frequency_hz > 1000) ? 1000 : frequency_hz;
+    target_loop_ms = 1000 / frequency_hz;
+    return target_loop_ms;
 }
