@@ -3,10 +3,34 @@
 
 typedef volatile uint8_t * DataReg;
 
-void StSpiInit(Spi *spi, StPrivSpi *st_spi, uint32_t base_addr, Timeout *timer)
+void StSpiInit(Spi *spi, StPrivSpi *st_spi, uint32_t base_addr, uint32_t timeout_ms)
 {
-    st_spi->instance = (SPI_TypeDef *) base_addr;
-    st_spi->timer = timer;
+    st_spi->timeout_ms = timeout_ms;
+
+    st_spi->handle.Instance = (SPI_TypeDef *) base_addr;
+    st_spi->handle.Init.Mode = SPI_MODE_MASTER;
+    st_spi->handle.Init.Direction = SPI_DIRECTION_2LINES;
+    st_spi->handle.Init.DataSize = SPI_DATASIZE_8BIT;
+    st_spi->handle.Init.CLKPolarity = SPI_POLARITY_LOW;
+    st_spi->handle.Init.CLKPhase = SPI_PHASE_1EDGE;
+    st_spi->handle.Init.NSS = SPI_NSS_SOFT;
+    st_spi->handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    st_spi->handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    st_spi->handle.Init.TIMode = SPI_TIMODE_DISABLE;
+    st_spi->handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    st_spi->handle.Init.CRCPolynomial = 0x7;
+    st_spi->handle.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+    st_spi->handle.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+    st_spi->handle.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+    st_spi->handle.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+    st_spi->handle.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    st_spi->handle.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+    st_spi->handle.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_ENABLE;
+    st_spi->handle.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+    st_spi->handle.Init.ReadyMasterManagement = SPI_RDY_MASTER_MANAGEMENT_INTERNALLY;
+    st_spi->handle.Init.ReadyPolarity = SPI_RDY_POLARITY_HIGH;
+    st_spi->handle.State = HAL_SPI_STATE_RESET;
+
     spi->priv = (void *) st_spi;
     spi->send = StSpiSend;
     spi->read = StSpiRead;
@@ -21,138 +45,35 @@ void StSpiConfig(Spi * spi)
     dev->miso.config(&dev->miso);
     dev->scl.config(&dev->scl);
 
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-    // SSI bit usage off
-    dev->instance->CR1 = SPI_CR1_SSI;
-
-    /**
-     * Disable SPI and turn off: CRC, DMA, FTHLVL = 1-data
-     * 8 bit frames
-	 * Set bitrate: freq pclk / 2 ^ (BR + 1)
-	 */
-    dev->instance->CFG1 = (0x7 << SPI_CFG1_DSIZE_Pos) | (0x7 << SPI_CFG1_CRCSIZE_Pos) | SPI_CFG1_MBR;
-
-    // CPOL/CPHA = 0, full-duplex,
-    dev->instance->CFG2 = SPI_CFG2_SSM | SPI_CFG2_MASTER;
-
-    dev->instance->I2SCFGR &= ~SPI_I2SCFGR_I2SMOD;
-
-    dev->instance->CFG2 |= SPI_CFG2_AFCNTR;
+    HAL_SPI_Init(&dev->handle);
 }
 
 bool StSpiSend(Spi * spi, uint8_t *data, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
-    dev->instance->CR1 |= SPI_CR1_SPE;
-    dev->instance->CR1 |= SPI_CR1_CSTART;
+    HAL_StatusTypeDef status =
+        HAL_SPI_Transmit(&dev->handle, (const uint8_t *) data, size, dev->timeout_ms);
 
-    for (size_t i = 0; i < size;)
-    {
-        // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
-
-		/**
-         * Send: Fill TXFIFO (by writing to SPI_DR)
-         * When transmission is enabled, seq begins and continues
-         * while data present in FIFO. CLK ends when FIFO becomes empty
-         */
-        *(DataReg)&dev->instance->TXDR = data[i++];
-
-        // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
-
-		/**
-         * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
-         * Write access to SPI_DR stores data in TXFIFO at end of queue
-         * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
-         */
-		uint8_t dummy = *(DataReg)&dev->instance->RXDR;
-	}
-
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_EOT), false);
-
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-
-    return true;
+    return status == HAL_OK;
 }
 
 bool StSpiRead(Spi * spi, uint8_t *data, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
-    dev->instance->CR1 |= SPI_CR1_SPE;
-    dev->instance->CR1 |= SPI_CR1_CSTART;
+    HAL_StatusTypeDef status =
+        HAL_SPI_Receive(&dev->handle, data, size, dev->timeout_ms);
 
-    for (size_t i = 0; i < size;)
-    {
-        // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
-
-		/**
-         * Send: Fill TXFIFO (by writing to SPI_DR)
-         * When transmission is enabled, seq begins and continues
-         * while data present in FIFO. CLK ends when FIFO becomes empty
-         */
-        *(DataReg)&dev->instance->TXDR = 0;
-
-        // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
-
-		/**
-         * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
-         * Write access to SPI_DR stores data in TXFIFO at end of queue
-         * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
-         */
-		data[i++] = *(DataReg)&dev->instance->RXDR;
-	}
-
-    WAIT(dev->timer, !(dev->instance->SR & SPI_SR_EOT), false);
-
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-
-    return true;
+    return status == HAL_OK;
 }
 
 bool StSpiTransact(Spi * spi, uint8_t *txdata, uint8_t *rxdata, size_t size)
 {
     StPrivSpi * dev = (StPrivSpi *) spi->priv;
 
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-    dev->instance->CR2 |= (size << SPI_CR2_TSIZE_Pos) & SPI_CR2_TSIZE;
-    dev->instance->CR1 |= SPI_CR1_SPE;
-    dev->instance->CR1 |= SPI_CR1_CSTART;
+    HAL_StatusTypeDef status =
+        HAL_SPI_TransmitReceive(&dev->handle, (const uint8_t *) txdata, rxdata, size, dev->timeout_ms);
 
-    for (size_t i = 0; i < size;)
-    {
-        // Wait for space in TX FIFO
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_TXP, false);
-
-		/**
-         * Send: Fill TXFIFO (by writing to SPI_DR)
-         * When transmission is enabled, seq begins and continues
-         * while data present in FIFO. CLK ends when FIFO becomes empty
-         */
-        *(DataReg)&dev->instance->TXDR = txdata[i];
-
-        // Wait for RX FIFO to fill
-		WAIT(dev->timer, dev->instance->SR & SPI_SR_RXP, false);
-
-		/**
-         * Read access to SPI_DR returns oldest value stored in RXFIFO not yet read
-         * Write access to SPI_DR stores data in TXFIFO at end of queue
-         * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
-         */
-		rxdata[i++] = *(DataReg)&dev->instance->RXDR;
-	}
-
-    WAIT(dev->timer, dev->instance->SR & SPI_SR_EOT, false);
-
-    dev->instance->CR1 &= ~SPI_CR1_SPE;
-
-    return true;
+    return status == HAL_OK;
 }

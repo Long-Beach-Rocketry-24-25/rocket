@@ -28,12 +28,13 @@ static void loop_func(void)
 void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
 {
     led = led_gpio;
-    Command commands[3] = { 
+    Command commands[4] = { 
         {"Blink", blink, "Blinks LED."},
         {"Imu", read_bno055, "Reads IMU accel/gyro."},
-        {"Baro", read_bmp390, "Reads Barometer Pressure."}
+        {"Baro", read_bmp390, "Reads Barometer Pressure."},
+        {"FlashId", read_w25q_id, "Reads W25q device ID."}
     };
-    create_cli_task(&cli, usart, commands, 3);
+    create_cli_task(&cli, usart, commands, 4);
 
     W25qInit(&flash, spi, 0xFFFFFF);
     Bno055_Init(&bno, i2c, BNO055_DEV_ADDR);
@@ -49,16 +50,7 @@ void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
     init_blink(cli.comm, led_gpio);
     init_read_bno055(cli.comm, &bno);
     init_read_bmp390(cli.comm, &bmp);
-
-    uint8_t tx[6] = {0x9F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-    uint8_t db[5] = {0xDE, 0xCA, 0xFE, 0xCA, 0xFE};
-    uint8_t rx[6] = {0};
-
-    spi->cs.select(&spi->cs);
-    spi->transact(spi, tx, rx, 4);
-    spi->cs.deselect(&spi->cs);
-
-    cli.comm->fwrite(cli.comm, "%x %x %x", rx[1], rx[2], rx[3]);
+    init_read_w25q_id(cli.comm, spi);
 
     create_main_loop(loop_func, 2);
 }

@@ -16,5 +16,6 @@
 #include "blink.h"
 #include "read_bno055.h"
 #include "read_bmp390.h"
+#include "read_w25q_id.h"
 
 void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio);
