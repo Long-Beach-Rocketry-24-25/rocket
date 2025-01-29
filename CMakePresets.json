@@ -15,8 +15,7 @@
             "name": "native",
             "inherits": "build",
             "cacheVariables": {
-                "TARGET_DEVICE": "NATIVE",
-                "NATIVE": true
+                "TARGET_DEVICE": "NATIVE"
             }
         },
         {
@@ -24,8 +23,7 @@
             "inherits": "build",
             "toolchainFile": "cmake/arm-linux-gnueabihf.cmake",
             "cacheVariables": {
-                "TARGET_DEVICE": "ARM32",
-                "ARM32": true
+                "TARGET_DEVICE": "ARM32"
             }
         },
         {
@@ -34,9 +32,7 @@
             "inherits": "build",
             "toolchainFile": "cmake/gcc-m7.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM7",
-                "TARGET_DEVICE": "STM32F7",
-                "STM32F7": true
+                "FREERTOS_PORT": "GCC_ARM_CM7"
             }
         },
         {
@@ -45,6 +41,7 @@
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746zgtx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f7xx/f746/startup_stm32f746zgtx.s",
+                "TARGET_DEVICE": "STM32F746",
                 "MCU_NAME": "STM32F746xx"
             }
         },
@@ -55,8 +52,7 @@
             "toolchainFile": "cmake/gcc-m4f.cmake",
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM4F",
-                "TARGET_DEVICE": "STM32L4",
-                "STM32L4": true
+                "TARGET_DEVICE": "STM32L4"
             }
         },
         {
@@ -65,6 +61,7 @@
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l452/STM32L452RCTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l452/startup_stm32l452rctx.s",
+                "TARGET_DEVICE": "STM32L452",
                 "MCU_NAME": "STM32L452xx"
             }
         },
@@ -74,6 +71,7 @@
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l476/STM32L476RGTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l476/startup_stm32l476rgtx.s",
+                "TARGET_DEVICE": "STM32L476",
                 "MCU_NAME": "STM32L476xx"
             }
         },
@@ -83,9 +81,7 @@
             "inherits": "build",
             "toolchainFile": "cmake/gcc-m33.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE",
-                "TARGET_DEVICE": "STM32H5",
-                "STM32H5": true
+                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE"
             }
         },
         {
@@ -94,6 +90,7 @@
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h503/STM32H503xx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h503/startup_stm32h503xx.s",
+                "TARGET_DEVICE": "STM32H503",
                 "MCU_NAME": "STM32H503xx"
             }
         },
@@ -103,6 +100,7 @@
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h563/STM32H563xx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h563/startup_stm32h563xx.s",
+                "TARGET_DEVICE": "STM32H563",
                 "MCU_NAME": "STM32H563xx"
             }
         }

@@ -1,6 +1,6 @@
 
 function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         message("Adding executable: ${EXECUTABLE}")
         message("Target: ${DEVICE}")
         add_executable(${EXECUTABLE} ${ARGN})
@@ -30,43 +30,43 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
 endfunction()
 
 function(add_library_for DEVICE TARGET)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         add_library(${TARGET} ${ARGN})
     endif()
 endfunction()
 
 function(add_subdirectory_for DEVICE TARGET)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         add_subdirectory(${TARGET})
     endif()
 endfunction()
 
 function(target_include_directories_for DEVICE TARGET)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         target_include_directories(${TARGET} ${ARGN})
     endif()
 endfunction()
 
 function(target_link_libraries_for DEVICE TARGET)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         target_link_libraries(${TARGET} ${ARGN})
     endif()
 endfunction()
 
 function(target_link_options_for DEVICE TARGET)
-    if(${DEVICE})
+    if("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         target_link_options(${TARGET} ${ARGN})
     endif()
 endfunction()
 
 function(target_compile_definitions_for DEVICE TARGET)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         target_compile_definitions(${TARGET} ${ARGN})
     endif()
 endfunction()
 
 function(target_preprocess_for DEVICE EXECUTABLE SRC_FILE OUT_FILE)
-    if (${DEVICE})
+    if ("${TARGET_DEVICE}" MATCHES "${DEVICE}")
         message("Preprocessing: ${SRC_FILE} -> ${OUT_FILE}")
         add_custom_command(TARGET ${EXECUTABLE}
             PRE_BUILD

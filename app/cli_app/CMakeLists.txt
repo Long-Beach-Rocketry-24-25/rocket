@@ -6,9 +6,9 @@ set(PREPROCESS_DEFS
     -DDEF_FLASH_SIZE=1024K
 )
 
-add_subdirectory_for(STM32F7 BSP_F7)
-add_subdirectory_for(STM32L4 BSP_L4)
-add_subdirectory_for(STM32H5 BSP_H5)
+add_subdirectory_for(STM32F746 BSP_F746)
+add_subdirectory_for(STM32L476 BSP_L476)
+add_subdirectory_for(STM32H563 BSP_H563)
 
 if (TARGET cli_app_bsp)
 
