@@ -5,7 +5,7 @@ static StPrivUsart st_usart;
 static StPrivSpi st_spi;
 static GpioChipSelect st_spi_cs;
 static StPrivI2c st_i2c;
-static StGpioParams led_stgpio = {{ 0 }, GPIOB_BASE, 0, {1, 0, 0, 0, 0}};
+static StGpioParams led_stgpio = {{ 0 }, GPIOA_BASE, 5, {1, 0, 0, 0, 0}};
 static StGpioParams spi_cs_io = {{ 0 }, GPIOC_BASE, 5, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
@@ -23,8 +23,8 @@ static StGpioParams spi_io3 = {{ 0 }, GPIOC_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x4}};
 
 const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
-static StGpioParams i2c1_io1 = {{ 0 }, GPIOB_BASE, 8, i2c_io_conf};
-static StGpioParams i2c1_io2 = {{ 0 }, GPIOB_BASE, 9, i2c_io_conf};
+static StGpioParams i2c1_io1 = {{ 0 }, GPIOC_BASE, 8, i2c_io_conf};
+static StGpioParams i2c1_io2 = {{ 0 }, GPIOC_BASE, 9, i2c_io_conf};
 
 void BSP_Init(Usart *usart, Spi *spi, I2c *temp_i2c, Gpio *led_gpio)
 {
@@ -32,7 +32,7 @@ void BSP_Init(Usart *usart, Spi *spi, I2c *temp_i2c, Gpio *led_gpio)
     SystemClock_Config();
 
     // LED GPIO
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
     StGpioInit(led_gpio, &led_stgpio);
     StGpioConfig(led_gpio);
@@ -74,7 +74,7 @@ void BSP_Init(Usart *usart, Spi *spi, I2c *temp_i2c, Gpio *led_gpio)
     StSpiConfig(spi);
 
     // I2c1 PC8, PC9
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
 
     StGpioInit(&st_i2c.scl, &i2c1_io1);
     StGpioInit(&st_i2c.sda, &i2c1_io2);

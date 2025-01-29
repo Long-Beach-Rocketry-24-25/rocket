@@ -52,5 +52,5 @@ void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
     init_read_bmp390(cli.comm, &bmp);
     init_read_w25q_id(cli.comm, spi);
 
-    create_main_loop(loop_func, 2);
+    create_main_loop(loop_func, 5);
 }
