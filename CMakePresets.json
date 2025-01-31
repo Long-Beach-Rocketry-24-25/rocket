@@ -23,7 +23,15 @@
             "inherits": "build",
             "toolchainFile": "cmake/arm-linux-gnueabihf.cmake",
             "cacheVariables": {
-                "TARGET_DEVICE": "ARM32"
+                "TARGET_DEVICE": "ARM_LINUX"
+            }
+        },
+        {
+            "name": "aarch64",
+            "inherits": "build",
+            "toolchainFile": "cmake/aarch64-none-linux-gnu.cmake",
+            "cacheVariables": {
+                "TARGET_DEVICE": "ARM_LINUX"
             }
         },
         {

@@ -2,7 +2,7 @@
 
 (will add more later...)
 
-Welcome to our CMake build system for STM32!
+Welcome to our CMake build system for Embedded SW!
 
 ## Installing Prerequisites
 First, install the arm toolchain. If you are on a Unix system, simply use your package installer, for example in Ubuntu: ```sudo apt-get install arm-none-eabi-gcc```.
