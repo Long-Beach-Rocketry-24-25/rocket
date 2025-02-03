@@ -10,7 +10,8 @@
 
 #include "i2c.h"
 
-#define BMP390_DEV_ADDR                     (0x76 << 1)
+#define BMP390_DEV_ADDR_GND                 (0x76 << 1)
+#define BMP390_DEV_ADDR_PWR                 (0x77 << 1)
 
 #define BMP390_CALIB_REG_START              (0x31)
 #define BMP390_CALIB_REG_LEN                (21)

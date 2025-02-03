@@ -10,8 +10,8 @@ static Bmp390 bmp;
 void DebugAppCreate(Usart *usart, I2c *i2c, Gpio *led_gpio)
 {
     Tmp102_Init(&tmp, i2c, TMP102_ADDR_GND);
-    Bno055_Init(&bno, i2c, BNO055_DEV_ADDR);
-    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR);
+    Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
+    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_GND);
 
     Command commands[6] = { 
         {"Blink", blink, "Blinks LED."},

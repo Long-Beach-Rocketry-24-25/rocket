@@ -8,7 +8,8 @@
 #include "i2c.h"
 #include "nav_data.h"
 
-#define BNO055_DEV_ADDR                 (0x28 << 1)
+#define BNO055_DEV_ADDR_GND             (0x28 << 1)
+#define BNO055_DEV_ADDR_PWR             (0x29 << 1)
 #define BNO055_IMU_MODE                 0x8
 
 #define BNO055_OPR_MODE_REG             0x3D

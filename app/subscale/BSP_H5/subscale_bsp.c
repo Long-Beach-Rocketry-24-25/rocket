@@ -6,7 +6,7 @@ static StPrivSpi st_spi;
 static GpioChipSelect st_spi_cs;
 static StPrivI2c st_i2c;
 static StGpioParams led_stgpio = {{ 0 }, GPIOA_BASE, 5, {1, 0, 0, 0, 0}};
-static StGpioParams spi_cs_io = {{ 0 }, GPIOC_BASE, 5, {1, 0, 0, 0, 0}};
+static StGpioParams spi_cs_io = {{ 0 }, GPIOC_BASE, 1, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;

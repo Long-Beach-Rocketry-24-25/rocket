@@ -37,8 +37,8 @@ void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
     create_cli_task(&cli, usart, commands, 4);
 
     W25qInit(&flash, spi, 0xFFFFFF);
-    Bno055_Init(&bno, i2c, BNO055_DEV_ADDR);
-    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR);
+    Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
+    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_PWR);
 
     W25qLoggerInit(&sub, &flash_log, &flash, flash.mem_size / flash.page_size);
     NavSuiteV1Init(&nav, &nav_suite, &bmp, &bno);
