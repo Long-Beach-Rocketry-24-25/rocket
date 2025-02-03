@@ -27,6 +27,7 @@ Lastly, pull in external dependencies:
 
 ## Building
 To build:
+If you are on Windows, use the ```.ps1``` script in powershell. If on Linux, use the ```.sh``` script.
 ```./make.ps1 -t <name of preset>```
 for example,
 ```./make.ps1 -t stm32f746``` (see CMakePresets.json)
