@@ -38,15 +38,15 @@
 /* Private define ------------------------------------------------------------*/
 /** @addtogroup PWREx_Private_Constants
   * @{
-  */    
-#define PWR_OVERDRIVE_TIMEOUT_VALUE  1000
-#define PWR_UDERDRIVE_TIMEOUT_VALUE  1000
-#define PWR_BKPREG_TIMEOUT_VALUE     1000
-#define PWR_VOSRDY_TIMEOUT_VALUE     1000
+  */
+#define PWR_OVERDRIVE_TIMEOUT_VALUE 1000
+#define PWR_UDERDRIVE_TIMEOUT_VALUE 1000
+#define PWR_BKPREG_TIMEOUT_VALUE 1000
+#define PWR_VOSRDY_TIMEOUT_VALUE 1000
 /**
   * @}
   */
-    
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -133,27 +133,27 @@
   */
 HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
 {
-  uint32_t tickstart = 0;
+    uint32_t tickstart = 0;
 
-  /* Enable Backup regulator */
-  PWR->CSR1 |= PWR_CSR1_BRE;
-    
-  /* Workaround for the following hardware bug: */
-  /* Id 19: PWR : No STANDBY wake-up when Back-up RAM enabled (ref. Errata Sheet p23) */
-  PWR->CSR1 |= PWR_CSR1_EIWUP;
+    /* Enable Backup regulator */
+    PWR->CSR1 |= PWR_CSR1_BRE;
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    /* Workaround for the following hardware bug: */
+    /* Id 19: PWR : No STANDBY wake-up when Back-up RAM enabled (ref. Errata Sheet p23) */
+    PWR->CSR1 |= PWR_CSR1_EIWUP;
 
-  /* Wait till Backup regulator ready flag is set */  
-  while(__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) == RESET)
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_BKPREG_TIMEOUT_VALUE)
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    /* Wait till Backup regulator ready flag is set */
+    while (__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) == RESET)
     {
-      return HAL_TIMEOUT;
-    } 
-  }
-  return HAL_OK;
+        if ((HAL_GetTick() - tickstart) > PWR_BKPREG_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
+    }
+    return HAL_OK;
 }
 
 /**
@@ -162,27 +162,27 @@ HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
   */
 HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void)
 {
-  uint32_t tickstart = 0;
-  
-  /* Disable Backup regulator */
-  PWR->CSR1 &= (uint32_t)~((uint32_t)PWR_CSR1_BRE);
-  
-  /* Workaround for the following hardware bug: */
-  /* Id 19: PWR : No STANDBY wake-up when Back-up RAM enabled (ref. Errata Sheet p23) */
-  PWR->CSR1 |= PWR_CSR1_EIWUP;
+    uint32_t tickstart = 0;
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    /* Disable Backup regulator */
+    PWR->CSR1 &= (uint32_t)~((uint32_t)PWR_CSR1_BRE);
 
-  /* Wait till Backup regulator ready flag is set */  
-  while(__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) != RESET)
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_BKPREG_TIMEOUT_VALUE)
+    /* Workaround for the following hardware bug: */
+    /* Id 19: PWR : No STANDBY wake-up when Back-up RAM enabled (ref. Errata Sheet p23) */
+    PWR->CSR1 |= PWR_CSR1_EIWUP;
+
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    /* Wait till Backup regulator ready flag is set */
+    while (__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) != RESET)
     {
-      return HAL_TIMEOUT;
-    } 
-  }
-  return HAL_OK;
+        if ((HAL_GetTick() - tickstart) > PWR_BKPREG_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
+    }
+    return HAL_OK;
 }
 
 /**
@@ -191,8 +191,8 @@ HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void)
   */
 void HAL_PWREx_EnableFlashPowerDown(void)
 {
-  /* Enable the Flash Power Down */
-  PWR->CR1 |= PWR_CR1_FPDS;
+    /* Enable the Flash Power Down */
+    PWR->CR1 |= PWR_CR1_FPDS;
 }
 
 /**
@@ -201,8 +201,8 @@ void HAL_PWREx_EnableFlashPowerDown(void)
   */
 void HAL_PWREx_DisableFlashPowerDown(void)
 {
-  /* Disable the Flash Power Down */
-  PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_FPDS);
+    /* Disable the Flash Power Down */
+    PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_FPDS);
 }
 
 /**
@@ -211,8 +211,8 @@ void HAL_PWREx_DisableFlashPowerDown(void)
   */
 void HAL_PWREx_EnableMainRegulatorLowVoltage(void)
 {
-  /* Enable Main regulator low voltage */
-  PWR->CR1 |= PWR_CR1_MRUDS;
+    /* Enable Main regulator low voltage */
+    PWR->CR1 |= PWR_CR1_MRUDS;
 }
 
 /**
@@ -220,9 +220,9 @@ void HAL_PWREx_EnableMainRegulatorLowVoltage(void)
   * @retval None
   */
 void HAL_PWREx_DisableMainRegulatorLowVoltage(void)
-{  
-  /* Disable Main regulator low voltage */
-  PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_MRUDS);
+{
+    /* Disable Main regulator low voltage */
+    PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_MRUDS);
 }
 
 /**
@@ -231,8 +231,8 @@ void HAL_PWREx_DisableMainRegulatorLowVoltage(void)
   */
 void HAL_PWREx_EnableLowRegulatorLowVoltage(void)
 {
-  /* Enable low power regulator */
-  PWR->CR1 |= PWR_CR1_LPUDS;
+    /* Enable low power regulator */
+    PWR->CR1 |= PWR_CR1_LPUDS;
 }
 
 /**
@@ -241,8 +241,8 @@ void HAL_PWREx_EnableLowRegulatorLowVoltage(void)
   */
 void HAL_PWREx_DisableLowRegulatorLowVoltage(void)
 {
-  /* Disable low power regulator */
-  PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_LPUDS);
+    /* Disable low power regulator */
+    PWR->CR1 &= (uint32_t)~((uint32_t)PWR_CR1_LPUDS);
 }
 
 /**
@@ -257,38 +257,38 @@ void HAL_PWREx_DisableLowRegulatorLowVoltage(void)
   */
 HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void)
 {
-  uint32_t tickstart = 0;
+    uint32_t tickstart = 0;
 
-  __HAL_RCC_PWR_CLK_ENABLE();
-  
-  /* Enable the Over-drive to extend the clock frequency to 216 MHz */
-  __HAL_PWR_OVERDRIVE_ENABLE();
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    /* Enable the Over-drive to extend the clock frequency to 216 MHz */
+    __HAL_PWR_OVERDRIVE_ENABLE();
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_ODRDY))
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_ODRDY))
     {
-      return HAL_TIMEOUT;
+        if ((HAL_GetTick() - tickstart) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
     }
-  }
-  
-  /* Enable the Over-drive switch */
-  __HAL_PWR_OVERDRIVESWITCHING_ENABLE();
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    /* Enable the Over-drive switch */
+    __HAL_PWR_OVERDRIVESWITCHING_ENABLE();
 
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_ODSWRDY))
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_ODSWRDY))
     {
-      return HAL_TIMEOUT;
+        if ((HAL_GetTick() - tickstart) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
     }
-  } 
-  return HAL_OK;
+    return HAL_OK;
 }
 
 /**
@@ -303,39 +303,39 @@ HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void)
   */
 HAL_StatusTypeDef HAL_PWREx_DisableOverDrive(void)
 {
-  uint32_t tickstart = 0;
-  
-  __HAL_RCC_PWR_CLK_ENABLE();
-    
-  /* Disable the Over-drive switch */
-  __HAL_PWR_OVERDRIVESWITCHING_DISABLE();
-  
-  /* Get tick */
-  tickstart = HAL_GetTick();
- 
-  while(__HAL_PWR_GET_FLAG(PWR_FLAG_ODSWRDY))
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_OVERDRIVE_TIMEOUT_VALUE)
-    {
-      return HAL_TIMEOUT;
-    }
-  } 
-  
-  /* Disable the Over-drive */
-  __HAL_PWR_OVERDRIVE_DISABLE();
+    uint32_t tickstart = 0;
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-  while(__HAL_PWR_GET_FLAG(PWR_FLAG_ODRDY))
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+    /* Disable the Over-drive switch */
+    __HAL_PWR_OVERDRIVESWITCHING_DISABLE();
+
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    while (__HAL_PWR_GET_FLAG(PWR_FLAG_ODSWRDY))
     {
-      return HAL_TIMEOUT;
+        if ((HAL_GetTick() - tickstart) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
     }
-  }
-  
-  return HAL_OK;
+
+    /* Disable the Over-drive */
+    __HAL_PWR_OVERDRIVE_DISABLE();
+
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    while (__HAL_PWR_GET_FLAG(PWR_FLAG_ODRDY))
+    {
+        if ((HAL_GetTick() - tickstart) > PWR_OVERDRIVE_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
+    }
+
+    return HAL_OK;
 }
 
 /**
@@ -375,75 +375,77 @@ HAL_StatusTypeDef HAL_PWREx_DisableOverDrive(void)
   *            @arg PWR_SLEEPENTRY_WFE: enter STOP mode with WFE instruction
   * @retval None
   */
-HAL_StatusTypeDef HAL_PWREx_EnterUnderDriveSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
+HAL_StatusTypeDef HAL_PWREx_EnterUnderDriveSTOPMode(uint32_t Regulator,
+                                                    uint8_t STOPEntry)
 {
-  uint32_t tempreg = 0;
-  uint32_t tickstart = 0;
-  
-  /* Check the parameters */
-  assert_param(IS_PWR_REGULATOR_UNDERDRIVE(Regulator));
-  assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
-  
-  /* Enable Power ctrl clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  /* Enable the Under-drive Mode ---------------------------------------------*/
-  /* Clear Under-drive flag */
-  __HAL_PWR_CLEAR_ODRUDR_FLAG();
-  
-  /* Enable the Under-drive */ 
-  __HAL_PWR_UNDERDRIVE_ENABLE();
+    uint32_t tempreg = 0;
+    uint32_t tickstart = 0;
 
-  /* Get tick */
-  tickstart = HAL_GetTick();
+    /* Check the parameters */
+    assert_param(IS_PWR_REGULATOR_UNDERDRIVE(Regulator));
+    assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
 
-  /* Wait for UnderDrive mode is ready */
-  while(__HAL_PWR_GET_FLAG(PWR_FLAG_UDRDY))
-  {
-    if((HAL_GetTick() - tickstart ) > PWR_UDERDRIVE_TIMEOUT_VALUE)
+    /* Enable Power ctrl clock */
+    __HAL_RCC_PWR_CLK_ENABLE();
+    /* Enable the Under-drive Mode ---------------------------------------------*/
+    /* Clear Under-drive flag */
+    __HAL_PWR_CLEAR_ODRUDR_FLAG();
+
+    /* Enable the Under-drive */
+    __HAL_PWR_UNDERDRIVE_ENABLE();
+
+    /* Get tick */
+    tickstart = HAL_GetTick();
+
+    /* Wait for UnderDrive mode is ready */
+    while (__HAL_PWR_GET_FLAG(PWR_FLAG_UDRDY))
     {
-      return HAL_TIMEOUT;
+        if ((HAL_GetTick() - tickstart) > PWR_UDERDRIVE_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
     }
-  }
-  
-  /* Select the regulator state in STOP mode ---------------------------------*/
-  tempreg = PWR->CR1;
-  /* Clear PDDS, LPDS, MRLUDS and LPLUDS bits */
-  tempreg &= (uint32_t)~(PWR_CR1_PDDS | PWR_CR1_LPDS | PWR_CR1_LPUDS | PWR_CR1_MRUDS);
-  
-  /* Set LPDS, MRLUDS and LPLUDS bits according to PWR_Regulator value */
-  tempreg |= Regulator;
-  
-  /* Store the new value */
-  PWR->CR1 = tempreg;
-  
-  /* Set SLEEPDEEP bit of Cortex System Control Register */
-  SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-  
-  /* Select STOP mode entry --------------------------------------------------*/
-  if(STOPEntry == PWR_SLEEPENTRY_WFI)
-  {   
-    /* Request Wait For Interrupt */
-    __WFI();
-  }
-  else
-  {
-    /* Request Wait For Event */
-    __WFE();
-  }
-  /* Reset SLEEPDEEP bit of Cortex System Control Register */
-  SCB->SCR &= (uint32_t)~((uint32_t)SCB_SCR_SLEEPDEEP_Msk);
 
-  return HAL_OK;  
+    /* Select the regulator state in STOP mode ---------------------------------*/
+    tempreg = PWR->CR1;
+    /* Clear PDDS, LPDS, MRLUDS and LPLUDS bits */
+    tempreg &= (uint32_t)~(PWR_CR1_PDDS | PWR_CR1_LPDS | PWR_CR1_LPUDS |
+                           PWR_CR1_MRUDS);
+
+    /* Set LPDS, MRLUDS and LPLUDS bits according to PWR_Regulator value */
+    tempreg |= Regulator;
+
+    /* Store the new value */
+    PWR->CR1 = tempreg;
+
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+
+    /* Select STOP mode entry --------------------------------------------------*/
+    if (STOPEntry == PWR_SLEEPENTRY_WFI)
+    {
+        /* Request Wait For Interrupt */
+        __WFI();
+    }
+    else
+    {
+        /* Request Wait For Event */
+        __WFE();
+    }
+    /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    SCB->SCR &= (uint32_t)~((uint32_t)SCB_SCR_SLEEPDEEP_Msk);
+
+    return HAL_OK;
 }
 
 /**
   * @brief Returns Voltage Scaling Range.
   * @retval VOS bit field (PWR_REGULATOR_VOLTAGE_SCALE1, PWR_REGULATOR_VOLTAGE_SCALE2 or 
   *            PWR_REGULATOR_VOLTAGE_SCALE3)PWR_REGULATOR_VOLTAGE_SCALE1
-  */  
+  */
 uint32_t HAL_PWREx_GetVoltageRange(void)
 {
-  return  (PWR->CR1 & PWR_CR1_VOS);
+    return (PWR->CR1 & PWR_CR1_VOS);
 }
 
 /**
@@ -475,62 +477,62 @@ uint32_t HAL_PWREx_GetVoltageRange(void)
   */
 HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling)
 {
-  uint32_t tickstart = 0;
+    uint32_t tickstart = 0;
 
-  assert_param(IS_PWR_REGULATOR_VOLTAGE(VoltageScaling));
+    assert_param(IS_PWR_REGULATOR_VOLTAGE(VoltageScaling));
 
-  /* Enable Power ctrl clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
+    /* Enable Power ctrl clock */
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-  /* Check if the PLL is used as system clock or not */
-  if(__HAL_RCC_GET_SYSCLK_SOURCE() != RCC_CFGR_SWS_PLL)
-  {
-    /* Disable the main PLL */
-    __HAL_RCC_PLL_DISABLE();
-    
-    /* Get Start Tick */
-    tickstart = HAL_GetTick();    
-    /* Wait till PLL is disabled */  
-    while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLRDY) != RESET)
+    /* Check if the PLL is used as system clock or not */
+    if (__HAL_RCC_GET_SYSCLK_SOURCE() != RCC_CFGR_SWS_PLL)
     {
-      if((HAL_GetTick() - tickstart ) > PLL_TIMEOUT_VALUE)
-      {
-        return HAL_TIMEOUT;
-      }
+        /* Disable the main PLL */
+        __HAL_RCC_PLL_DISABLE();
+
+        /* Get Start Tick */
+        tickstart = HAL_GetTick();
+        /* Wait till PLL is disabled */
+        while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLRDY) != RESET)
+        {
+            if ((HAL_GetTick() - tickstart) > PLL_TIMEOUT_VALUE)
+            {
+                return HAL_TIMEOUT;
+            }
+        }
+
+        /* Set Range */
+        __HAL_PWR_VOLTAGESCALING_CONFIG(VoltageScaling);
+
+        /* Enable the main PLL */
+        __HAL_RCC_PLL_ENABLE();
+
+        /* Get Start Tick */
+        tickstart = HAL_GetTick();
+        /* Wait till PLL is ready */
+        while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLRDY) == RESET)
+        {
+            if ((HAL_GetTick() - tickstart) > PLL_TIMEOUT_VALUE)
+            {
+                return HAL_TIMEOUT;
+            }
+        }
+
+        /* Get Start Tick */
+        tickstart = HAL_GetTick();
+        while ((__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) == RESET))
+        {
+            if ((HAL_GetTick() - tickstart) > PWR_VOSRDY_TIMEOUT_VALUE)
+            {
+                return HAL_TIMEOUT;
+            }
+        }
     }
-    
-    /* Set Range */
-    __HAL_PWR_VOLTAGESCALING_CONFIG(VoltageScaling);
-    
-    /* Enable the main PLL */
-    __HAL_RCC_PLL_ENABLE();
-    
-    /* Get Start Tick */
-    tickstart = HAL_GetTick();
-    /* Wait till PLL is ready */  
-    while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLRDY) == RESET)
+    else
     {
-      if((HAL_GetTick() - tickstart ) > PLL_TIMEOUT_VALUE)
-      {
-        return HAL_TIMEOUT;
-      } 
+        return HAL_ERROR;
     }
-    
-    /* Get Start Tick */
-    tickstart = HAL_GetTick();
-    while((__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY) == RESET))
-    {
-      if((HAL_GetTick() - tickstart ) > PWR_VOSRDY_TIMEOUT_VALUE)
-      {
-        return HAL_TIMEOUT;
-      } 
-    }
-  }
-  else
-  {
-    return HAL_ERROR;
-  }
-  return HAL_OK;
+    return HAL_OK;
 }
 
 /**
@@ -549,4 +551,3 @@ HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling)
 /**
   * @}
   */
-

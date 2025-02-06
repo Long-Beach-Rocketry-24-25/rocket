@@ -4,7 +4,7 @@
 #define FLASH_KEY_1 0x45670123
 #define FLASH_KEY_2 0xCDEF89AB
 
-static bool set_flash_lock(StPrivFlash *flash, bool lock)
+static bool set_flash_lock(StPrivFlash* flash, bool lock)
 {
     if (lock)
     {
@@ -19,34 +19,35 @@ static bool set_flash_lock(StPrivFlash *flash, bool lock)
     return flash->instance->CR & FLASH_CR_LOCK;
 }
 
-static inline bool is_busy(StPrivFlash *flash)
+static inline bool is_busy(StPrivFlash* flash)
 {
     return flash->instance->SR & FLASH_SR_BSY;
 }
 
 static inline void program_word(size_t addr, uint32_t data)
 {
-    *(volatile uint32_t *)addr = data;
+    *(volatile uint32_t*)addr = data;
 }
 
 static inline void program_byte(size_t addr, uint8_t data)
 {
-    *(volatile uint8_t *)addr = data;
+    *(volatile uint8_t*)addr = data;
 }
 
-void StFlashInit(Flash *flash, StPrivFlash *st_flash, uint32_t base_addr, Timeout* timer)
+void StFlashInit(Flash* flash, StPrivFlash* st_flash, uint32_t base_addr,
+                 Timeout* timer)
 {
-    st_flash->instance = (FLASH_TypeDef *) base_addr;
+    st_flash->instance = (FLASH_TypeDef*)base_addr;
     st_flash->timer = timer;
 
-    flash->priv = (void *) st_flash;
+    flash->priv = (void*)st_flash;
     flash->write = StFlashWrite;
     flash->eraseSector = StFlashEraseSector;
 }
 
-bool StFlashWrite(Flash *flash, size_t addr, uint32_t data)
+bool StFlashWrite(Flash* flash, size_t addr, uint32_t data)
 {
-    StPrivFlash * dev = (StPrivFlash *) flash->priv;
+    StPrivFlash* dev = (StPrivFlash*)flash->priv;
 
     // Check bsy bit in flash reg
     if (is_busy(dev) || set_flash_lock(dev, false))
@@ -80,14 +81,14 @@ bool StFlashWrite(Flash *flash, size_t addr, uint32_t data)
     return true;
 }
 
-bool StFlashEraseSector(Flash *flash, size_t sector)
+bool StFlashEraseSector(Flash* flash, size_t sector)
 {
     if (sector > MAX_SECTOR)
     {
         return false;
     }
 
-    StPrivFlash * dev = (StPrivFlash *) flash->priv;
+    StPrivFlash* dev = (StPrivFlash*)flash->priv;
 
     // Check bsy bit in flash reg
     if (is_busy(dev) || set_flash_lock(dev, false))

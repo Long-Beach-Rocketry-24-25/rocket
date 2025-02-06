@@ -9,9 +9,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "retry_timer.h"
 #include "ring_buffer.h"
 #include "usart.h"
-#include "retry_timer.h"
 
 #include "cli.h"
 
@@ -39,5 +39,5 @@ void usart_rx_callback();
  * @returns True if all commands are registered and the task is created,
  *          otherwise false.
  */
-bool create_cli_task(Cli *cmdline, Usart* cli_usart,
-                     Command * commands, size_t num_commands);
+bool create_cli_task(Cli* cmdline, Usart* cli_usart, Command* commands,
+                     size_t num_commands);

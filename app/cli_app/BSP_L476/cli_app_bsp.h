@@ -4,16 +4,16 @@
 
 #pragma once
 
-#include "stm32l4xx_hal.h"
-#include "st_usart.h"
-#include "st_i2c.h"
-#include "st_gpio.h"
 #include "freertos_timer.h"
+#include "st_gpio.h"
+#include "st_i2c.h"
+#include "st_usart.h"
+#include "stm32l4xx_hal.h"
 #include "usart_cli.h"
 
 extern TIM_HandleTypeDef htim1;
 
-void BSP_Init(Usart *usart, I2c *i2c, Gpio *led_gpio);
+void BSP_Init(Usart* usart, I2c* i2c, Gpio* led_gpio);
 
 void USART2_IRQHandler(void);
 

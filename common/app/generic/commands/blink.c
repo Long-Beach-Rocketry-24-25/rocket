@@ -1,10 +1,10 @@
 
 #include "blink.h"
 
-static Send *send;
-static Gpio *gpio;
+static Send* send;
+static Gpio* gpio;
 
-void init_blink(Send *sender, Gpio * pin)
+void init_blink(Send* sender, Gpio* pin)
 {
     gpio = pin;
     send = sender;

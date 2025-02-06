@@ -1,10 +1,8 @@
 
 #include "matrix.h"
 
-
 int main(int argc, char* argv[])
 {
-
     double mat[3][3] = {{2, 0, 0}, {0, 2, 0}, {0, 0, 2}};
     double mat2[3][3] = {{0, 0, 2}, {0, 2, 0}, {2, 0, 0}};
     double res[3][3] = {{0}, {0}, {0}};

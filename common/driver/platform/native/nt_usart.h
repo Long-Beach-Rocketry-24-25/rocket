@@ -2,16 +2,16 @@
 
 #pragma once
 
-#include "usart.h"
 #include "timeout.h"
+#include "usart.h"
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 typedef struct
 {
-    Timeout * timer;
+    Timeout* timer;
 } NativePrivUsart;
 
-void NativeUsartInit(Usart *usart, NativePrivUsart *st_usart, Timeout* timer);
+void NativeUsartInit(Usart* usart, NativePrivUsart* st_usart, Timeout* timer);

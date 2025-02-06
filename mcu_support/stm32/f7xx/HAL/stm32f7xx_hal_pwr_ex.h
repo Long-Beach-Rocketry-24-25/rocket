@@ -21,7 +21,8 @@
 #define __STM32F7xx_HAL_PWR_EX_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -33,9 +34,9 @@
 
 /** @addtogroup PWREx
   * @{
-  */ 
+  */
 
-/* Exported types ------------------------------------------------------------*/ 
+/* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup PWREx_Exported_Constants PWREx Exported Constants
   * @{
@@ -43,65 +44,66 @@
 /** @defgroup PWREx_WakeUp_Pins PWREx Wake Up Pins
   * @{
   */
-#define PWR_WAKEUP_PIN1                PWR_CSR2_EWUP1
-#define PWR_WAKEUP_PIN2                PWR_CSR2_EWUP2
-#define PWR_WAKEUP_PIN3                PWR_CSR2_EWUP3
-#define PWR_WAKEUP_PIN4                PWR_CSR2_EWUP4
-#define PWR_WAKEUP_PIN5                PWR_CSR2_EWUP5
-#define PWR_WAKEUP_PIN6                PWR_CSR2_EWUP6
-#define PWR_WAKEUP_PIN1_HIGH           PWR_CSR2_EWUP1
-#define PWR_WAKEUP_PIN2_HIGH           PWR_CSR2_EWUP2
-#define PWR_WAKEUP_PIN3_HIGH           PWR_CSR2_EWUP3
-#define PWR_WAKEUP_PIN4_HIGH           PWR_CSR2_EWUP4
-#define PWR_WAKEUP_PIN5_HIGH           PWR_CSR2_EWUP5
-#define PWR_WAKEUP_PIN6_HIGH           PWR_CSR2_EWUP6
-#define PWR_WAKEUP_PIN1_LOW            (uint32_t)((PWR_CR2_WUPP1<<6) | PWR_CSR2_EWUP1)
-#define PWR_WAKEUP_PIN2_LOW            (uint32_t)((PWR_CR2_WUPP2<<6) | PWR_CSR2_EWUP2)
-#define PWR_WAKEUP_PIN3_LOW            (uint32_t)((PWR_CR2_WUPP3<<6) | PWR_CSR2_EWUP3)
-#define PWR_WAKEUP_PIN4_LOW            (uint32_t)((PWR_CR2_WUPP4<<6) | PWR_CSR2_EWUP4)
-#define PWR_WAKEUP_PIN5_LOW            (uint32_t)((PWR_CR2_WUPP5<<6) | PWR_CSR2_EWUP5)
-#define PWR_WAKEUP_PIN6_LOW            (uint32_t)((PWR_CR2_WUPP6<<6) | PWR_CSR2_EWUP6)
+#define PWR_WAKEUP_PIN1 PWR_CSR2_EWUP1
+#define PWR_WAKEUP_PIN2 PWR_CSR2_EWUP2
+#define PWR_WAKEUP_PIN3 PWR_CSR2_EWUP3
+#define PWR_WAKEUP_PIN4 PWR_CSR2_EWUP4
+#define PWR_WAKEUP_PIN5 PWR_CSR2_EWUP5
+#define PWR_WAKEUP_PIN6 PWR_CSR2_EWUP6
+#define PWR_WAKEUP_PIN1_HIGH PWR_CSR2_EWUP1
+#define PWR_WAKEUP_PIN2_HIGH PWR_CSR2_EWUP2
+#define PWR_WAKEUP_PIN3_HIGH PWR_CSR2_EWUP3
+#define PWR_WAKEUP_PIN4_HIGH PWR_CSR2_EWUP4
+#define PWR_WAKEUP_PIN5_HIGH PWR_CSR2_EWUP5
+#define PWR_WAKEUP_PIN6_HIGH PWR_CSR2_EWUP6
+#define PWR_WAKEUP_PIN1_LOW (uint32_t)((PWR_CR2_WUPP1 << 6) | PWR_CSR2_EWUP1)
+#define PWR_WAKEUP_PIN2_LOW (uint32_t)((PWR_CR2_WUPP2 << 6) | PWR_CSR2_EWUP2)
+#define PWR_WAKEUP_PIN3_LOW (uint32_t)((PWR_CR2_WUPP3 << 6) | PWR_CSR2_EWUP3)
+#define PWR_WAKEUP_PIN4_LOW (uint32_t)((PWR_CR2_WUPP4 << 6) | PWR_CSR2_EWUP4)
+#define PWR_WAKEUP_PIN5_LOW (uint32_t)((PWR_CR2_WUPP5 << 6) | PWR_CSR2_EWUP5)
+#define PWR_WAKEUP_PIN6_LOW (uint32_t)((PWR_CR2_WUPP6 << 6) | PWR_CSR2_EWUP6)
 
 /**
   * @}
   */
-	
+
 /** @defgroup PWREx_Regulator_state_in_UnderDrive_mode PWREx Regulator state in UnderDrive mode
   * @{
   */
-#define PWR_MAINREGULATOR_UNDERDRIVE_ON                       PWR_CR1_MRUDS
-#define PWR_LOWPOWERREGULATOR_UNDERDRIVE_ON                   ((uint32_t)(PWR_CR1_LPDS | PWR_CR1_LPUDS))
+#define PWR_MAINREGULATOR_UNDERDRIVE_ON PWR_CR1_MRUDS
+#define PWR_LOWPOWERREGULATOR_UNDERDRIVE_ON \
+    ((uint32_t)(PWR_CR1_LPDS | PWR_CR1_LPUDS))
 /**
   * @}
-  */ 
-  
+  */
+
 /** @defgroup PWREx_Over_Under_Drive_Flag PWREx Over Under Drive Flag
   * @{
   */
-#define PWR_FLAG_ODRDY                  PWR_CSR1_ODRDY
-#define PWR_FLAG_ODSWRDY                PWR_CSR1_ODSWRDY
-#define PWR_FLAG_UDRDY                  PWR_CSR1_UDRDY
+#define PWR_FLAG_ODRDY PWR_CSR1_ODRDY
+#define PWR_FLAG_ODSWRDY PWR_CSR1_ODSWRDY
+#define PWR_FLAG_UDRDY PWR_CSR1_UDRDY
 /**
   * @}
   */
-	
+
 /** @defgroup PWREx_Wakeup_Pins_Flag PWREx Wake Up Pin Flags
   * @{
   */
-#define PWR_WAKEUP_PIN_FLAG1            PWR_CSR2_WUPF1
-#define PWR_WAKEUP_PIN_FLAG2            PWR_CSR2_WUPF2
-#define PWR_WAKEUP_PIN_FLAG3            PWR_CSR2_WUPF3
-#define PWR_WAKEUP_PIN_FLAG4            PWR_CSR2_WUPF4
-#define PWR_WAKEUP_PIN_FLAG5            PWR_CSR2_WUPF5
-#define PWR_WAKEUP_PIN_FLAG6            PWR_CSR2_WUPF6
+#define PWR_WAKEUP_PIN_FLAG1 PWR_CSR2_WUPF1
+#define PWR_WAKEUP_PIN_FLAG2 PWR_CSR2_WUPF2
+#define PWR_WAKEUP_PIN_FLAG3 PWR_CSR2_WUPF3
+#define PWR_WAKEUP_PIN_FLAG4 PWR_CSR2_WUPF4
+#define PWR_WAKEUP_PIN_FLAG5 PWR_CSR2_WUPF5
+#define PWR_WAKEUP_PIN_FLAG6 PWR_CSR2_WUPF6
 /**
   * @}
   */
 
 /**
   * @}
-  */ 
-  
+  */
+
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup PWREx_Exported_Macro PWREx Exported Macro
   *  @{
@@ -113,8 +115,10 @@
 
 /** @brief Macros to enable or disable the Over drive switching.
   */
-#define __HAL_PWR_OVERDRIVESWITCHING_ENABLE() (PWR->CR1 |= (uint32_t)PWR_CR1_ODSWEN)
-#define __HAL_PWR_OVERDRIVESWITCHING_DISABLE() (PWR->CR1 &= (uint32_t)(~PWR_CR1_ODSWEN))
+#define __HAL_PWR_OVERDRIVESWITCHING_ENABLE() \
+    (PWR->CR1 |= (uint32_t)PWR_CR1_ODSWEN)
+#define __HAL_PWR_OVERDRIVESWITCHING_DISABLE() \
+    (PWR->CR1 &= (uint32_t)(~PWR_CR1_ODSWEN))
 
 /** @brief Macros to enable or disable the Under drive mode.
   * @note  This mode is enabled only with STOP low power mode.
@@ -140,11 +144,13 @@
   *                                 is enabled in Stop mode
   * @retval The new state of __FLAG__ (TRUE or FALSE).
   */
-#define __HAL_PWR_GET_ODRUDR_FLAG(__FLAG__) ((PWR->CSR1 & (__FLAG__)) == (__FLAG__))
+#define __HAL_PWR_GET_ODRUDR_FLAG(__FLAG__) \
+    ((PWR->CSR1 & (__FLAG__)) == (__FLAG__))
 
 /** @brief Clear the Under-Drive Ready flag.
   */
-#define __HAL_PWR_CLEAR_ODRUDR_FLAG() (PWR->CSR1 |= (PWR_FLAG_UDRDY | PWR_CSR1_EIWUP))
+#define __HAL_PWR_CLEAR_ODRUDR_FLAG() \
+    (PWR->CSR1 |= (PWR_FLAG_UDRDY | PWR_CSR1_EIWUP))
 
 /** @brief  Check Wake Up flag is set or not.
   * @param  __WUFLAG__ specifies the Wake Up flag to check.
@@ -168,34 +174,35 @@
   *            @arg PWR_WAKEUP_PIN_FLAG5: Wakeup Pin Flag for PI8
   *            @arg PWR_WAKEUP_PIN_FLAG6: Wakeup Pin Flag for PI11          
   */
-#define __HAL_PWR_CLEAR_WAKEUP_FLAG(__WUFLAG__) (PWR->CR2 |=  (__WUFLAG__))
-/**
+#define __HAL_PWR_CLEAR_WAKEUP_FLAG(__WUFLAG__) (PWR->CR2 |= (__WUFLAG__))
+    /**
   * @}
   */
-/* Exported functions --------------------------------------------------------*/
-/** @addtogroup PWREx_Exported_Functions PWREx Exported Functions
+    /* Exported functions --------------------------------------------------------*/
+    /** @addtogroup PWREx_Exported_Functions PWREx Exported Functions
   *  @{
   */
- 
-/** @addtogroup PWREx_Exported_Functions_Group1
+
+    /** @addtogroup PWREx_Exported_Functions_Group1
   * @{
   */
-uint32_t HAL_PWREx_GetVoltageRange(void);
-HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling);
+    uint32_t HAL_PWREx_GetVoltageRange(void);
+    HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling);
 
-void HAL_PWREx_EnableFlashPowerDown(void);
-void HAL_PWREx_DisableFlashPowerDown(void); 
-HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void);
-HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void); 
+    void HAL_PWREx_EnableFlashPowerDown(void);
+    void HAL_PWREx_DisableFlashPowerDown(void);
+    HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void);
+    HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void);
 
-void HAL_PWREx_EnableMainRegulatorLowVoltage(void);
-void HAL_PWREx_DisableMainRegulatorLowVoltage(void);
-void HAL_PWREx_EnableLowRegulatorLowVoltage(void);
-void HAL_PWREx_DisableLowRegulatorLowVoltage(void);
+    void HAL_PWREx_EnableMainRegulatorLowVoltage(void);
+    void HAL_PWREx_DisableMainRegulatorLowVoltage(void);
+    void HAL_PWREx_EnableLowRegulatorLowVoltage(void);
+    void HAL_PWREx_DisableLowRegulatorLowVoltage(void);
 
-HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
-HAL_StatusTypeDef HAL_PWREx_DisableOverDrive(void);
-HAL_StatusTypeDef HAL_PWREx_EnterUnderDriveSTOPMode(uint32_t Regulator, uint8_t STOPEntry);
+    HAL_StatusTypeDef HAL_PWREx_EnableOverDrive(void);
+    HAL_StatusTypeDef HAL_PWREx_DisableOverDrive(void);
+    HAL_StatusTypeDef HAL_PWREx_EnterUnderDriveSTOPMode(uint32_t Regulator,
+                                                        uint8_t STOPEntry);
 
 /**
   * @}
@@ -215,46 +222,42 @@ HAL_StatusTypeDef HAL_PWREx_EnterUnderDriveSTOPMode(uint32_t Regulator, uint8_t 
 /** @defgroup PWREx_IS_PWR_Definitions PWREx Private macros to check input parameters
   * @{
   */
-#define IS_PWR_REGULATOR_UNDERDRIVE(REGULATOR) (((REGULATOR) == PWR_MAINREGULATOR_UNDERDRIVE_ON) || \
-                                                ((REGULATOR) == PWR_LOWPOWERREGULATOR_UNDERDRIVE_ON))
-#define IS_PWR_WAKEUP_PIN(__PIN__)         (((__PIN__) == PWR_WAKEUP_PIN1)       || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN2)       || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN3)       || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN4)       || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN5)       || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN6)  		 || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN1_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN2_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN3_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN4_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN5_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN6_HIGH)  || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN1_LOW)   || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN2_LOW)   || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN3_LOW)   || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN4_LOW)   || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN5_LOW)	 || \
-                                            ((__PIN__) == PWR_WAKEUP_PIN6_LOW))
-/**
+#define IS_PWR_REGULATOR_UNDERDRIVE(REGULATOR)           \
+    (((REGULATOR) == PWR_MAINREGULATOR_UNDERDRIVE_ON) || \
+     ((REGULATOR) == PWR_LOWPOWERREGULATOR_UNDERDRIVE_ON))
+#define IS_PWR_WAKEUP_PIN(__PIN__)                                       \
+    (((__PIN__) == PWR_WAKEUP_PIN1) || ((__PIN__) == PWR_WAKEUP_PIN2) || \
+     ((__PIN__) == PWR_WAKEUP_PIN3) || ((__PIN__) == PWR_WAKEUP_PIN4) || \
+     ((__PIN__) == PWR_WAKEUP_PIN5) || ((__PIN__) == PWR_WAKEUP_PIN6) || \
+     ((__PIN__) == PWR_WAKEUP_PIN1_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN2_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN3_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN4_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN5_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN6_HIGH) ||                              \
+     ((__PIN__) == PWR_WAKEUP_PIN1_LOW) ||                               \
+     ((__PIN__) == PWR_WAKEUP_PIN2_LOW) ||                               \
+     ((__PIN__) == PWR_WAKEUP_PIN3_LOW) ||                               \
+     ((__PIN__) == PWR_WAKEUP_PIN4_LOW) ||                               \
+     ((__PIN__) == PWR_WAKEUP_PIN5_LOW) || ((__PIN__) == PWR_WAKEUP_PIN6_LOW))
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
-/**
-  * @}
-  */ 
-
-/**
+    /**
   * @}
   */
-  
+
+    /**
+  * @}
+  */
+
 #ifdef __cplusplus
 }
 #endif
 
-
 #endif /* __STM32F7xx_HAL_PWR_EX_H */
-

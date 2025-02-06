@@ -1,13 +1,14 @@
 
 #include "st_spi.h"
 
-typedef volatile uint8_t * DataReg;
+typedef volatile uint8_t* DataReg;
 
-void StSpiInit(Spi *spi, StPrivSpi *st_spi, uint32_t base_addr, uint32_t timeout_ms)
+void StSpiInit(Spi* spi, StPrivSpi* st_spi, uint32_t base_addr,
+               uint32_t timeout_ms)
 {
     st_spi->timeout_ms = timeout_ms;
 
-    st_spi->handle.Instance = (SPI_TypeDef *) base_addr;
+    st_spi->handle.Instance = (SPI_TypeDef*)base_addr;
     st_spi->handle.Init.Mode = SPI_MODE_MASTER;
     st_spi->handle.Init.Direction = SPI_DIRECTION_2LINES;
     st_spi->handle.Init.DataSize = SPI_DATASIZE_8BIT;
@@ -23,23 +24,25 @@ void StSpiInit(Spi *spi, StPrivSpi *st_spi, uint32_t base_addr, uint32_t timeout
     st_spi->handle.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
     st_spi->handle.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
     st_spi->handle.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
-    st_spi->handle.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+    st_spi->handle.Init.MasterInterDataIdleness =
+        SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
     st_spi->handle.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
     st_spi->handle.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_ENABLE;
     st_spi->handle.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-    st_spi->handle.Init.ReadyMasterManagement = SPI_RDY_MASTER_MANAGEMENT_INTERNALLY;
+    st_spi->handle.Init.ReadyMasterManagement =
+        SPI_RDY_MASTER_MANAGEMENT_INTERNALLY;
     st_spi->handle.Init.ReadyPolarity = SPI_RDY_POLARITY_HIGH;
     st_spi->handle.State = HAL_SPI_STATE_RESET;
 
-    spi->priv = (void *) st_spi;
+    spi->priv = (void*)st_spi;
     spi->send = StSpiSend;
     spi->read = StSpiRead;
     spi->transact = StSpiTransact;
 }
 
-void StSpiConfig(Spi * spi)
+void StSpiConfig(Spi* spi)
 {
-    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+    StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
     dev->mosi.config(&dev->mosi);
     dev->miso.config(&dev->miso);
@@ -48,19 +51,19 @@ void StSpiConfig(Spi * spi)
     HAL_SPI_Init(&dev->handle);
 }
 
-bool StSpiSend(Spi * spi, uint8_t *data, size_t size)
+bool StSpiSend(Spi* spi, uint8_t* data, size_t size)
 {
-    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+    StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    HAL_StatusTypeDef status =
-        HAL_SPI_Transmit(&dev->handle, (const uint8_t *) data, size, dev->timeout_ms);
+    HAL_StatusTypeDef status = HAL_SPI_Transmit(
+        &dev->handle, (const uint8_t*)data, size, dev->timeout_ms);
 
     return status == HAL_OK;
 }
 
-bool StSpiRead(Spi * spi, uint8_t *data, size_t size)
+bool StSpiRead(Spi* spi, uint8_t* data, size_t size)
 {
-    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+    StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
     HAL_StatusTypeDef status =
         HAL_SPI_Receive(&dev->handle, data, size, dev->timeout_ms);
@@ -68,12 +71,12 @@ bool StSpiRead(Spi * spi, uint8_t *data, size_t size)
     return status == HAL_OK;
 }
 
-bool StSpiTransact(Spi * spi, uint8_t *txdata, uint8_t *rxdata, size_t size)
+bool StSpiTransact(Spi* spi, uint8_t* txdata, uint8_t* rxdata, size_t size)
 {
-    StPrivSpi * dev = (StPrivSpi *) spi->priv;
+    StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    HAL_StatusTypeDef status =
-        HAL_SPI_TransmitReceive(&dev->handle, (const uint8_t *) txdata, rxdata, size, dev->timeout_ms);
+    HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(
+        &dev->handle, (const uint8_t*)txdata, rxdata, size, dev->timeout_ms);
 
     return status == HAL_OK;
 }

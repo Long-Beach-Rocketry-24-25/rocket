@@ -13,6 +13,6 @@
 #define MAX_I2CW_SIZE 16
 #define MAX_I2CR_SIZE 6
 
-void init_i2c_access(Send *sender, I2c *i2c_dev);
+void init_i2c_access(Send* sender, I2c* i2c_dev);
 void write_i2c(int argc, char* argv[]);
 void read_i2c(int argc, char* argv[]);

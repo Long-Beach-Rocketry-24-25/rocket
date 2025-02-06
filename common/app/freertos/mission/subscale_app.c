@@ -15,7 +15,7 @@ static NavDataLogBuilder nav_builder;
 static NavData nav;
 static NavSuiteV1 nav_suite;
 
-static Gpio *led;
+static Gpio* led;
 
 static void loop_func(void)
 {
@@ -25,15 +25,13 @@ static void loop_func(void)
     led->toggle(led);
 }
 
-void SubscaleAppCreate(Usart *usart, Spi *spi, I2c *i2c, Gpio *led_gpio)
+void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio)
 {
     led = led_gpio;
-    Command commands[4] = { 
-        {"Blink", blink, "Blinks LED."},
-        {"Imu", read_bno055, "Reads IMU accel/gyro."},
-        {"Baro", read_bmp390, "Reads Barometer Pressure."},
-        {"FlashId", read_w25q_id, "Reads W25q device ID."}
-    };
+    Command commands[4] = {{"Blink", blink, "Blinks LED."},
+                           {"Imu", read_bno055, "Reads IMU accel/gyro."},
+                           {"Baro", read_bmp390, "Reads Barometer Pressure."},
+                           {"FlashId", read_w25q_id, "Reads W25q device ID."}};
     create_cli_task(&cli, usart, commands, 4);
 
     W25qInit(&flash, spi, 0xFFFFFF);

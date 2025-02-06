@@ -168,7 +168,7 @@
 
 #ifdef HAL_COMP_MODULE_ENABLED
 
-#if defined (COMP1)
+#if defined(COMP1)
 
 /** @defgroup COMP COMP
   * @brief COMP HAL module driver
@@ -186,14 +186,14 @@
 /* Literal set to maximum value (refer to device datasheet,                   */
 /* parameter "tSTART").                                                       */
 /* Unit: us                                                                   */
-#define COMP_DELAY_STARTUP_US          (80UL) /*!< Delay for COMP startup time */
+#define COMP_DELAY_STARTUP_US (80UL) /*!< Delay for COMP startup time */
 
 /* Delay for COMP voltage scaler stabilization time.                          */
 /* Literal set to maximum value (refer to device datasheet,                   */
 /* parameter "tSTART_SCALER").                                                */
 /* Unit: us                                                                   */
-#define COMP_DELAY_VOLTAGE_SCALER_STAB_US (200UL)  /*!< Delay for COMP voltage scaler stabilization time */
-
+#define COMP_DELAY_VOLTAGE_SCALER_STAB_US \
+    (200UL) /*!< Delay for COMP voltage scaler stabilization time */
 
 /**
   * @}
@@ -229,127 +229,132 @@
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef* hcomp)
 {
-  uint32_t tmp_csr;
-  uint32_t exti_line;
-  uint32_t comp_voltage_scaler_initialized; /* Value "0" if comparator voltage scaler is not initialized */
-  __IO uint32_t wait_loop_index = 0UL;
-  HAL_StatusTypeDef status = HAL_OK;
+    uint32_t tmp_csr;
+    uint32_t exti_line;
+    uint32_t
+        comp_voltage_scaler_initialized; /* Value "0" if comparator voltage scaler is not initialized */
+    __IO uint32_t wait_loop_index = 0UL;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameters */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-    assert_param(IS_COMP_INPUT_PLUS(hcomp->Instance, hcomp->Init.InputPlus));
-    assert_param(IS_COMP_INPUT_MINUS(hcomp->Instance, hcomp->Init.InputMinus));
-    assert_param(IS_COMP_OUTPUTPOL(hcomp->Init.OutputPol));
-    assert_param(IS_COMP_POWERMODE(hcomp->Init.Mode));
-    assert_param(IS_COMP_HYSTERESIS(hcomp->Init.Hysteresis));
-    assert_param(IS_COMP_BLANKINGSRCE(hcomp->Init.BlankingSrce));
-    assert_param(IS_COMP_TRIGGERMODE(hcomp->Init.TriggerMode));
-
-    if (hcomp->State == HAL_COMP_STATE_RESET)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Allocate lock resource and initialize it */
-      hcomp->Lock = HAL_UNLOCKED;
-
-      /* Set COMP error code to none */
-      COMP_CLEAR_ERRORCODE(hcomp);
-
-      hcomp->InterruptAutoRearm = 0;
-
-#if (USE_HAL_COMP_REGISTER_CALLBACKS == 1U)
-      /* Init the COMP Callback settings */
-      hcomp->TriggerCallback = HAL_COMP_TriggerCallback; /* Legacy weak callback */
-
-      if (hcomp->MspInitCallback == NULL)
-      {
-        hcomp->MspInitCallback = HAL_COMP_MspInit; /* Legacy weak MspInit  */
-      }
-
-      /* Init the low level hardware */
-      hcomp->MspInitCallback(hcomp);
-#else
-      /* Init the low level hardware */
-      HAL_COMP_MspInit(hcomp);
-#endif /* USE_HAL_COMP_REGISTER_CALLBACKS */
+        status = HAL_ERROR;
     }
-
-    /* Memorize voltage scaler state before initialization */
-    comp_voltage_scaler_initialized = READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_SCALEN);
-
-    /* Set COMP parameters */
-    tmp_csr = (hcomp->Init.InputMinus
-               | hcomp->Init.InputPlus
-               | hcomp->Init.BlankingSrce
-               | hcomp->Init.Hysteresis
-               | hcomp->Init.OutputPol
-               | hcomp->Init.Mode);
-
-    /* Set parameters in COMP register */
-    /* Note: Update all bits except read-only, lock and enable bits */
-    MODIFY_REG(hcomp->Instance->CFGR1,
-               COMP_CFGR1_PWRMODE | COMP_CFGR1_INMSEL | COMP_CFGR1_INPSEL1
-               | COMP_CFGR1_INPSEL2 | COMP_CFGR1_POLARITY | COMP_CFGR1_HYST
-               | COMP_CFGR1_BLANKING | COMP_CFGR1_BRGEN | COMP_CFGR1_SCALEN,
-               tmp_csr
-              );
-
-    if (hcomp->Init.InputPlus == COMP_INPUT_PLUS_IO2)
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
     {
-      MODIFY_REG(hcomp->Instance->CFGR2, COMP_CFGR2_INPSEL0, COMP_CFGR2_INPSEL0);
-    }
-
-    /* Delay for COMP scaler bridge voltage stabilization */
-    /* Apply the delay if voltage scaler bridge is enabled for the first time */
-    if ((READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_SCALEN) != 0UL) &&
-        (comp_voltage_scaler_initialized != 0UL))
-    {
-      /* Wait loop initialization and execution */
-      /* Note: Variable divided by 2 to compensate partially              */
-      /*       CPU processing cycles, scaling in us split to not          */
-      /*       exceed 32 bits register capacity and handle low frequency. */
-      wait_loop_index = ((COMP_DELAY_VOLTAGE_SCALER_STAB_US / 10UL) * ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
-      while (wait_loop_index != 0UL)
-      {
-        wait_loop_index--;
-      }
-    }
-
-    /* Get the EXTI line corresponding to the selected COMP instance */
-    exti_line = COMP_GET_EXTI_LINE(hcomp->Instance);
-
-    /* Manage EXTI settings */
-    if ((hcomp->Init.TriggerMode & COMP_EXTI_IT) != 0UL)
-    {
-      LL_EXTI_EnableIT_0_31(exti_line);
+        status = HAL_ERROR;
     }
     else
     {
-      /* Disable EXTI interrupt mode */
-      LL_EXTI_DisableIT_0_31(exti_line);
+        /* Check the parameters */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
+        assert_param(
+            IS_COMP_INPUT_PLUS(hcomp->Instance, hcomp->Init.InputPlus));
+        assert_param(
+            IS_COMP_INPUT_MINUS(hcomp->Instance, hcomp->Init.InputMinus));
+        assert_param(IS_COMP_OUTPUTPOL(hcomp->Init.OutputPol));
+        assert_param(IS_COMP_POWERMODE(hcomp->Init.Mode));
+        assert_param(IS_COMP_HYSTERESIS(hcomp->Init.Hysteresis));
+        assert_param(IS_COMP_BLANKINGSRCE(hcomp->Init.BlankingSrce));
+        assert_param(IS_COMP_TRIGGERMODE(hcomp->Init.TriggerMode));
+
+        if (hcomp->State == HAL_COMP_STATE_RESET)
+        {
+            /* Allocate lock resource and initialize it */
+            hcomp->Lock = HAL_UNLOCKED;
+
+            /* Set COMP error code to none */
+            COMP_CLEAR_ERRORCODE(hcomp);
+
+            hcomp->InterruptAutoRearm = 0;
+
+#if (USE_HAL_COMP_REGISTER_CALLBACKS == 1U)
+            /* Init the COMP Callback settings */
+            hcomp->TriggerCallback =
+                HAL_COMP_TriggerCallback; /* Legacy weak callback */
+
+            if (hcomp->MspInitCallback == NULL)
+            {
+                hcomp->MspInitCallback =
+                    HAL_COMP_MspInit; /* Legacy weak MspInit  */
+            }
+
+            /* Init the low level hardware */
+            hcomp->MspInitCallback(hcomp);
+#else
+            /* Init the low level hardware */
+            HAL_COMP_MspInit(hcomp);
+#endif /* USE_HAL_COMP_REGISTER_CALLBACKS */
+        }
+
+        /* Memorize voltage scaler state before initialization */
+        comp_voltage_scaler_initialized =
+            READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_SCALEN);
+
+        /* Set COMP parameters */
+        tmp_csr = (hcomp->Init.InputMinus | hcomp->Init.InputPlus |
+                   hcomp->Init.BlankingSrce | hcomp->Init.Hysteresis |
+                   hcomp->Init.OutputPol | hcomp->Init.Mode);
+
+        /* Set parameters in COMP register */
+        /* Note: Update all bits except read-only, lock and enable bits */
+        MODIFY_REG(hcomp->Instance->CFGR1,
+                   COMP_CFGR1_PWRMODE | COMP_CFGR1_INMSEL | COMP_CFGR1_INPSEL1 |
+                       COMP_CFGR1_INPSEL2 | COMP_CFGR1_POLARITY |
+                       COMP_CFGR1_HYST | COMP_CFGR1_BLANKING |
+                       COMP_CFGR1_BRGEN | COMP_CFGR1_SCALEN,
+                   tmp_csr);
+
+        if (hcomp->Init.InputPlus == COMP_INPUT_PLUS_IO2)
+        {
+            MODIFY_REG(hcomp->Instance->CFGR2, COMP_CFGR2_INPSEL0,
+                       COMP_CFGR2_INPSEL0);
+        }
+
+        /* Delay for COMP scaler bridge voltage stabilization */
+        /* Apply the delay if voltage scaler bridge is enabled for the first time */
+        if ((READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_SCALEN) != 0UL) &&
+            (comp_voltage_scaler_initialized != 0UL))
+        {
+            /* Wait loop initialization and execution */
+            /* Note: Variable divided by 2 to compensate partially              */
+            /*       CPU processing cycles, scaling in us split to not          */
+            /*       exceed 32 bits register capacity and handle low frequency. */
+            wait_loop_index = ((COMP_DELAY_VOLTAGE_SCALER_STAB_US / 10UL) *
+                               ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
+            while (wait_loop_index != 0UL)
+            {
+                wait_loop_index--;
+            }
+        }
+
+        /* Get the EXTI line corresponding to the selected COMP instance */
+        exti_line = COMP_GET_EXTI_LINE(hcomp->Instance);
+
+        /* Manage EXTI settings */
+        if ((hcomp->Init.TriggerMode & COMP_EXTI_IT) != 0UL)
+        {
+            LL_EXTI_EnableIT_0_31(exti_line);
+        }
+        else
+        {
+            /* Disable EXTI interrupt mode */
+            LL_EXTI_DisableIT_0_31(exti_line);
+        }
+
+        /* Set HAL COMP handle state */
+        /* Note: Transition from state reset to state ready,                      */
+        /*       otherwise (coming from state ready or busy) no state update.     */
+        if (hcomp->State == HAL_COMP_STATE_RESET)
+        {
+            hcomp->State = HAL_COMP_STATE_READY;
+        }
     }
 
-    /* Set HAL COMP handle state */
-    /* Note: Transition from state reset to state ready,                      */
-    /*       otherwise (coming from state ready or busy) no state update.     */
-    if (hcomp->State == HAL_COMP_STATE_RESET)
-    {
-      hcomp->State = HAL_COMP_STATE_READY;
-    }
-  }
-
-  return status;
+    return status;
 }
 
 /**
@@ -359,48 +364,49 @@ HAL_StatusTypeDef HAL_COMP_Init(COMP_HandleTypeDef *hcomp)
   * @param  hcomp  COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_DeInit(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_DeInit(COMP_HandleTypeDef* hcomp)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
+    {
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
+    }
+    else
+    {
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-    /* Set configuration register to reset value */
-    WRITE_REG(hcomp->Instance->CFGR1, 0x00000000UL);
+        /* Set configuration register to reset value */
+        WRITE_REG(hcomp->Instance->CFGR1, 0x00000000UL);
 
 #if (USE_HAL_COMP_REGISTER_CALLBACKS == 1U)
-    if (hcomp->MspDeInitCallback == NULL)
-    {
-      hcomp->MspDeInitCallback = HAL_COMP_MspDeInit; /* Legacy weak MspDeInit  */
-    }
+        if (hcomp->MspDeInitCallback == NULL)
+        {
+            hcomp->MspDeInitCallback =
+                HAL_COMP_MspDeInit; /* Legacy weak MspDeInit  */
+        }
 
-    /* DeInit the low level hardware */
-    hcomp->MspDeInitCallback(hcomp);
+        /* DeInit the low level hardware */
+        hcomp->MspDeInitCallback(hcomp);
 #else
-    /* DeInit the low level hardware */
-    HAL_COMP_MspDeInit(hcomp);
+        /* DeInit the low level hardware */
+        HAL_COMP_MspDeInit(hcomp);
 #endif /* USE_HAL_COMP_REGISTER_CALLBACKS */
 
-    /* Set HAL COMP handle state */
-    hcomp->State = HAL_COMP_STATE_RESET;
+        /* Set HAL COMP handle state */
+        hcomp->State = HAL_COMP_STATE_RESET;
 
-    /* Release Lock */
-    __HAL_UNLOCK(hcomp);
-  }
+        /* Release Lock */
+        __HAL_UNLOCK(hcomp);
+    }
 
-  return status;
+    return status;
 }
 
 /**
@@ -408,12 +414,12 @@ HAL_StatusTypeDef HAL_COMP_DeInit(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval None
   */
-__weak void HAL_COMP_MspInit(COMP_HandleTypeDef *hcomp)
+__weak void HAL_COMP_MspInit(COMP_HandleTypeDef* hcomp)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcomp);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcomp);
 
-  /* NOTE : This function should not be modified, when the callback is needed,
+    /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_COMP_MspInit could be implemented in the user file
    */
 }
@@ -423,12 +429,12 @@ __weak void HAL_COMP_MspInit(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval None
   */
-__weak void HAL_COMP_MspDeInit(COMP_HandleTypeDef *hcomp)
+__weak void HAL_COMP_MspDeInit(COMP_HandleTypeDef* hcomp)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcomp);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcomp);
 
-  /* NOTE : This function should not be modified, when the callback is needed,
+    /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_COMP_MspDeInit could be implemented in the user file
    */
 }
@@ -447,75 +453,76 @@ __weak void HAL_COMP_MspDeInit(COMP_HandleTypeDef *hcomp)
   * @param  pCallback pointer to the Callback function
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_RegisterCallback(COMP_HandleTypeDef *hcomp, HAL_COMP_CallbackIDTypeDef CallbackID,
-                                            pCOMP_CallbackTypeDef pCallback)
+HAL_StatusTypeDef HAL_COMP_RegisterCallback(
+    COMP_HandleTypeDef* hcomp, HAL_COMP_CallbackIDTypeDef CallbackID,
+    pCOMP_CallbackTypeDef pCallback)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  if (pCallback == NULL)
-  {
-    /* Update the error code */
-    hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
-
-    return HAL_ERROR;
-  }
-
-  if (HAL_COMP_STATE_READY == hcomp->State)
-  {
-    switch (CallbackID)
+    if (pCallback == NULL)
     {
-      case HAL_COMP_TRIGGER_CB_ID :
-        hcomp->TriggerCallback = pCallback;
-        break;
+        /* Update the error code */
+        hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
 
-      case HAL_COMP_MSPINIT_CB_ID :
-        hcomp->MspInitCallback = pCallback;
-        break;
+        return HAL_ERROR;
+    }
 
-      case HAL_COMP_MSPDEINIT_CB_ID :
-        hcomp->MspDeInitCallback = pCallback;
-        break;
+    if (HAL_COMP_STATE_READY == hcomp->State)
+    {
+        switch (CallbackID)
+        {
+            case HAL_COMP_TRIGGER_CB_ID:
+                hcomp->TriggerCallback = pCallback;
+                break;
 
-      default :
+            case HAL_COMP_MSPINIT_CB_ID:
+                hcomp->MspInitCallback = pCallback;
+                break;
+
+            case HAL_COMP_MSPDEINIT_CB_ID:
+                hcomp->MspDeInitCallback = pCallback;
+                break;
+
+            default:
+                /* Update the error code */
+                hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else if (HAL_COMP_STATE_RESET == hcomp->State)
+    {
+        switch (CallbackID)
+        {
+            case HAL_COMP_MSPINIT_CB_ID:
+                hcomp->MspInitCallback = pCallback;
+                break;
+
+            case HAL_COMP_MSPDEINIT_CB_ID:
+                hcomp->MspDeInitCallback = pCallback;
+                break;
+
+            default:
+                /* Update the error code */
+                hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else
+    {
         /* Update the error code */
         hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
 
         /* Return error status */
         status = HAL_ERROR;
-        break;
     }
-  }
-  else if (HAL_COMP_STATE_RESET == hcomp->State)
-  {
-    switch (CallbackID)
-    {
-      case HAL_COMP_MSPINIT_CB_ID :
-        hcomp->MspInitCallback = pCallback;
-        break;
 
-      case HAL_COMP_MSPDEINIT_CB_ID :
-        hcomp->MspDeInitCallback = pCallback;
-        break;
-
-      default :
-        /* Update the error code */
-        hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
-
-        /* Return error status */
-        status = HAL_ERROR;
-        break;
-    }
-  }
-  else
-  {
-    /* Update the error code */
-    hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
-
-    /* Return error status */
-    status =  HAL_ERROR;
-  }
-
-  return status;
+    return status;
 }
 
 /**
@@ -530,66 +537,72 @@ HAL_StatusTypeDef HAL_COMP_RegisterCallback(COMP_HandleTypeDef *hcomp, HAL_COMP_
   *          @arg @ref HAL_COMP_MSPDEINIT_CB_ID MspDeInit callback ID
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_UnRegisterCallback(COMP_HandleTypeDef *hcomp, HAL_COMP_CallbackIDTypeDef CallbackID)
+HAL_StatusTypeDef HAL_COMP_UnRegisterCallback(
+    COMP_HandleTypeDef* hcomp, HAL_COMP_CallbackIDTypeDef CallbackID)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  if (HAL_COMP_STATE_READY == hcomp->State)
-  {
-    switch (CallbackID)
+    if (HAL_COMP_STATE_READY == hcomp->State)
     {
-      case HAL_COMP_TRIGGER_CB_ID :
-        hcomp->TriggerCallback = HAL_COMP_TriggerCallback;         /* Legacy weak callback */
-        break;
+        switch (CallbackID)
+        {
+            case HAL_COMP_TRIGGER_CB_ID:
+                hcomp->TriggerCallback =
+                    HAL_COMP_TriggerCallback; /* Legacy weak callback */
+                break;
 
-      case HAL_COMP_MSPINIT_CB_ID :
-        hcomp->MspInitCallback = HAL_COMP_MspInit;                 /* Legacy weak MspInit */
-        break;
+            case HAL_COMP_MSPINIT_CB_ID:
+                hcomp->MspInitCallback =
+                    HAL_COMP_MspInit; /* Legacy weak MspInit */
+                break;
 
-      case HAL_COMP_MSPDEINIT_CB_ID :
-        hcomp->MspDeInitCallback = HAL_COMP_MspDeInit;             /* Legacy weak MspDeInit */
-        break;
+            case HAL_COMP_MSPDEINIT_CB_ID:
+                hcomp->MspDeInitCallback =
+                    HAL_COMP_MspDeInit; /* Legacy weak MspDeInit */
+                break;
 
-      default :
+            default:
+                /* Update the error code */
+                hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else if (HAL_COMP_STATE_RESET == hcomp->State)
+    {
+        switch (CallbackID)
+        {
+            case HAL_COMP_MSPINIT_CB_ID:
+                hcomp->MspInitCallback =
+                    HAL_COMP_MspInit; /* Legacy weak MspInit */
+                break;
+
+            case HAL_COMP_MSPDEINIT_CB_ID:
+                hcomp->MspDeInitCallback =
+                    HAL_COMP_MspDeInit; /* Legacy weak MspDeInit */
+                break;
+
+            default:
+                /* Update the error code */
+                hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else
+    {
         /* Update the error code */
         hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
 
         /* Return error status */
-        status =  HAL_ERROR;
-        break;
+        status = HAL_ERROR;
     }
-  }
-  else if (HAL_COMP_STATE_RESET == hcomp->State)
-  {
-    switch (CallbackID)
-    {
-      case HAL_COMP_MSPINIT_CB_ID :
-        hcomp->MspInitCallback = HAL_COMP_MspInit;                 /* Legacy weak MspInit */
-        break;
 
-      case HAL_COMP_MSPDEINIT_CB_ID :
-        hcomp->MspDeInitCallback = HAL_COMP_MspDeInit;             /* Legacy weak MspDeInit */
-        break;
-
-      default :
-        /* Update the error code */
-        hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
-
-        /* Return error status */
-        status =  HAL_ERROR;
-        break;
-    }
-  }
-  else
-  {
-    /* Update the error code */
-    hcomp->ErrorCode |= HAL_COMP_ERROR_INVALID_CALLBACK;
-
-    /* Return error status */
-    status =  HAL_ERROR;
-  }
-
-  return status;
+    return status;
 }
 
 #endif /* USE_HAL_COMP_REGISTER_CALLBACKS */
@@ -618,61 +631,63 @@ HAL_StatusTypeDef HAL_COMP_UnRegisterCallback(COMP_HandleTypeDef *hcomp, HAL_COM
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Start(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Start(COMP_HandleTypeDef* hcomp)
 {
-  __IO uint32_t wait_loop_index = 0UL;
+    __IO uint32_t wait_loop_index = 0UL;
 
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    if ((hcomp->Init.TriggerMode & COMP_EXTI_IT) != 0UL)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Case of operation with interruption */
-      /* Note: Specific to comparator of this STM32 series featuring IT with direct line only (low latency) */
-      status = HAL_COMP_Start_IT_AutoRearm(hcomp);
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
     }
     else
     {
-      if (hcomp->State == HAL_COMP_STATE_READY)
-      {
-        /* Enable the selected comparator */
-        SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-        /* Set HAL COMP handle state */
-        hcomp->State = HAL_COMP_STATE_BUSY;
-
-        /* Delay for COMP startup time */
-        /* Wait loop initialization and execution */
-        /* Note: Variable divided by 2 to compensate partially              */
-        /*       CPU processing cycles, scaling in us split to not          */
-        /*       exceed 32 bits register capacity and handle low frequency. */
-        wait_loop_index = ((COMP_DELAY_STARTUP_US / 10UL) * ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
-        while (wait_loop_index != 0UL)
+        if ((hcomp->Init.TriggerMode & COMP_EXTI_IT) != 0UL)
         {
-          wait_loop_index--;
+            /* Case of operation with interruption */
+            /* Note: Specific to comparator of this STM32 series featuring IT with direct line only (low latency) */
+            status = HAL_COMP_Start_IT_AutoRearm(hcomp);
         }
-      }
-      else
-      {
-        status = HAL_ERROR;
-      }
-    }
-  }
+        else
+        {
+            if (hcomp->State == HAL_COMP_STATE_READY)
+            {
+                /* Enable the selected comparator */
+                SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
 
-  return status;
+                /* Set HAL COMP handle state */
+                hcomp->State = HAL_COMP_STATE_BUSY;
+
+                /* Delay for COMP startup time */
+                /* Wait loop initialization and execution */
+                /* Note: Variable divided by 2 to compensate partially              */
+                /*       CPU processing cycles, scaling in us split to not          */
+                /*       exceed 32 bits register capacity and handle low frequency. */
+                wait_loop_index =
+                    ((COMP_DELAY_STARTUP_US / 10UL) *
+                     ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
+                while (wait_loop_index != 0UL)
+                {
+                    wait_loop_index--;
+                }
+            }
+            else
+            {
+                status = HAL_ERROR;
+            }
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -680,41 +695,41 @@ HAL_StatusTypeDef HAL_COMP_Start(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Stop(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Stop(COMP_HandleTypeDef* hcomp)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    /* Check compliant states: HAL_COMP_STATE_READY or HAL_COMP_STATE_BUSY    */
-    /* (all states except HAL_COMP_STATE_RESET and except locked status.      */
-    if (hcomp->State != HAL_COMP_STATE_RESET)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Disable the selected comparator */
-      CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
-
-      /* Set HAL COMP handle state */
-      hcomp->State = HAL_COMP_STATE_READY;
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
     }
     else
     {
-      status = HAL_ERROR;
-    }
-  }
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return status;
+        /* Check compliant states: HAL_COMP_STATE_READY or HAL_COMP_STATE_BUSY    */
+        /* (all states except HAL_COMP_STATE_RESET and except locked status.      */
+        if (hcomp->State != HAL_COMP_STATE_RESET)
+        {
+            /* Disable the selected comparator */
+            CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
+
+            /* Set HAL COMP handle state */
+            hcomp->State = HAL_COMP_STATE_READY;
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -726,86 +741,88 @@ HAL_StatusTypeDef HAL_COMP_Stop(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Start_IT_OneShot(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Start_IT_OneShot(COMP_HandleTypeDef* hcomp)
 {
-  __IO uint32_t wait_loop_index = 0UL;
-  uint32_t polarity_toggle = 0U;
-  HAL_StatusTypeDef status = HAL_OK;
+    __IO uint32_t wait_loop_index = 0UL;
+    uint32_t polarity_toggle = 0U;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    if (hcomp->State == HAL_COMP_STATE_READY)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Enable the selected comparator */
-      SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
-
-      /* Set HAL COMP handle state */
-      hcomp->State = HAL_COMP_STATE_BUSY;
-
-      /* Delay for COMP startup time */
-      /* Wait loop initialization and execution */
-      /* Note: Variable divided by 2 to compensate partially              */
-      /*       CPU processing cycles, scaling in us split to not          */
-      /*       exceed 32 bits register capacity and handle low frequency. */
-      wait_loop_index = ((COMP_DELAY_STARTUP_US / 10UL) * ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
-      while (wait_loop_index != 0UL)
-      {
-        wait_loop_index--;
-      }
-
-      /* Check whether initial comparator output level is compliant with interruption mode */
-      if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
-      {
-        if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
-        {
-          polarity_toggle = 1U;
-        }
-      }
-      else /* COMP_EXTI_RISING */
-      {
-        if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
-        {
-          polarity_toggle = 1U;
-        }
-      }
-
-      if (polarity_toggle == 1U)
-      {
-        /* Toggle poarity */
-        if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) == 0UL)
-        {
-          SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-        }
-        else
-        {
-          CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-        }
-      }
-
-      /* Enable comparator interruption */
-      hcomp->InterruptAutoRearm = 0U;
-      __HAL_COMP_CLEAR_FLAG(COMP_CLEAR_C1IF);
-      SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
     }
     else
     {
-      status = HAL_ERROR;
-    }
-  }
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return status;
+        if (hcomp->State == HAL_COMP_STATE_READY)
+        {
+            /* Enable the selected comparator */
+            SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
+
+            /* Set HAL COMP handle state */
+            hcomp->State = HAL_COMP_STATE_BUSY;
+
+            /* Delay for COMP startup time */
+            /* Wait loop initialization and execution */
+            /* Note: Variable divided by 2 to compensate partially              */
+            /*       CPU processing cycles, scaling in us split to not          */
+            /*       exceed 32 bits register capacity and handle low frequency. */
+            wait_loop_index = ((COMP_DELAY_STARTUP_US / 10UL) *
+                               ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
+            while (wait_loop_index != 0UL)
+            {
+                wait_loop_index--;
+            }
+
+            /* Check whether initial comparator output level is compliant with interruption mode */
+            if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
+            {
+                if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
+                {
+                    polarity_toggle = 1U;
+                }
+            }
+            else /* COMP_EXTI_RISING */
+            {
+                if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
+                {
+                    polarity_toggle = 1U;
+                }
+            }
+
+            if (polarity_toggle == 1U)
+            {
+                /* Toggle poarity */
+                if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) ==
+                    0UL)
+                {
+                    SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+                }
+                else
+                {
+                    CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+                }
+            }
+
+            /* Enable comparator interruption */
+            hcomp->InterruptAutoRearm = 0U;
+            __HAL_COMP_CLEAR_FLAG(COMP_CLEAR_C1IF);
+            SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -817,86 +834,88 @@ HAL_StatusTypeDef HAL_COMP_Start_IT_OneShot(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Start_IT_AutoRearm(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Start_IT_AutoRearm(COMP_HandleTypeDef* hcomp)
 {
-  __IO uint32_t wait_loop_index = 0UL;
-  uint32_t polarity_toggle = 0U;
-  HAL_StatusTypeDef status = HAL_OK;
+    __IO uint32_t wait_loop_index = 0UL;
+    uint32_t polarity_toggle = 0U;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    if (hcomp->State == HAL_COMP_STATE_READY)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Enable the selected comparator */
-      SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
-
-      /* Set HAL COMP handle state */
-      hcomp->State = HAL_COMP_STATE_BUSY;
-
-      /* Delay for COMP startup time */
-      /* Wait loop initialization and execution */
-      /* Note: Variable divided by 2 to compensate partially              */
-      /*       CPU processing cycles, scaling in us split to not          */
-      /*       exceed 32 bits register capacity and handle low frequency. */
-      wait_loop_index = ((COMP_DELAY_STARTUP_US / 10UL) * ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
-      while (wait_loop_index != 0UL)
-      {
-        wait_loop_index--;
-      }
-
-      /* Check whether initial comparator output level is compliant with interruption mode */
-      if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
-      {
-        if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
-        {
-          polarity_toggle = 1U;
-        }
-      }
-      else /* COMP_EXTI_RISING */
-      {
-        if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
-        {
-          polarity_toggle = 1U;
-        }
-      }
-
-      if (polarity_toggle == 1U)
-      {
-        /* Toggle poarity */
-        if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) == 0UL)
-        {
-          SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-        }
-        else
-        {
-          CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-        }
-      }
-
-      /* Enable comparator interruption */
-      hcomp->InterruptAutoRearm = 1U;
-      __HAL_COMP_CLEAR_FLAG(COMP_CLEAR_C1IF);
-      SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
     }
     else
     {
-      status = HAL_ERROR;
-    }
-  }
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return status;
+        if (hcomp->State == HAL_COMP_STATE_READY)
+        {
+            /* Enable the selected comparator */
+            SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
+
+            /* Set HAL COMP handle state */
+            hcomp->State = HAL_COMP_STATE_BUSY;
+
+            /* Delay for COMP startup time */
+            /* Wait loop initialization and execution */
+            /* Note: Variable divided by 2 to compensate partially              */
+            /*       CPU processing cycles, scaling in us split to not          */
+            /*       exceed 32 bits register capacity and handle low frequency. */
+            wait_loop_index = ((COMP_DELAY_STARTUP_US / 10UL) *
+                               ((SystemCoreClock / (100000UL * 2UL)) + 1UL));
+            while (wait_loop_index != 0UL)
+            {
+                wait_loop_index--;
+            }
+
+            /* Check whether initial comparator output level is compliant with interruption mode */
+            if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
+            {
+                if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
+                {
+                    polarity_toggle = 1U;
+                }
+            }
+            else /* COMP_EXTI_RISING */
+            {
+                if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
+                {
+                    polarity_toggle = 1U;
+                }
+            }
+
+            if (polarity_toggle == 1U)
+            {
+                /* Toggle poarity */
+                if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) ==
+                    0UL)
+                {
+                    SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+                }
+                else
+                {
+                    CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+                }
+            }
+
+            /* Enable comparator interruption */
+            hcomp->InterruptAutoRearm = 1U;
+            __HAL_COMP_CLEAR_FLAG(COMP_CLEAR_C1IF);
+            SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -904,47 +923,47 @@ HAL_StatusTypeDef HAL_COMP_Start_IT_AutoRearm(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Stop_IT(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Stop_IT(COMP_HandleTypeDef* hcomp)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    /* Check compliant states: HAL_COMP_STATE_READY or HAL_COMP_STATE_BUSY    */
-    /* (all states except HAL_COMP_STATE_RESET and except locked status.      */
-    if (hcomp->State != HAL_COMP_STATE_RESET)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      /* Disable the selected comparator */
-      CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
-
-      /* Disable the EXTI Line interrupt mode */
-      CLEAR_BIT(EXTI->IMR1, COMP_GET_EXTI_LINE(hcomp->Instance));
-
-      /* Disable the Interrupt comparator */
-      CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
-
-      /* Set HAL COMP handle state */
-      hcomp->State = HAL_COMP_STATE_READY;
+        status = HAL_ERROR;
+    }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
     }
     else
     {
-      status = HAL_ERROR;
-    }
-  }
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return status;
+        /* Check compliant states: HAL_COMP_STATE_READY or HAL_COMP_STATE_BUSY    */
+        /* (all states except HAL_COMP_STATE_RESET and except locked status.      */
+        if (hcomp->State != HAL_COMP_STATE_RESET)
+        {
+            /* Disable the selected comparator */
+            CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_EN);
+
+            /* Disable the EXTI Line interrupt mode */
+            CLEAR_BIT(EXTI->IMR1, COMP_GET_EXTI_LINE(hcomp->Instance));
+
+            /* Disable the Interrupt comparator */
+            CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_ITEN);
+
+            /* Set HAL COMP handle state */
+            hcomp->State = HAL_COMP_STATE_READY;
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -952,64 +971,64 @@ HAL_StatusTypeDef HAL_COMP_Stop_IT(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval None
   */
-void HAL_COMP_IRQHandler(COMP_HandleTypeDef *hcomp)
+void HAL_COMP_IRQHandler(COMP_HandleTypeDef* hcomp)
 {
-  uint32_t polarity_toggle = 0U;
+    uint32_t polarity_toggle = 0U;
 
-  /* Disable COMP interrupt */
-  /* Note: Specific to comparator of this STM32 series: comparator output triggers interruption on high level. */
-  __HAL_COMP_DISABLE_IT(hcomp, COMP_IT_EN);
+    /* Disable COMP interrupt */
+    /* Note: Specific to comparator of this STM32 series: comparator output triggers interruption on high level. */
+    __HAL_COMP_DISABLE_IT(hcomp, COMP_IT_EN);
 
-  /* Clear COMP1 interrupt flag */
-  __HAL_COMP_CLEAR_C1IFLAG();
-  NVIC_ClearPendingIRQ(COMP1_IRQn);
+    /* Clear COMP1 interrupt flag */
+    __HAL_COMP_CLEAR_C1IFLAG();
+    NVIC_ClearPendingIRQ(COMP1_IRQn);
 
-  /* COMP trigger callback */
+    /* COMP trigger callback */
 #if (USE_HAL_COMP_REGISTER_CALLBACKS == 1U)
-  hcomp->TriggerCallback(hcomp);
+    hcomp->TriggerCallback(hcomp);
 #else
-  HAL_COMP_TriggerCallback(hcomp);
+    HAL_COMP_TriggerCallback(hcomp);
 #endif /* USE_HAL_COMP_REGISTER_CALLBACKS */
 
-  if (hcomp->InterruptAutoRearm == 1U)
-  {
-    /* Check whether initial comparator output level is compliant with interruption mode */
-    if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
+    if (hcomp->InterruptAutoRearm == 1U)
     {
-      if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
-      {
-        polarity_toggle = 1U;
-      }
-    }
-    else /* COMP_EXTI_RISING */
-    {
-      if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
-      {
-        polarity_toggle = 1U;
-      }
-    }
+        /* Check whether initial comparator output level is compliant with interruption mode */
+        if (hcomp->Init.TriggerMode == COMP_EXTI_FALLING)
+        {
+            if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_HIGH)
+            {
+                polarity_toggle = 1U;
+            }
+        }
+        else /* COMP_EXTI_RISING */
+        {
+            if (HAL_COMP_GetOutputLevel(hcomp) != COMP_OUTPUT_LEVEL_LOW)
+            {
+                polarity_toggle = 1U;
+            }
+        }
 
-    if (polarity_toggle == 1U)
-    {
-      /* Toggle poarity */
-      if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) == 0UL)
-      {
-        SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-      }
-      else
-      {
-        CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
-      }
-    }
+        if (polarity_toggle == 1U)
+        {
+            /* Toggle poarity */
+            if (READ_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY) == 0UL)
+            {
+                SET_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+            }
+            else
+            {
+                CLEAR_BIT(hcomp->Instance->CFGR1, COMP_CFGR1_POLARITY);
+            }
+        }
 
-    /* Enable COMP interrupt */
-    __HAL_COMP_ENABLE_IT(hcomp, COMP_IT_EN);
-  }
-  else
-  {
-    /* Change COMP state */
-    hcomp->State = HAL_COMP_STATE_READY;
-  }
+        /* Enable COMP interrupt */
+        __HAL_COMP_ENABLE_IT(hcomp, COMP_IT_EN);
+    }
+    else
+    {
+        /* Change COMP state */
+        hcomp->State = HAL_COMP_STATE_READY;
+    }
 }
 
 /**
@@ -1036,42 +1055,42 @@ void HAL_COMP_IRQHandler(COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_COMP_Lock(COMP_HandleTypeDef *hcomp)
+HAL_StatusTypeDef HAL_COMP_Lock(COMP_HandleTypeDef* hcomp)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the COMP handle allocation and lock status */
-  if (hcomp == NULL)
-  {
-    status = HAL_ERROR;
-  }
-  else if (__HAL_COMP_IS_LOCKED(hcomp))
-  {
-    status = HAL_ERROR;
-  }
-  else
-  {
-    /* Check the parameter */
-    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
-
-    /* Set HAL COMP handle state */
-    switch (hcomp->State)
+    /* Check the COMP handle allocation and lock status */
+    if (hcomp == NULL)
     {
-      case HAL_COMP_STATE_RESET:
-        hcomp->State = HAL_COMP_STATE_RESET_LOCKED;
-        break;
-      case HAL_COMP_STATE_READY:
-        hcomp->State = HAL_COMP_STATE_READY_LOCKED;
-        break;
-      default: /* HAL_COMP_STATE_BUSY */
-        hcomp->State = HAL_COMP_STATE_BUSY_LOCKED;
-        break;
+        status = HAL_ERROR;
     }
+    else if (__HAL_COMP_IS_LOCKED(hcomp))
+    {
+        status = HAL_ERROR;
+    }
+    else
+    {
+        /* Check the parameter */
+        assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-    /* Set the lock bit corresponding to selected comparator */
-    __HAL_COMP_LOCK(hcomp);
-  }
-  return status;
+        /* Set HAL COMP handle state */
+        switch (hcomp->State)
+        {
+            case HAL_COMP_STATE_RESET:
+                hcomp->State = HAL_COMP_STATE_RESET_LOCKED;
+                break;
+            case HAL_COMP_STATE_READY:
+                hcomp->State = HAL_COMP_STATE_READY_LOCKED;
+                break;
+            default: /* HAL_COMP_STATE_BUSY */
+                hcomp->State = HAL_COMP_STATE_BUSY_LOCKED;
+                break;
+        }
+
+        /* Set the lock bit corresponding to selected comparator */
+        __HAL_COMP_LOCK(hcomp);
+    }
+    return status;
 }
 
 /**
@@ -1096,12 +1115,12 @@ HAL_StatusTypeDef HAL_COMP_Lock(COMP_HandleTypeDef *hcomp)
   *         @arg @ref COMP_OUTPUT_LEVEL_HIGH
   *
   */
-uint32_t HAL_COMP_GetOutputLevel(const COMP_HandleTypeDef *hcomp)
+uint32_t HAL_COMP_GetOutputLevel(const COMP_HandleTypeDef* hcomp)
 {
-  /* Check the parameter */
-  assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
+    /* Check the parameter */
+    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return (uint32_t)(READ_BIT(COMP1->SR, COMP_SR_C1VAL));
+    return (uint32_t)(READ_BIT(COMP1->SR, COMP_SR_C1VAL));
 }
 
 /**
@@ -1109,16 +1128,15 @@ uint32_t HAL_COMP_GetOutputLevel(const COMP_HandleTypeDef *hcomp)
   * @param  hcomp COMP handle
   * @retval None
   */
-__weak void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp)
+__weak void HAL_COMP_TriggerCallback(COMP_HandleTypeDef* hcomp)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcomp);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcomp);
 
-  /* NOTE : This function should not be modified, when the callback is needed,
+    /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_COMP_TriggerCallback should be implemented in the user file
    */
 }
-
 
 /**
   * @}
@@ -1143,19 +1161,19 @@ __weak void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp)
   * @param  hcomp  COMP handle
   * @retval HAL state
   */
-HAL_COMP_StateTypeDef HAL_COMP_GetState(const COMP_HandleTypeDef *hcomp)
+HAL_COMP_StateTypeDef HAL_COMP_GetState(const COMP_HandleTypeDef* hcomp)
 {
-  /* Check the COMP handle allocation */
-  if (hcomp == NULL)
-  {
-    return HAL_COMP_STATE_RESET;
-  }
+    /* Check the COMP handle allocation */
+    if (hcomp == NULL)
+    {
+        return HAL_COMP_STATE_RESET;
+    }
 
-  /* Check the parameter */
-  assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
+    /* Check the parameter */
+    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  /* Return HAL COMP handle state */
-  return hcomp->State;
+    /* Return HAL COMP handle state */
+    return hcomp->State;
 }
 
 /**
@@ -1163,12 +1181,12 @@ HAL_COMP_StateTypeDef HAL_COMP_GetState(const COMP_HandleTypeDef *hcomp)
   * @param hcomp COMP handle
   * @retval COMP error code
   */
-uint32_t HAL_COMP_GetError(const COMP_HandleTypeDef *hcomp)
+uint32_t HAL_COMP_GetError(const COMP_HandleTypeDef* hcomp)
 {
-  /* Check the parameters */
-  assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
+    /* Check the parameters */
+    assert_param(IS_COMP_ALL_INSTANCE(hcomp->Instance));
 
-  return hcomp->ErrorCode;
+    return hcomp->ErrorCode;
 }
 
 /**

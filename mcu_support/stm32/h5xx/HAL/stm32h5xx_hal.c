@@ -50,25 +50,25 @@
 /**
   * @brief STM32H5xx HAL Driver version number 1.1.0
    */
-#define __STM32H5XX_HAL_VERSION_MAIN   (0x01U) /*!< [31:24] main version */
-#define __STM32H5XX_HAL_VERSION_SUB1   (0x01U) /*!< [23:16] sub1 version */
-#define __STM32H5XX_HAL_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
-#define __STM32H5XX_HAL_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
-#define __STM32H5XX_HAL_VERSION         ((__STM32H5XX_HAL_VERSION_MAIN << 24U)\
-                                         |(__STM32H5XX_HAL_VERSION_SUB1 << 16U)\
-                                         |(__STM32H5XX_HAL_VERSION_SUB2 << 8U )\
-                                         |(__STM32H5XX_HAL_VERSION_RC))
+#define __STM32H5XX_HAL_VERSION_MAIN (0x01U) /*!< [31:24] main version */
+#define __STM32H5XX_HAL_VERSION_SUB1 (0x01U) /*!< [23:16] sub1 version */
+#define __STM32H5XX_HAL_VERSION_SUB2 (0x00U) /*!< [15:8]  sub2 version */
+#define __STM32H5XX_HAL_VERSION_RC (0x00U)   /*!< [7:0]  release candidate */
+#define __STM32H5XX_HAL_VERSION              \
+    ((__STM32H5XX_HAL_VERSION_MAIN << 24U) | \
+     (__STM32H5XX_HAL_VERSION_SUB1 << 16U) | \
+     (__STM32H5XX_HAL_VERSION_SUB2 << 8U) | (__STM32H5XX_HAL_VERSION_RC))
 
 #if defined(VREFBUF)
-#define VREFBUF_TIMEOUT_VALUE           10U   /* 10 ms */
-#endif /* VREFBUF */
+#define VREFBUF_TIMEOUT_VALUE 10U /* 10 ms */
+#endif                            /* VREFBUF */
 
 /* Value used to increment hide protection level */
-#define SBS_HDPL_INCREMENT_VALUE  (uint8_t)0x6A
+#define SBS_HDPL_INCREMENT_VALUE (uint8_t)0x6A
 
 /* Value used to lock/unlock debug functionalities */
-#define SBS_DEBUG_LOCK_VALUE      (uint8_t)0xC3
-#define SBS_DEBUG_UNLOCK_VALUE    (uint8_t)0xB4
+#define SBS_DEBUG_LOCK_VALUE (uint8_t)0xC3
+#define SBS_DEBUG_UNLOCK_VALUE (uint8_t)0xB4
 
 /* Private macro -----------------------------------------------------------------------------------------------------*/
 /* Private variables -------------------------------------------------------------------------------------------------*/
@@ -78,8 +78,8 @@
   * @{
   */
 __IO uint32_t uwTick;
-uint32_t uwTickPrio   = (1UL << __NVIC_PRIO_BITS); /* Invalid PRIO */
-HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
+uint32_t uwTickPrio = (1UL << __NVIC_PRIO_BITS);        /* Invalid PRIO */
+HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT; /* 1KHz */
 /**
   * @}
   */
@@ -142,28 +142,30 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
   */
 HAL_StatusTypeDef HAL_Init(void)
 {
-  /* Configure Flash prefetch */
+    /* Configure Flash prefetch */
 #if (PREFETCH_ENABLE != 0U)
-  __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
+    __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
 #endif /* PREFETCH_ENABLE */
 
-  /* Set Interrupt Group Priority */
-  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+    /* Set Interrupt Group Priority */
+    HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
-  /* Update the SystemCoreClock global variable */
-  SystemCoreClock = HAL_RCC_GetSysClockFreq() >> AHBPrescTable[(RCC->CFGR2 & RCC_CFGR2_HPRE) >> RCC_CFGR2_HPRE_Pos];
+    /* Update the SystemCoreClock global variable */
+    SystemCoreClock =
+        HAL_RCC_GetSysClockFreq() >>
+        AHBPrescTable[(RCC->CFGR2 & RCC_CFGR2_HPRE) >> RCC_CFGR2_HPRE_Pos];
 
-  /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK)
-  {
-    return HAL_ERROR;
-  }
+    /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
+    if (HAL_InitTick(TICK_INT_PRIORITY) != HAL_OK)
+    {
+        return HAL_ERROR;
+    }
 
-  /* Init the low level hardware */
-  HAL_MspInit();
+    /* Init the low level hardware */
+    HAL_MspInit();
 
-  /* Return function status */
-  return HAL_OK;
+    /* Return function status */
+    return HAL_OK;
 }
 
 /**
@@ -173,32 +175,32 @@ HAL_StatusTypeDef HAL_Init(void)
   */
 HAL_StatusTypeDef HAL_DeInit(void)
 {
-  /* Reset of all peripherals */
-  __HAL_RCC_APB1_FORCE_RESET();
-  __HAL_RCC_APB1_RELEASE_RESET();
+    /* Reset of all peripherals */
+    __HAL_RCC_APB1_FORCE_RESET();
+    __HAL_RCC_APB1_RELEASE_RESET();
 
-  __HAL_RCC_APB2_FORCE_RESET();
-  __HAL_RCC_APB2_RELEASE_RESET();
+    __HAL_RCC_APB2_FORCE_RESET();
+    __HAL_RCC_APB2_RELEASE_RESET();
 
-  __HAL_RCC_APB3_FORCE_RESET();
-  __HAL_RCC_APB3_RELEASE_RESET();
+    __HAL_RCC_APB3_FORCE_RESET();
+    __HAL_RCC_APB3_RELEASE_RESET();
 
-  __HAL_RCC_AHB1_FORCE_RESET();
-  __HAL_RCC_AHB1_RELEASE_RESET();
+    __HAL_RCC_AHB1_FORCE_RESET();
+    __HAL_RCC_AHB1_RELEASE_RESET();
 
-  __HAL_RCC_AHB2_FORCE_RESET();
-  __HAL_RCC_AHB2_RELEASE_RESET();
+    __HAL_RCC_AHB2_FORCE_RESET();
+    __HAL_RCC_AHB2_RELEASE_RESET();
 
 #if defined(AHB4PERIPH_BASE)
-  __HAL_RCC_AHB4_FORCE_RESET();
-  __HAL_RCC_AHB4_RELEASE_RESET();
+    __HAL_RCC_AHB4_FORCE_RESET();
+    __HAL_RCC_AHB4_RELEASE_RESET();
 #endif /* AHB4PERIPH_BASE */
 
-  /* De-Init the low level hardware */
-  HAL_MspDeInit();
+    /* De-Init the low level hardware */
+    HAL_MspDeInit();
 
-  /* Return function status */
-  return HAL_OK;
+    /* Return function status */
+    return HAL_OK;
 }
 
 /**
@@ -207,7 +209,7 @@ HAL_StatusTypeDef HAL_DeInit(void)
   */
 __weak void HAL_MspInit(void)
 {
-  /* NOTE : This function Should not be modified, when the callback is needed,
+    /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_MspInit could be implemented in the user file
    */
 }
@@ -218,7 +220,7 @@ __weak void HAL_MspInit(void)
   */
 __weak void HAL_MspDeInit(void)
 {
-  /* NOTE : This function Should not be modified, when the callback is needed,
+    /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_MspDeInit could be implemented in the user file
    */
 }
@@ -241,31 +243,32 @@ __weak void HAL_MspDeInit(void)
   */
 __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
-  /* Check uwTickFreq for MisraC 2012 (even if uwTickFreq is a enum type that don't take the value zero)*/
-  if ((uint32_t)uwTickFreq == 0UL)
-  {
-    return HAL_ERROR;
-  }
+    /* Check uwTickFreq for MisraC 2012 (even if uwTickFreq is a enum type that don't take the value zero)*/
+    if ((uint32_t)uwTickFreq == 0UL)
+    {
+        return HAL_ERROR;
+    }
 
-  /* Configure the SysTick to have interrupt in 1ms time basis*/
-  if (HAL_SYSTICK_Config(SystemCoreClock / (1000UL / (uint32_t)uwTickFreq)) > 0U)
-  {
-    return HAL_ERROR;
-  }
+    /* Configure the SysTick to have interrupt in 1ms time basis*/
+    if (HAL_SYSTICK_Config(SystemCoreClock / (1000UL / (uint32_t)uwTickFreq)) >
+        0U)
+    {
+        return HAL_ERROR;
+    }
 
-  /* Configure the SysTick IRQ priority */
-  if (TickPriority < (1UL << __NVIC_PRIO_BITS))
-  {
-    HAL_NVIC_SetPriority(SysTick_IRQn, TickPriority, 0U);
-    uwTickPrio = TickPriority;
-  }
-  else
-  {
-    return HAL_ERROR;
-  }
+    /* Configure the SysTick IRQ priority */
+    if (TickPriority < (1UL << __NVIC_PRIO_BITS))
+    {
+        HAL_NVIC_SetPriority(SysTick_IRQn, TickPriority, 0U);
+        uwTickPrio = TickPriority;
+    }
+    else
+    {
+        return HAL_ERROR;
+    }
 
-  /* Return function status */
-  return HAL_OK;
+    /* Return function status */
+    return HAL_OK;
 }
 
 /**
@@ -303,7 +306,7 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   */
 __weak void HAL_IncTick(void)
 {
-  uwTick += (uint32_t)uwTickFreq;
+    uwTick += (uint32_t)uwTickFreq;
 }
 
 /**
@@ -314,7 +317,7 @@ __weak void HAL_IncTick(void)
   */
 __weak uint32_t HAL_GetTick(void)
 {
-  return uwTick;
+    return uwTick;
 }
 
 /**
@@ -323,7 +326,7 @@ __weak uint32_t HAL_GetTick(void)
   */
 uint32_t HAL_GetTickPrio(void)
 {
-  return uwTickPrio;
+    return uwTickPrio;
 }
 
 /**
@@ -332,30 +335,30 @@ uint32_t HAL_GetTickPrio(void)
   */
 HAL_StatusTypeDef HAL_SetTickFreq(HAL_TickFreqTypeDef Freq)
 {
-  HAL_StatusTypeDef status  = HAL_OK;
-  HAL_TickFreqTypeDef prevTickFreq;
+    HAL_StatusTypeDef status = HAL_OK;
+    HAL_TickFreqTypeDef prevTickFreq;
 
-  assert_param(IS_TICKFREQ(Freq));
+    assert_param(IS_TICKFREQ(Freq));
 
-  if (uwTickFreq != Freq)
-  {
-
-    /* Back up uwTickFreq frequency */
-    prevTickFreq = uwTickFreq;
-
-    /* Update uwTickFreq global variable used by HAL_InitTick() */
-    uwTickFreq = Freq;
-
-    /* Apply the new tick Freq  */
-    status = HAL_InitTick(uwTickPrio);
-    if (status != HAL_OK)
+    if (uwTickFreq != Freq)
     {
-      /* Restore previous tick frequency */
-      uwTickFreq = prevTickFreq;
-    }
-  }
 
-  return status;
+        /* Back up uwTickFreq frequency */
+        prevTickFreq = uwTickFreq;
+
+        /* Update uwTickFreq global variable used by HAL_InitTick() */
+        uwTickFreq = Freq;
+
+        /* Apply the new tick Freq  */
+        status = HAL_InitTick(uwTickPrio);
+        if (status != HAL_OK)
+        {
+            /* Restore previous tick frequency */
+            uwTickFreq = prevTickFreq;
+        }
+    }
+
+    return status;
 }
 
 /**
@@ -365,7 +368,7 @@ HAL_StatusTypeDef HAL_SetTickFreq(HAL_TickFreqTypeDef Freq)
   */
 HAL_TickFreqTypeDef HAL_GetTickFreq(void)
 {
-  return uwTickFreq;
+    return uwTickFreq;
 }
 
 /**
@@ -381,18 +384,18 @@ HAL_TickFreqTypeDef HAL_GetTickFreq(void)
   */
 __weak void HAL_Delay(uint32_t Delay)
 {
-  uint32_t tickstart = HAL_GetTick();
-  uint32_t wait = Delay;
+    uint32_t tickstart = HAL_GetTick();
+    uint32_t wait = Delay;
 
-  /* Add a freq to guarantee minimum wait */
-  if (wait < HAL_MAX_DELAY)
-  {
-    wait += (uint32_t)(uwTickFreq);
-  }
+    /* Add a freq to guarantee minimum wait */
+    if (wait < HAL_MAX_DELAY)
+    {
+        wait += (uint32_t)(uwTickFreq);
+    }
 
-  while ((HAL_GetTick() - tickstart) < wait)
-  {
-  }
+    while ((HAL_GetTick() - tickstart) < wait)
+    {
+    }
 }
 
 /**
@@ -407,8 +410,8 @@ __weak void HAL_Delay(uint32_t Delay)
   */
 __weak void HAL_SuspendTick(void)
 {
-  /* Disable SysTick Interrupt */
-  SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    /* Disable SysTick Interrupt */
+    SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
 }
 
 /**
@@ -423,8 +426,8 @@ __weak void HAL_SuspendTick(void)
   */
 __weak void HAL_ResumeTick(void)
 {
-  /* Enable SysTick Interrupt */
-  SysTick->CTRL  |= SysTick_CTRL_TICKINT_Msk;
+    /* Enable SysTick Interrupt */
+    SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 }
 
 /**
@@ -433,7 +436,7 @@ __weak void HAL_ResumeTick(void)
   */
 uint32_t HAL_GetHalVersion(void)
 {
-  return __STM32H5XX_HAL_VERSION;
+    return __STM32H5XX_HAL_VERSION;
 }
 
 /**
@@ -442,7 +445,7 @@ uint32_t HAL_GetHalVersion(void)
   */
 uint32_t HAL_GetREVID(void)
 {
-  return ((DBGMCU->IDCODE & DBGMCU_IDCODE_REV_ID) >> 16);
+    return ((DBGMCU->IDCODE & DBGMCU_IDCODE_REV_ID) >> 16);
 }
 
 /**
@@ -451,7 +454,7 @@ uint32_t HAL_GetREVID(void)
   */
 uint32_t HAL_GetDEVID(void)
 {
-  return (DBGMCU->IDCODE & DBGMCU_IDCODE_DEV_ID);
+    return (DBGMCU->IDCODE & DBGMCU_IDCODE_DEV_ID);
 }
 
 /**
@@ -460,7 +463,7 @@ uint32_t HAL_GetDEVID(void)
   */
 uint32_t HAL_GetUIDw0(void)
 {
-  return (READ_REG(*((uint32_t *)UID_BASE)));
+    return (READ_REG(*((uint32_t*)UID_BASE)));
 }
 
 /**
@@ -469,7 +472,7 @@ uint32_t HAL_GetUIDw0(void)
   */
 uint32_t HAL_GetUIDw1(void)
 {
-  return (READ_REG(*((uint32_t *)(UID_BASE + 4U))));
+    return (READ_REG(*((uint32_t*)(UID_BASE + 4U))));
 }
 
 /**
@@ -478,13 +481,12 @@ uint32_t HAL_GetUIDw1(void)
   */
 uint32_t HAL_GetUIDw2(void)
 {
-  return (READ_REG(*((uint32_t *)(UID_BASE + 8U))));
+    return (READ_REG(*((uint32_t*)(UID_BASE + 8U))));
 }
 
 /**
   * @}
   */
-
 
 /** @defgroup HAL_Exported_Functions_Group3 HAL Debug functions
   *  @brief    HAL Debug functions
@@ -507,7 +509,7 @@ uint32_t HAL_GetUIDw2(void)
   */
 void HAL_DBGMCU_EnableDBGStopMode(void)
 {
-  SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STOP);
+    SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STOP);
 }
 
 /**
@@ -516,7 +518,7 @@ void HAL_DBGMCU_EnableDBGStopMode(void)
   */
 void HAL_DBGMCU_DisableDBGStopMode(void)
 {
-  CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STOP);
+    CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STOP);
 }
 
 /**
@@ -525,7 +527,7 @@ void HAL_DBGMCU_DisableDBGStopMode(void)
   */
 void HAL_DBGMCU_EnableDBGStandbyMode(void)
 {
-  SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STANDBY);
+    SET_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STANDBY);
 }
 
 /**
@@ -534,7 +536,7 @@ void HAL_DBGMCU_EnableDBGStandbyMode(void)
   */
 void HAL_DBGMCU_DisableDBGStandbyMode(void)
 {
-  CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STANDBY);
+    CLEAR_BIT(DBGMCU->CR, DBGMCU_CR_DBG_STANDBY);
 }
 
 /**
@@ -573,10 +575,10 @@ void HAL_DBGMCU_DisableDBGStandbyMode(void)
   */
 void HAL_VREFBUF_VoltageScalingConfig(uint32_t VoltageScaling)
 {
-  /* Check the parameters */
-  assert_param(IS_VREFBUF_VOLTAGE_SCALE(VoltageScaling));
+    /* Check the parameters */
+    assert_param(IS_VREFBUF_VOLTAGE_SCALE(VoltageScaling));
 
-  MODIFY_REG(VREFBUF->CSR, VREFBUF_CSR_VRS, VoltageScaling);
+    MODIFY_REG(VREFBUF->CSR, VREFBUF_CSR_VRS, VoltageScaling);
 }
 
 /**
@@ -589,10 +591,10 @@ void HAL_VREFBUF_VoltageScalingConfig(uint32_t VoltageScaling)
   */
 void HAL_VREFBUF_HighImpedanceConfig(uint32_t Mode)
 {
-  /* Check the parameters */
-  assert_param(IS_VREFBUF_HIGH_IMPEDANCE(Mode));
+    /* Check the parameters */
+    assert_param(IS_VREFBUF_HIGH_IMPEDANCE(Mode));
 
-  MODIFY_REG(VREFBUF->CSR, VREFBUF_CSR_HIZ, Mode);
+    MODIFY_REG(VREFBUF->CSR, VREFBUF_CSR_HIZ, Mode);
 }
 
 /**
@@ -601,10 +603,10 @@ void HAL_VREFBUF_HighImpedanceConfig(uint32_t Mode)
   */
 void HAL_VREFBUF_TrimmingConfig(uint32_t TrimmingValue)
 {
-  /* Check the parameters */
-  assert_param(IS_VREFBUF_TRIMMING(TrimmingValue));
+    /* Check the parameters */
+    assert_param(IS_VREFBUF_TRIMMING(TrimmingValue));
 
-  MODIFY_REG(VREFBUF->CCR, VREFBUF_CCR_TRIM, TrimmingValue);
+    MODIFY_REG(VREFBUF->CCR, VREFBUF_CCR_TRIM, TrimmingValue);
 }
 
 /**
@@ -613,23 +615,23 @@ void HAL_VREFBUF_TrimmingConfig(uint32_t TrimmingValue)
   */
 HAL_StatusTypeDef HAL_EnableVREFBUF(void)
 {
-  uint32_t  tickstart;
+    uint32_t tickstart;
 
-  SET_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
+    SET_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
 
-  /* Get Start Tick*/
-  tickstart = HAL_GetTick();
+    /* Get Start Tick*/
+    tickstart = HAL_GetTick();
 
-  /* Wait for VRR bit  */
-  while (READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRR) == 0UL)
-  {
-    if ((HAL_GetTick() - tickstart) > VREFBUF_TIMEOUT_VALUE)
+    /* Wait for VRR bit  */
+    while (READ_BIT(VREFBUF->CSR, VREFBUF_CSR_VRR) == 0UL)
     {
-      return HAL_TIMEOUT;
+        if ((HAL_GetTick() - tickstart) > VREFBUF_TIMEOUT_VALUE)
+        {
+            return HAL_TIMEOUT;
+        }
     }
-  }
 
-  return HAL_OK;
+    return HAL_OK;
 }
 
 /**
@@ -639,7 +641,7 @@ HAL_StatusTypeDef HAL_EnableVREFBUF(void)
   */
 void HAL_DisableVREFBUF(void)
 {
-  CLEAR_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
+    CLEAR_BIT(VREFBUF->CSR, VREFBUF_CSR_ENVR);
 }
 #endif /* VREFBUF */
 
@@ -677,10 +679,10 @@ void HAL_DisableVREFBUF(void)
   */
 void HAL_SBS_ETHInterfaceSelect(uint32_t SBS_ETHInterface)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_ETHERNET_CONFIG(SBS_ETHInterface));
+    /* Check the parameter */
+    assert_param(IS_SBS_ETHERNET_CONFIG(SBS_ETHInterface));
 
-  MODIFY_REG(SBS->PMCR, SBS_PMCR_ETH_SEL_PHY, (uint32_t)(SBS_ETHInterface));
+    MODIFY_REG(SBS->PMCR, SBS_PMCR_ETH_SEL_PHY, (uint32_t)(SBS_ETHInterface));
 }
 #endif /* SBS_PMCR_ETH_SEL_PHY */
 
@@ -692,7 +694,7 @@ void HAL_SBS_ETHInterfaceSelect(uint32_t SBS_ETHInterface)
   */
 void HAL_SBS_EnableVddIO1CompensationCell(void)
 {
-  SET_BIT(SBS->CCCSR, SBS_CCCSR_EN1) ;
+    SET_BIT(SBS->CCCSR, SBS_CCCSR_EN1);
 }
 
 /**
@@ -703,7 +705,7 @@ void HAL_SBS_EnableVddIO1CompensationCell(void)
   */
 void HAL_SBS_DisableVddIO1CompensationCell(void)
 {
-  CLEAR_BIT(SBS->CCCSR, SBS_CCCSR_EN1);
+    CLEAR_BIT(SBS->CCCSR, SBS_CCCSR_EN1);
 }
 
 /**
@@ -714,7 +716,7 @@ void HAL_SBS_DisableVddIO1CompensationCell(void)
   */
 void HAL_SBS_EnableVddIO2CompensationCell(void)
 {
-  SET_BIT(SBS->CCCSR, SBS_CCCSR_EN2) ;
+    SET_BIT(SBS->CCCSR, SBS_CCCSR_EN2);
 }
 
 /**
@@ -725,7 +727,7 @@ void HAL_SBS_EnableVddIO2CompensationCell(void)
   */
 void HAL_SBS_DisableVddIO2CompensationCell(void)
 {
-  CLEAR_BIT(SBS->CCCSR, SBS_CCCSR_EN2);
+    CLEAR_BIT(SBS->CCCSR, SBS_CCCSR_EN2);
 }
 
 /**
@@ -738,9 +740,9 @@ void HAL_SBS_DisableVddIO2CompensationCell(void)
   */
 void HAL_SBS_VDDCompensationCodeSelect(uint32_t SBS_CompCode)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_VDD_CODE_SELECT(SBS_CompCode));
-  MODIFY_REG(SBS->CCCSR, SBS_CCCSR_CS1, (uint32_t)(SBS_CompCode));
+    /* Check the parameter */
+    assert_param(IS_SBS_VDD_CODE_SELECT(SBS_CompCode));
+    MODIFY_REG(SBS->CCCSR, SBS_CCCSR_CS1, (uint32_t)(SBS_CompCode));
 }
 
 /**
@@ -753,9 +755,9 @@ void HAL_SBS_VDDCompensationCodeSelect(uint32_t SBS_CompCode)
   */
 void HAL_SBS_VDDIOCompensationCodeSelect(uint32_t SBS_CompCode)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_VDDIO_CODE_SELECT(SBS_CompCode));
-  MODIFY_REG(SBS->CCCSR, SBS_CCCSR_CS2, (uint32_t)(SBS_CompCode));
+    /* Check the parameter */
+    assert_param(IS_SBS_VDDIO_CODE_SELECT(SBS_CompCode));
+    MODIFY_REG(SBS->CCCSR, SBS_CCCSR_CS2, (uint32_t)(SBS_CompCode));
 }
 
 /**
@@ -764,7 +766,8 @@ void HAL_SBS_VDDIOCompensationCodeSelect(uint32_t SBS_CompCode)
   */
 uint32_t HAL_SBS_GetVddIO1CompensationCellReadyFlag(void)
 {
-  return ((READ_BIT(SBS->CCCSR, SBS_CCCSR_RDY1) == SBS_CCCSR_RDY1) ? 1UL : 0UL);
+    return ((READ_BIT(SBS->CCCSR, SBS_CCCSR_RDY1) == SBS_CCCSR_RDY1) ? 1UL
+                                                                     : 0UL);
 }
 
 /**
@@ -773,7 +776,8 @@ uint32_t HAL_SBS_GetVddIO1CompensationCellReadyFlag(void)
   */
 uint32_t HAL_SBS_GetVddIO2CompensationCellReadyFlag(void)
 {
-  return ((READ_BIT(SBS->CCCSR, SBS_CCCSR_RDY2) == SBS_CCCSR_RDY2) ? 1UL : 0UL);
+    return ((READ_BIT(SBS->CCCSR, SBS_CCCSR_RDY2) == SBS_CCCSR_RDY2) ? 1UL
+                                                                     : 0UL);
 }
 
 /**
@@ -786,13 +790,14 @@ uint32_t HAL_SBS_GetVddIO2CompensationCellReadyFlag(void)
   *          SBS_CCSR is set
   * @retval None
   */
-void HAL_SBS_VDDCompensationCodeConfig(uint32_t SBS_PMOSCode, uint32_t SBS_NMOSCode)
+void HAL_SBS_VDDCompensationCodeConfig(uint32_t SBS_PMOSCode,
+                                       uint32_t SBS_NMOSCode)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_CODE_CONFIG(SBS_PMOSCode));
-  assert_param(IS_SBS_CODE_CONFIG(SBS_NMOSCode));
-  MODIFY_REG(SBS->CCSWCR, SBS_CCSWCR_SW_ANSRC1 | SBS_CCSWCR_SW_APSRC1, (((uint32_t)(SBS_PMOSCode) << 4) | \
-                                                                        (uint32_t)(SBS_NMOSCode)));
+    /* Check the parameter */
+    assert_param(IS_SBS_CODE_CONFIG(SBS_PMOSCode));
+    assert_param(IS_SBS_CODE_CONFIG(SBS_NMOSCode));
+    MODIFY_REG(SBS->CCSWCR, SBS_CCSWCR_SW_ANSRC1 | SBS_CCSWCR_SW_APSRC1,
+               (((uint32_t)(SBS_PMOSCode) << 4) | (uint32_t)(SBS_NMOSCode)));
 }
 
 /**
@@ -805,13 +810,15 @@ void HAL_SBS_VDDCompensationCodeConfig(uint32_t SBS_PMOSCode, uint32_t SBS_NMOSC
   *          SBS_CCSR is set
   * @retval None
   */
-void HAL_SBS_VDDIOCompensationCodeConfig(uint32_t SBS_PMOSCode, uint32_t SBS_NMOSCode)
+void HAL_SBS_VDDIOCompensationCodeConfig(uint32_t SBS_PMOSCode,
+                                         uint32_t SBS_NMOSCode)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_CODE_CONFIG(SBS_PMOSCode));
-  assert_param(IS_SBS_CODE_CONFIG(SBS_NMOSCode));
-  MODIFY_REG(SBS->CCSWCR, SBS_CCSWCR_SW_ANSRC2 | SBS_CCSWCR_SW_APSRC2, (((uint32_t)(SBS_PMOSCode) << 12) | \
-                                                                        ((uint32_t)(SBS_NMOSCode) << 8)));
+    /* Check the parameter */
+    assert_param(IS_SBS_CODE_CONFIG(SBS_PMOSCode));
+    assert_param(IS_SBS_CODE_CONFIG(SBS_NMOSCode));
+    MODIFY_REG(
+        SBS->CCSWCR, SBS_CCSWCR_SW_ANSRC2 | SBS_CCSWCR_SW_APSRC2,
+        (((uint32_t)(SBS_PMOSCode) << 12) | ((uint32_t)(SBS_NMOSCode) << 8)));
 }
 
 /**
@@ -820,7 +827,7 @@ void HAL_SBS_VDDIOCompensationCodeConfig(uint32_t SBS_PMOSCode, uint32_t SBS_NMO
   */
 uint32_t HAL_SBS_GetNMOSVddCompensationValue(void)
 {
-  return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_ANSRC1));
+    return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_ANSRC1));
 }
 
 /**
@@ -829,7 +836,8 @@ uint32_t HAL_SBS_GetNMOSVddCompensationValue(void)
   */
 uint32_t HAL_SBS_GetPMOSVddCompensationValue(void)
 {
-  return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_APSRC1) >>  SBS_CCVALR_APSRC1_Pos);
+    return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_APSRC1) >>
+                      SBS_CCVALR_APSRC1_Pos);
 }
 
 /**
@@ -838,9 +846,9 @@ uint32_t HAL_SBS_GetPMOSVddCompensationValue(void)
   */
 uint32_t HAL_SBS_GetNMOSVddIO2CompensationValue(void)
 {
-  return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_ANSRC2) >>  SBS_CCVALR_ANSRC2_Pos);
+    return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_ANSRC2) >>
+                      SBS_CCVALR_ANSRC2_Pos);
 }
-
 
 /**
   * @brief  Get PMOS compensation value of the I/Os supplied by VDDIO2
@@ -848,7 +856,8 @@ uint32_t HAL_SBS_GetNMOSVddIO2CompensationValue(void)
   */
 uint32_t HAL_SBS_GetPMOSVddIO2CompensationValue(void)
 {
-  return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_APSRC2) >>  SBS_CCVALR_APSRC2_Pos);
+    return (uint32_t)(READ_BIT(SBS->CCVALR, SBS_CCVALR_APSRC2) >>
+                      SBS_CCVALR_APSRC2_Pos);
 }
 
 /**
@@ -858,7 +867,7 @@ uint32_t HAL_SBS_GetPMOSVddIO2CompensationValue(void)
   */
 void HAL_SBS_FLASH_DisableECCNMI(void)
 {
-  SET_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN);
+    SET_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN);
 }
 
 /**
@@ -868,7 +877,7 @@ void HAL_SBS_FLASH_DisableECCNMI(void)
   */
 void HAL_SBS_FLASH_EnableECCNMI(void)
 {
-  CLEAR_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN);
+    CLEAR_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN);
 }
 
 /**
@@ -878,7 +887,10 @@ void HAL_SBS_FLASH_EnableECCNMI(void)
   */
 uint32_t HAL_SBS_FLASH_ECCNMI_IsDisabled(void)
 {
-  return ((READ_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN) == SBS_ECCNMIR_ECCNMI_MASK_EN) ? 1UL : 0UL);
+    return ((READ_BIT(SBS->ECCNMIR, SBS_ECCNMIR_ECCNMI_MASK_EN) ==
+             SBS_ECCNMIR_ECCNMI_MASK_EN)
+                ? 1UL
+                : 0UL);
 }
 
 /**
@@ -906,7 +918,7 @@ uint32_t HAL_SBS_FLASH_ECCNMI_IsDisabled(void)
   */
 void HAL_SBS_IncrementHDPLValue(void)
 {
-  MODIFY_REG(SBS->HDPLCR, SBS_HDPLCR_INCR_HDPL, SBS_HDPL_INCREMENT_VALUE);
+    MODIFY_REG(SBS->HDPLCR, SBS_HDPLCR_INCR_HDPL, SBS_HDPL_INCREMENT_VALUE);
 }
 
 /**
@@ -921,7 +933,7 @@ void HAL_SBS_IncrementHDPLValue(void)
   */
 uint32_t HAL_SBS_GetHDPLValue(void)
 {
-  return (uint32_t)(READ_BIT(SBS->HDPLSR, SBS_HDPLSR_HDPL));
+    return (uint32_t)(READ_BIT(SBS->HDPLSR, SBS_HDPLSR_HDPL));
 }
 
 /**
@@ -956,10 +968,11 @@ uint32_t HAL_SBS_GetHDPLValue(void)
   */
 void HAL_SBS_EPOCHSelection(uint32_t Epoch_Selection)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_EPOCH_SELECTION(Epoch_Selection));
+    /* Check the parameter */
+    assert_param(IS_SBS_EPOCH_SELECTION(Epoch_Selection));
 
-  MODIFY_REG(SBS->EPOCHSELCR, SBS_EPOCHSELCR_EPOCH_SEL, (uint32_t)(Epoch_Selection));
+    MODIFY_REG(SBS->EPOCHSELCR, SBS_EPOCHSELCR_EPOCH_SEL,
+               (uint32_t)(Epoch_Selection));
 }
 
 /**
@@ -971,7 +984,7 @@ void HAL_SBS_EPOCHSelection(uint32_t Epoch_Selection)
   */
 uint32_t HAL_SBS_GetEPOCHSelection(void)
 {
-  return (uint32_t)(READ_BIT(SBS->EPOCHSELCR, SBS_EPOCHSELCR_EPOCH_SEL));
+    return (uint32_t)(READ_BIT(SBS->EPOCHSELCR, SBS_EPOCHSELCR_EPOCH_SEL));
 }
 #endif /* SBS_EPOCHSELCR_EPOCH_SEL */
 
@@ -988,10 +1001,11 @@ uint32_t HAL_SBS_GetEPOCHSelection(void)
   */
 void HAL_SBS_SetOBKHDPL(uint32_t OBKHDPL_Value)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_OBKHDPL_SELECTION(OBKHDPL_Value));
+    /* Check the parameter */
+    assert_param(IS_SBS_OBKHDPL_SELECTION(OBKHDPL_Value));
 
-  MODIFY_REG(SBS->NEXTHDPLCR, SBS_NEXTHDPLCR_NEXTHDPL, (uint32_t)(OBKHDPL_Value));
+    MODIFY_REG(SBS->NEXTHDPLCR, SBS_NEXTHDPLCR_NEXTHDPL,
+               (uint32_t)(OBKHDPL_Value));
 }
 
 /**
@@ -1005,7 +1019,7 @@ void HAL_SBS_SetOBKHDPL(uint32_t OBKHDPL_Value)
   */
 uint32_t HAL_SBS_GetOBKHDPL(void)
 {
-  return (uint32_t)(READ_BIT(SBS->NEXTHDPLCR, SBS_NEXTHDPLCR_NEXTHDPL));
+    return (uint32_t)(READ_BIT(SBS->NEXTHDPLCR, SBS_NEXTHDPLCR_NEXTHDPL));
 }
 #endif /* SBS_NEXTHDPLCR_NEXTHDPL */
 
@@ -1039,7 +1053,7 @@ uint32_t HAL_SBS_GetOBKHDPL(void)
   */
 void HAL_SBS_OpenAccessPort(void)
 {
-  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_AP_UNLOCK, SBS_DEBUG_UNLOCK_VALUE);
+    MODIFY_REG(SBS->DBGCR, SBS_DBGCR_AP_UNLOCK, SBS_DEBUG_UNLOCK_VALUE);
 }
 
 /**
@@ -1049,7 +1063,8 @@ void HAL_SBS_OpenAccessPort(void)
   */
 void HAL_SBS_OpenDebug(void)
 {
-  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_UNLOCK, (SBS_DEBUG_UNLOCK_VALUE << SBS_DBGCR_DBG_UNLOCK_Pos));
+    MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_UNLOCK,
+               (SBS_DEBUG_UNLOCK_VALUE << SBS_DBGCR_DBG_UNLOCK_Pos));
 }
 
 /**
@@ -1062,18 +1077,19 @@ void HAL_SBS_OpenDebug(void)
   */
 HAL_StatusTypeDef HAL_SBS_ConfigDebugLevel(uint32_t Level)
 {
-  /* Check the parameter */
-  assert_param(IS_SBS_HDPL(Level));
+    /* Check the parameter */
+    assert_param(IS_SBS_HDPL(Level));
 
-  if (Level != SBS_HDPL_VALUE_0)
-  {
-    MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_HDPL, (Level << SBS_DBGCR_DBG_AUTH_HDPL_Pos));
-    return HAL_OK;
-  }
-  else
-  {
-    return HAL_ERROR;
-  }
+    if (Level != SBS_HDPL_VALUE_0)
+    {
+        MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_HDPL,
+                   (Level << SBS_DBGCR_DBG_AUTH_HDPL_Pos));
+        return HAL_OK;
+    }
+    else
+    {
+        return HAL_ERROR;
+    }
 }
 
 /**
@@ -1084,7 +1100,8 @@ HAL_StatusTypeDef HAL_SBS_ConfigDebugLevel(uint32_t Level)
   */
 uint32_t HAL_SBS_GetDebugLevel(void)
 {
-  return ((SBS->DBGCR & SBS_DBGCR_DBG_AUTH_HDPL) >> SBS_DBGCR_DBG_AUTH_HDPL_Pos);
+    return ((SBS->DBGCR & SBS_DBGCR_DBG_AUTH_HDPL) >>
+            SBS_DBGCR_DBG_AUTH_HDPL_Pos);
 }
 
 /**
@@ -1095,7 +1112,7 @@ uint32_t HAL_SBS_GetDebugLevel(void)
   */
 void HAL_SBS_LockDebugConfig(void)
 {
-  MODIFY_REG(SBS->DBGLOCKR, SBS_DBGLOCKR_DBGCFG_LOCK, SBS_DEBUG_LOCK_VALUE);
+    MODIFY_REG(SBS->DBGLOCKR, SBS_DBGLOCKR_DBGCFG_LOCK, SBS_DEBUG_LOCK_VALUE);
 }
 
 #if defined(SBS_DBGCR_DBG_AUTH_SEC)
@@ -1109,7 +1126,8 @@ void HAL_SBS_LockDebugConfig(void)
   */
 void HAL_SBS_ConfigDebugSecurity(uint32_t Security)
 {
-  MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_SEC, (Security << SBS_DBGCR_DBG_AUTH_SEC_Pos));
+    MODIFY_REG(SBS->DBGCR, SBS_DBGCR_DBG_AUTH_SEC,
+               (Security << SBS_DBGCR_DBG_AUTH_SEC_Pos));
 }
 
 /**
@@ -1121,7 +1139,8 @@ void HAL_SBS_ConfigDebugSecurity(uint32_t Security)
   */
 uint32_t HAL_SBS_GetDebugSecurity(void)
 {
-  return ((SBS->DBGCR & SBS_DBGCR_DBG_AUTH_SEC) >> SBS_DBGCR_DBG_AUTH_SEC_Pos);
+    return ((SBS->DBGCR & SBS_DBGCR_DBG_AUTH_SEC) >>
+            SBS_DBGCR_DBG_AUTH_SEC_Pos);
 }
 #endif /* SBS_DBGCR_DBG_AUTH_SEC */
 
@@ -1151,16 +1170,18 @@ uint32_t HAL_SBS_GetDebugSecurity(void)
   */
 void HAL_SBS_Lock(uint32_t Item)
 {
-  /* Check the parameters */
-  assert_param(IS_SBS_LOCK_ITEMS(Item));
+    /* Check the parameters */
+    assert_param(IS_SBS_LOCK_ITEMS(Item));
 
-  /* Privilege secure/non-secure locks */
-  SBS->CNSLCKR = (0xFFFFU & Item);  /* non-secure lock item in 16 lowest bits */
+    /* Privilege secure/non-secure locks */
+    SBS->CNSLCKR =
+        (0xFFFFU & Item); /* non-secure lock item in 16 lowest bits */
 
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-  /* Privilege secure only locks */
-  SBS->CSLCKR = ((0xFFFF0000U & Item) >> 16U);  /* Secure-only lock item in 16 highest bits */
-#endif /* __ARM_FEATURE_CMSE */
+#if defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+    /* Privilege secure only locks */
+    SBS->CSLCKR = ((0xFFFF0000U & Item) >>
+                   16U); /* Secure-only lock item in 16 highest bits */
+#endif                   /* __ARM_FEATURE_CMSE */
 }
 
 /**
@@ -1170,28 +1191,28 @@ void HAL_SBS_Lock(uint32_t Item)
   *         the return value can be a combination of @ref SBS_Lock_items
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SBS_GetLock(uint32_t *pItem)
+HAL_StatusTypeDef HAL_SBS_GetLock(uint32_t* pItem)
 {
-  uint32_t tmp_lock;
+    uint32_t tmp_lock;
 
-  /* Check null pointer */
-  if (pItem == NULL)
-  {
-    return HAL_ERROR;
-  }
+    /* Check null pointer */
+    if (pItem == NULL)
+    {
+        return HAL_ERROR;
+    }
 
-  /* Get the non-secure lock state */
-  tmp_lock = SBS->CNSLCKR;
+    /* Get the non-secure lock state */
+    tmp_lock = SBS->CNSLCKR;
 
-  /* Get the secure lock state in secure code */
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-  tmp_lock |= (SBS->CSLCKR << 16U);
+    /* Get the secure lock state in secure code */
+#if defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+    tmp_lock |= (SBS->CSLCKR << 16U);
 #endif /* __ARM_FEATURE_CMSE */
 
-  /* Return overall lock status */
-  *pItem = tmp_lock;
+    /* Return overall lock status */
+    *pItem = tmp_lock;
 
-  return HAL_OK;
+    return HAL_OK;
 }
 
 /**
@@ -1210,7 +1231,7 @@ HAL_StatusTypeDef HAL_SBS_GetLock(uint32_t *pItem)
   * @{
   */
 
-#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+#if defined(__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
 /**
   * @brief  Configure the SBS item attribute(s).
   * @note   Available attributes are to secure SBS items, so this function is
@@ -1223,28 +1244,27 @@ HAL_StatusTypeDef HAL_SBS_GetLock(uint32_t *pItem)
   */
 void HAL_SBS_ConfigAttributes(uint32_t Item, uint32_t Attributes)
 {
-  uint32_t tmp;
+    uint32_t tmp;
 
-  /* Check the parameters */
-  assert_param(IS_SBS_ITEMS_ATTRIBUTES(Item));
-  assert_param(IS_SBS_ATTRIBUTES(Attributes));
+    /* Check the parameters */
+    assert_param(IS_SBS_ITEMS_ATTRIBUTES(Item));
+    assert_param(IS_SBS_ATTRIBUTES(Attributes));
 
-  tmp = SBS->SECCFGR;
+    tmp = SBS->SECCFGR;
 
-  /* Set or reset Item */
-  if ((Attributes & SBS_SEC) != 0x00U)
-  {
-    tmp |= Item;
-  }
-  else
-  {
-    tmp &= ~Item;
-  }
+    /* Set or reset Item */
+    if ((Attributes & SBS_SEC) != 0x00U)
+    {
+        tmp |= Item;
+    }
+    else
+    {
+        tmp &= ~Item;
+    }
 
-  /* Set secure attributes */
-  SBS->SECCFGR = tmp;
+    /* Set secure attributes */
+    SBS->SECCFGR = tmp;
 }
-
 
 /**
   * @brief  Get the attribute of a SBS items.
@@ -1254,28 +1274,29 @@ void HAL_SBS_ConfigAttributes(uint32_t Item, uint32_t Attributes)
   * @param  pAttributes pointer to return the attribute.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SBS_GetConfigAttributes(uint32_t Item, uint32_t *pAttributes)
+HAL_StatusTypeDef HAL_SBS_GetConfigAttributes(uint32_t Item,
+                                              uint32_t* pAttributes)
 {
-  /* Check null pointer */
-  if (pAttributes == NULL)
-  {
-    return HAL_ERROR;
-  }
+    /* Check null pointer */
+    if (pAttributes == NULL)
+    {
+        return HAL_ERROR;
+    }
 
-  /* Check the parameters */
-  assert_param(IS_SBS_ITEMS_ATTRIBUTES(Item));
+    /* Check the parameters */
+    assert_param(IS_SBS_ITEMS_ATTRIBUTES(Item));
 
-  /* Get the secure attribute state */
-  if ((SBS->SECCFGR & Item) != 0U)
-  {
-    *pAttributes = SBS_SEC;
-  }
-  else
-  {
-    *pAttributes = SBS_NSEC;
-  }
+    /* Get the secure attribute state */
+    if ((SBS->SECCFGR & Item) != 0U)
+    {
+        *pAttributes = SBS_SEC;
+    }
+    else
+    {
+        *pAttributes = SBS_NSEC;
+    }
 
-  return HAL_OK;
+    return HAL_OK;
 }
 #endif /* __ARM_FEATURE_CMSE */
 
@@ -1295,4 +1316,3 @@ HAL_StatusTypeDef HAL_SBS_GetConfigAttributes(uint32_t Item, uint32_t *pAttribut
 /**
   * @}
   */
-

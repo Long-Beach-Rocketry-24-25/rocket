@@ -21,77 +21,94 @@
 #define STM32H5xx_HAL_RAMCFG_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h5xx_hal_def.h"
 
-/** @addtogroup STM32H5xx_HAL_Driver
+    /** @addtogroup STM32H5xx_HAL_Driver
   * @{
   */
 
-/** @addtogroup RAMCFG
+    /** @addtogroup RAMCFG
   * @{
   */
 
+    /* Exported types ------------------------------------------------------------*/
 
-/* Exported types ------------------------------------------------------------*/
-
-/** @defgroup RAMCFG_Exported_Types RAMCFG Exported Types
+    /** @defgroup RAMCFG_Exported_Types RAMCFG Exported Types
   * @brief    RAMCFG Exported Types
   * @{
   */
 
-/**
+    /**
   * @brief  HAL RAMCFG State Enumeration Definition
   */
-typedef enum
-{
-  HAL_RAMCFG_STATE_RESET             = 0x00U,  /*!< RAMCFG not yet initialized or disabled */
-  HAL_RAMCFG_STATE_READY             = 0x01U,  /*!< RAMCFG initialized and ready for use   */
-  HAL_RAMCFG_STATE_BUSY              = 0x02U,  /*!< RAMCFG process is ongoing              */
-  HAL_RAMCFG_STATE_ERROR             = 0x03U,  /*!< RAMCFG error state                     */
-} HAL_RAMCFG_StateTypeDef;
+    typedef enum
+    {
+        HAL_RAMCFG_STATE_RESET =
+            0x00U, /*!< RAMCFG not yet initialized or disabled */
+        HAL_RAMCFG_STATE_READY =
+            0x01U, /*!< RAMCFG initialized and ready for use   */
+        HAL_RAMCFG_STATE_BUSY =
+            0x02U, /*!< RAMCFG process is ongoing              */
+        HAL_RAMCFG_STATE_ERROR =
+            0x03U, /*!< RAMCFG error state                     */
+    } HAL_RAMCFG_StateTypeDef;
 
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-/**
+    /**
   * @brief  HAL RAMCFG Callbacks IDs Enumeration Definition
   */
-typedef enum
-{
-  HAL_RAMCFG_MSPINIT_CB_ID           = 0x00U,  /*!< RAMCFG MSP Init Callback ID            */
-  HAL_RAMCFG_MSPDEINIT_CB_ID         = 0x01U,  /*!< RAMCFG MSP DeInit Callback ID          */
-  HAL_RAMCFG_SE_DETECT_CB_ID         = 0x02U,  /*!< RAMCFG Single Error Detect Callback ID */
-  HAL_RAMCFG_DE_DETECT_CB_ID         = 0x03U,  /*!< RAMCFG Double Error Detect Callback ID */
-  HAL_RAMCFG_ALL_CB_ID               = 0x04U,  /*!< RAMCFG All callback ID                 */
-} HAL_RAMCFG_CallbackIDTypeDef;
+    typedef enum
+    {
+        HAL_RAMCFG_MSPINIT_CB_ID =
+            0x00U, /*!< RAMCFG MSP Init Callback ID            */
+        HAL_RAMCFG_MSPDEINIT_CB_ID =
+            0x01U, /*!< RAMCFG MSP DeInit Callback ID          */
+        HAL_RAMCFG_SE_DETECT_CB_ID =
+            0x02U, /*!< RAMCFG Single Error Detect Callback ID */
+        HAL_RAMCFG_DE_DETECT_CB_ID =
+            0x03U, /*!< RAMCFG Double Error Detect Callback ID */
+        HAL_RAMCFG_ALL_CB_ID =
+            0x04U, /*!< RAMCFG All callback ID                 */
+    } HAL_RAMCFG_CallbackIDTypeDef;
 #endif /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
 
 /**
   * @brief  RAMCFG Handle Structure Definition
   */
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-typedef struct __RAMCFG_HandleTypeDef
+    typedef struct __RAMCFG_HandleTypeDef
 #else
 typedef struct
 #endif /* (USE_HAL_RAMCFG_REGISTER_CALLBACKS) */
-{
-  RAMCFG_TypeDef                  *Instance;                                 /*!< RAMCFG Register Base Address        */
-  __IO HAL_RAMCFG_StateTypeDef    State;                                     /*!< RAMCFG State                        */
-  __IO uint32_t                   ErrorCode;                                 /*!< RAMCFG Error Code                   */
+    {
+        RAMCFG_TypeDef* Instance; /*!< RAMCFG Register Base Address        */
+        __IO HAL_RAMCFG_StateTypeDef
+            State;               /*!< RAMCFG State                        */
+        __IO uint32_t ErrorCode; /*!< RAMCFG Error Code                   */
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-  void (* MspInitCallback)(struct __RAMCFG_HandleTypeDef *hramcfg);          /*!< RAMCFG MSP Init Callback            */
-  void (* MspDeInitCallback)(struct __RAMCFG_HandleTypeDef *hramcfg);        /*!< RAMCFG MSP DeInit Callback          */
-  void (* DetectSingleErrorCallback)(struct __RAMCFG_HandleTypeDef *hramcfg);/*!< RAMCFG Single Error Detect Callback */
-  void (* DetectDoubleErrorCallback)(struct __RAMCFG_HandleTypeDef *hramcfg);/*!< RAMCFG Double Error Detect Callback */
-#endif  /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
-} RAMCFG_HandleTypeDef;
+        void (*MspInitCallback)(
+            struct __RAMCFG_HandleTypeDef*
+                hramcfg); /*!< RAMCFG MSP Init Callback            */
+        void (*MspDeInitCallback)(
+            struct __RAMCFG_HandleTypeDef*
+                hramcfg); /*!< RAMCFG MSP DeInit Callback          */
+        void (*DetectSingleErrorCallback)(
+            struct __RAMCFG_HandleTypeDef*
+                hramcfg); /*!< RAMCFG Single Error Detect Callback */
+        void (*DetectDoubleErrorCallback)(
+            struct __RAMCFG_HandleTypeDef*
+                hramcfg); /*!< RAMCFG Double Error Detect Callback */
+#endif                    /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
+    } RAMCFG_HandleTypeDef;
 
 /**
   * @}
   */
-
 
 /* Exported constants --------------------------------------------------------*/
 
@@ -104,12 +121,13 @@ typedef struct
   * @brief    RAMCFG Error Codes
   * @{
   */
-#define HAL_RAMCFG_ERROR_NONE             0x00000000U  /*!< RAMCFG No Error         */
-#define HAL_RAMCFG_ERROR_TIMEOUT          0x00000001U  /*!< RAMCFG Timeout Error    */
-#define HAL_RAMCFG_ERROR_BUSY             0x00000002U  /*!< RAMCFG Busy Error       */
+#define HAL_RAMCFG_ERROR_NONE 0x00000000U    /*!< RAMCFG No Error         */
+#define HAL_RAMCFG_ERROR_TIMEOUT 0x00000001U /*!< RAMCFG Timeout Error    */
+#define HAL_RAMCFG_ERROR_BUSY 0x00000002U    /*!< RAMCFG Busy Error       */
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-#define HAL_RAMCFG_ERROR_INVALID_CALLBACK 0x00000003U  /*!< Invalid Callback error  */
-#endif  /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
+#define HAL_RAMCFG_ERROR_INVALID_CALLBACK \
+    0x00000003U /*!< Invalid Callback error  */
+#endif          /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
 /**
   * @}
   */
@@ -118,11 +136,15 @@ typedef struct
   * @brief    RAMCFG Interrupts
   * @{
   */
-#define RAMCFG_IT_SINGLEERR   RAMCFG_IER_SEIE           /*!< RAMCFG Single Error Interrupt                   */
-#define RAMCFG_IT_DOUBLEERR   RAMCFG_IER_DEIE           /*!< RAMCFG Double Error Interrupt                   */
-#define RAMCFG_IT_NMIERR      RAMCFG_IER_ECCNMI         /*!< RAMCFG Double Error redirected to NMI Interrupt */
-#define RAMCFG_IT_ALL \
-  (RAMCFG_IER_SEIE | RAMCFG_IER_DEIE |RAMCFG_IER_ECCNMI)  /*!< RAMCFG All RAMCFG interrupt                     */
+#define RAMCFG_IT_SINGLEERR \
+    RAMCFG_IER_SEIE /*!< RAMCFG Single Error Interrupt                   */
+#define RAMCFG_IT_DOUBLEERR \
+    RAMCFG_IER_DEIE /*!< RAMCFG Double Error Interrupt                   */
+#define RAMCFG_IT_NMIERR \
+    RAMCFG_IER_ECCNMI /*!< RAMCFG Double Error redirected to NMI Interrupt */
+#define RAMCFG_IT_ALL                    \
+    (RAMCFG_IER_SEIE | RAMCFG_IER_DEIE | \
+     RAMCFG_IER_ECCNMI) /*!< RAMCFG All RAMCFG interrupt                     */
 /**
   * @}
   */
@@ -131,11 +153,15 @@ typedef struct
   * @brief    RAMCFG Monitor Flags
   * @{
   */
-#define RAMCFG_FLAG_SINGLEERR   RAMCFG_ISR_SEDC            /*!< RAMCFG Single Error Detected and Corrected Flag */
-#define RAMCFG_FLAG_DOUBLEERR   RAMCFG_ISR_DED             /*!< RAMCFG Double Error Detected Flag               */
-#define RAMCFG_FLAG_SRAMBUSY    RAMCFG_ISR_SRAMBUSY        /*!< RAMCFG SRAM busy Flag                           */
-#define RAMCFG_FLAGS_ALL \
-  (RAMCFG_ISR_SEDC | RAMCFG_ISR_DED  | RAMCFG_ISR_SRAMBUSY)  /*!< RAMCFG All Flags                                */
+#define RAMCFG_FLAG_SINGLEERR \
+    RAMCFG_ISR_SEDC /*!< RAMCFG Single Error Detected and Corrected Flag */
+#define RAMCFG_FLAG_DOUBLEERR \
+    RAMCFG_ISR_DED /*!< RAMCFG Double Error Detected Flag               */
+#define RAMCFG_FLAG_SRAMBUSY \
+    RAMCFG_ISR_SRAMBUSY /*!< RAMCFG SRAM busy Flag                           */
+#define RAMCFG_FLAGS_ALL                \
+    (RAMCFG_ISR_SEDC | RAMCFG_ISR_DED | \
+     RAMCFG_ISR_SRAMBUSY) /*!< RAMCFG All Flags                                */
 /**
   * @}
   */
@@ -144,20 +170,18 @@ typedef struct
   * @brief    RAMCFG Keys
   * @{
   */
-#define RAMCFG_ERASE_KEY1  (0xCAU) /*!< RAMCFG launch Erase Key 1 */
-#define RAMCFG_ERASE_KEY2  (0x53U) /*!< RAMCFG launch Erase Key 2 */
+#define RAMCFG_ERASE_KEY1 (0xCAU) /*!< RAMCFG launch Erase Key 1 */
+#define RAMCFG_ERASE_KEY2 (0x53U) /*!< RAMCFG launch Erase Key 2 */
 
-#define RAMCFG_ECC_KEY1    (0xAEU) /*!< RAMCFG launch ECC Key 1 */
-#define RAMCFG_ECC_KEY2    (0x75U) /*!< RAMCFG launch ECC Key 2 */
+#define RAMCFG_ECC_KEY1 (0xAEU) /*!< RAMCFG launch ECC Key 1 */
+#define RAMCFG_ECC_KEY2 (0x75U) /*!< RAMCFG launch ECC Key 2 */
 /**
   * @}
   */
 
-
 /**
   * @}
   */
-
 
 /* Exported macro ------------------------------------------------------------*/
 
@@ -178,7 +202,7 @@ typedef struct
   * @retval None
   */
 #define __HAL_RAMCFG_ENABLE_IT(__HANDLE__, __INTERRUPT__) \
-  ((__HANDLE__)->Instance->IER |= (__INTERRUPT__))
+    ((__HANDLE__)->Instance->IER |= (__INTERRUPT__))
 
 /**
   * @brief  Disable the specified RAMCFG interrupts.
@@ -192,7 +216,7 @@ typedef struct
   * @retval None
   */
 #define __HAL_RAMCFG_DISABLE_IT(__HANDLE__, __INTERRUPT__) \
-  ((__HANDLE__)->Instance->IER &= ~(__INTERRUPT__))
+    ((__HANDLE__)->Instance->IER &= ~(__INTERRUPT__))
 
 /**
   * @brief  Check whether the specified RAMCFG interrupt source is enabled or not.
@@ -204,8 +228,10 @@ typedef struct
   *           @arg RAMCFG_IT_NMIERR       : Double Error Interrupt Redirection to NMI Mask.
   * @retval The new state of __INTERRUPT__ (SET or RESET).
   */
-#define __HAL_RAMCFG_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__) \
-  ((((__HANDLE__)->Instance->IER & (__INTERRUPT__)) == (__INTERRUPT__)) ? 1U : 0U)
+#define __HAL_RAMCFG_GET_IT_SOURCE(__HANDLE__, __INTERRUPT__)             \
+    ((((__HANDLE__)->Instance->IER & (__INTERRUPT__)) == (__INTERRUPT__)) \
+         ? 1U                                                             \
+         : 0U)
 
 /**
   * @brief  Get the RAMCFG pending flags.
@@ -218,7 +244,7 @@ typedef struct
   * @retval The state of FLAG (SET or RESET).
   */
 #define __HAL_RAMCFG_GET_FLAG(__HANDLE__, __FLAG__) \
-  (READ_BIT((__HANDLE__)->Instance->ISR, (__FLAG__)) == (__FLAG__))
+    (READ_BIT((__HANDLE__)->Instance->ISR, (__FLAG__)) == (__FLAG__))
 
 /**
   * @brief  Clear the RAMCFG pending flags.
@@ -230,107 +256,117 @@ typedef struct
   * @retval None.
   */
 #define __HAL_RAMCFG_CLEAR_FLAG(__HANDLE__, __FLAG__) \
-  ((__HANDLE__)->Instance->ICR |= (__FLAG__))
+    ((__HANDLE__)->Instance->ICR |= (__FLAG__))
 
 /** @brief  Reset the RAMCFG handle state.
   * @param  __HANDLE__    : Specifies the RAMCFG Handle.
   * @retval None.
   */
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-#define __HAL_RAMCFG_RESET_HANDLE_STATE(__HANDLE__) \
-  do{\
-    (__HANDLE__)->State = HAL_RAMCFG_STATE_RESET; \
-    (__HANDLE__)->MspInitCallback   = NULL;       \
-    (__HANDLE__)->MspDeInitCallback = NULL;       \
-  }while(0)
+#define __HAL_RAMCFG_RESET_HANDLE_STATE(__HANDLE__)   \
+    do                                                \
+    {                                                 \
+        (__HANDLE__)->State = HAL_RAMCFG_STATE_RESET; \
+        (__HANDLE__)->MspInitCallback = NULL;         \
+        (__HANDLE__)->MspDeInitCallback = NULL;       \
+    } while (0)
 #else
-#define __HAL_RAMCFG_RESET_HANDLE_STATE(__HANDLE__) \
-  do{\
-    (__HANDLE__)->State = HAL_RAMCFG_STATE_RESET; \
-  }while(0)
+#define __HAL_RAMCFG_RESET_HANDLE_STATE(__HANDLE__)   \
+    do                                                \
+    {                                                 \
+        (__HANDLE__)->State = HAL_RAMCFG_STATE_RESET; \
+    } while (0)
 #endif /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
 
-/**
+    /**
   * @}
   */
 
+    /* Exported functions --------------------------------------------------------*/
 
-/* Exported functions --------------------------------------------------------*/
-
-/** @defgroup RAMCFG_Exported_Functions RAMCFG Exported Functions
+    /** @defgroup RAMCFG_Exported_Functions RAMCFG Exported Functions
   * @brief    RAMCFG Exported Functions
   * @{
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group1 Initialization and De-Initialization Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group1 Initialization and De-Initialization Functions
   * @brief    Initialization and De-Initialization Functions
   * @{
   */
-HAL_StatusTypeDef HAL_RAMCFG_Init(RAMCFG_HandleTypeDef *hramcfg);
-HAL_StatusTypeDef HAL_RAMCFG_DeInit(RAMCFG_HandleTypeDef *hramcfg);
-void HAL_RAMCFG_MspInit(RAMCFG_HandleTypeDef *hramcfg);
-void HAL_RAMCFG_MspDeInit(RAMCFG_HandleTypeDef *hramcfg);
-/**
+    HAL_StatusTypeDef HAL_RAMCFG_Init(RAMCFG_HandleTypeDef* hramcfg);
+    HAL_StatusTypeDef HAL_RAMCFG_DeInit(RAMCFG_HandleTypeDef* hramcfg);
+    void HAL_RAMCFG_MspInit(RAMCFG_HandleTypeDef* hramcfg);
+    void HAL_RAMCFG_MspDeInit(RAMCFG_HandleTypeDef* hramcfg);
+    /**
   * @}
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group2 ECC Operation Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group2 ECC Operation Functions
   * @brief    ECC Operation Functions
   * @{
   */
-HAL_StatusTypeDef HAL_RAMCFG_StartECC(RAMCFG_HandleTypeDef *hramcfg);
-HAL_StatusTypeDef HAL_RAMCFG_StopECC(RAMCFG_HandleTypeDef *hramcfg);
-HAL_StatusTypeDef HAL_RAMCFG_EnableNotification(RAMCFG_HandleTypeDef *hramcfg, uint32_t Notifications);
-HAL_StatusTypeDef HAL_RAMCFG_DisableNotification(RAMCFG_HandleTypeDef *hramcfg, uint32_t Notifications);
-uint32_t HAL_RAMCFG_IsECCSingleErrorDetected(const RAMCFG_HandleTypeDef *hramcfg);
-uint32_t HAL_RAMCFG_IsECCDoubleErrorDetected(const RAMCFG_HandleTypeDef *hramcfg);
-uint32_t HAL_RAMCFG_GetSingleErrorAddress(const RAMCFG_HandleTypeDef *hramcfg);
-uint32_t HAL_RAMCFG_GetDoubleErrorAddress(const RAMCFG_HandleTypeDef *hramcfg);
-/**
+    HAL_StatusTypeDef HAL_RAMCFG_StartECC(RAMCFG_HandleTypeDef* hramcfg);
+    HAL_StatusTypeDef HAL_RAMCFG_StopECC(RAMCFG_HandleTypeDef* hramcfg);
+    HAL_StatusTypeDef HAL_RAMCFG_EnableNotification(
+        RAMCFG_HandleTypeDef* hramcfg, uint32_t Notifications);
+    HAL_StatusTypeDef HAL_RAMCFG_DisableNotification(
+        RAMCFG_HandleTypeDef* hramcfg, uint32_t Notifications);
+    uint32_t HAL_RAMCFG_IsECCSingleErrorDetected(
+        const RAMCFG_HandleTypeDef* hramcfg);
+    uint32_t HAL_RAMCFG_IsECCDoubleErrorDetected(
+        const RAMCFG_HandleTypeDef* hramcfg);
+    uint32_t HAL_RAMCFG_GetSingleErrorAddress(
+        const RAMCFG_HandleTypeDef* hramcfg);
+    uint32_t HAL_RAMCFG_GetDoubleErrorAddress(
+        const RAMCFG_HandleTypeDef* hramcfg);
+    /**
   * @}
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group4 Write Protection Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group4 Write Protection Functions
   * @brief    Write Protection Functions
   * @{
   */
-HAL_StatusTypeDef HAL_RAMCFG_EnableWriteProtection(RAMCFG_HandleTypeDef *hramcfg, uint32_t StartPage, uint32_t NbPage);
-/**
+    HAL_StatusTypeDef HAL_RAMCFG_EnableWriteProtection(
+        RAMCFG_HandleTypeDef* hramcfg, uint32_t StartPage, uint32_t NbPage);
+    /**
   * @}
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group5 Erase Operation Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group5 Erase Operation Functions
   * @brief    Erase Operation Functions
   * @{
   */
-HAL_StatusTypeDef HAL_RAMCFG_Erase(RAMCFG_HandleTypeDef *hramcfg);
-/**
+    HAL_StatusTypeDef HAL_RAMCFG_Erase(RAMCFG_HandleTypeDef* hramcfg);
+    /**
   * @}
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group6 Handle Interrupt and Callbacks Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group6 Handle Interrupt and Callbacks Functions
   * @brief    Handle Interrupt and Callbacks Functions
   * @{
   */
-void              HAL_RAMCFG_IRQHandler(RAMCFG_HandleTypeDef *hramcfg);
-void              HAL_RAMCFG_DetectSingleErrorCallback(RAMCFG_HandleTypeDef *hramcfg);
-void              HAL_RAMCFG_DetectDoubleErrorCallback(RAMCFG_HandleTypeDef *hramcfg);
+    void HAL_RAMCFG_IRQHandler(RAMCFG_HandleTypeDef* hramcfg);
+    void HAL_RAMCFG_DetectSingleErrorCallback(RAMCFG_HandleTypeDef* hramcfg);
+    void HAL_RAMCFG_DetectDoubleErrorCallback(RAMCFG_HandleTypeDef* hramcfg);
 #if (USE_HAL_RAMCFG_REGISTER_CALLBACKS == 1)
-HAL_StatusTypeDef HAL_RAMCFG_RegisterCallback(RAMCFG_HandleTypeDef *hramcfg,
-                                              HAL_RAMCFG_CallbackIDTypeDef CallbackID,
-                                              void (* pCallback)(RAMCFG_HandleTypeDef *_hramcfg));
-HAL_StatusTypeDef HAL_RAMCFG_UnRegisterCallback(RAMCFG_HandleTypeDef *hramcfg, HAL_RAMCFG_CallbackIDTypeDef CallbackID);
+    HAL_StatusTypeDef HAL_RAMCFG_RegisterCallback(
+        RAMCFG_HandleTypeDef* hramcfg, HAL_RAMCFG_CallbackIDTypeDef CallbackID,
+        void (*pCallback)(RAMCFG_HandleTypeDef* _hramcfg));
+    HAL_StatusTypeDef HAL_RAMCFG_UnRegisterCallback(
+        RAMCFG_HandleTypeDef* hramcfg, HAL_RAMCFG_CallbackIDTypeDef CallbackID);
 #endif /* USE_HAL_RAMCFG_REGISTER_CALLBACKS */
-/**
+    /**
   * @}
   */
 
-/** @defgroup RAMCFG_Exported_Functions_Group7 State and Error Functions
+    /** @defgroup RAMCFG_Exported_Functions_Group7 State and Error Functions
   * @brief    State and Error Functions
   * @{
   */
-uint32_t HAL_RAMCFG_GetError(const RAMCFG_HandleTypeDef *hramcfg);
-HAL_RAMCFG_StateTypeDef HAL_RAMCFG_GetState(const RAMCFG_HandleTypeDef *hramcfg);
+    uint32_t HAL_RAMCFG_GetError(const RAMCFG_HandleTypeDef* hramcfg);
+    HAL_RAMCFG_StateTypeDef HAL_RAMCFG_GetState(
+        const RAMCFG_HandleTypeDef* hramcfg);
 /**
   * @}
   */
@@ -338,7 +374,6 @@ HAL_RAMCFG_StateTypeDef HAL_RAMCFG_GetState(const RAMCFG_HandleTypeDef *hramcfg)
 /**
   * @}
   */
-
 
 /* Private Constants ---------------------------------------------------------*/
 
@@ -350,40 +385,38 @@ HAL_RAMCFG_StateTypeDef HAL_RAMCFG_GetState(const RAMCFG_HandleTypeDef *hramcfg)
   * @}
   */
 
-
 /* Private macros ------------------------------------------------------------*/
 
 /** @defgroup RAMCFG_Private_Macros RAMCFG Private Macros
   * @brief    RAMCFG Private Macros
   * @{
   */
-#define IS_RAMCFG_INTERRUPT(INTERRUPT) \
-  (((INTERRUPT) != 0U) && (((INTERRUPT) & ~(RAMCFG_IT_SINGLEERR | RAMCFG_IT_DOUBLEERR | RAMCFG_IT_NMIERR)) == 0U))
+#define IS_RAMCFG_INTERRUPT(INTERRUPT)                             \
+    (((INTERRUPT) != 0U) &&                                        \
+     (((INTERRUPT) & ~(RAMCFG_IT_SINGLEERR | RAMCFG_IT_DOUBLEERR | \
+                       RAMCFG_IT_NMIERR)) == 0U))
 
+#define IS_RAMCFG_WRITEPROTECTION_PAGE(PAGE) ((PAGE) <= 64U)
 
-#define IS_RAMCFG_WRITEPROTECTION_PAGE(PAGE)   ((PAGE) <= 64U)
-
-
-/**
+    /**
   * @}
   */
 
+    /* Private functions ---------------------------------------------------------*/
 
-/* Private functions ---------------------------------------------------------*/
-
-/** @defgroup RAMCFG_Private_Functions RAMCFG Private Functions
+    /** @defgroup RAMCFG_Private_Functions RAMCFG Private Functions
   * @brief    RAMCFG Private Functions
   * @{
   */
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 

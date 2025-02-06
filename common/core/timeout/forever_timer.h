@@ -12,12 +12,12 @@
 /**
  * Start function for Timeout interface.
  */
-void forever_timer_start(void * data);
+void forever_timer_start(void* data);
 
 /**
  * Tick function for Timeout interface.
  */
-bool forever_timer_tick(void * data);
+bool forever_timer_tick(void* data);
 
 /**
  * Initializes a Timeout interface as a Forever Timer, that

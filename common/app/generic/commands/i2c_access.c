@@ -1,10 +1,10 @@
 
 #include "i2c_access.h"
 
-static Send *send;
-static I2c *i2c;
+static Send* send;
+static I2c* i2c;
 
-void init_i2c_access(Send *sender, I2c *i2c_dev)
+void init_i2c_access(Send* sender, I2c* i2c_dev)
 {
     i2c = i2c_dev;
     send = sender;
@@ -44,12 +44,13 @@ void write_i2c(int argc, char* argv[])
         }
     }
 
-    send->fwrite(send, "Writing: %x %x %x %x... s%d", id, address, data[0], data[1], count);
+    send->fwrite(send, "Writing: %x %x %x %x... s%d", id, address, data[0],
+                 data[1], count);
     i2c->set_target(i2c, id << 1);
     i2c->write(i2c, address, data, count);
 }
 
-void read_i2c(int argc, char *argv[])
+void read_i2c(int argc, char* argv[])
 {
     bool valid = true;
     uint8_t id = 0;
@@ -64,7 +65,7 @@ void read_i2c(int argc, char *argv[])
             id = str_to_8(argv[i]);
         }
         else if (i == 2)
-        {  
+        {
             address = str_to_16(argv[i]);
         }
         else

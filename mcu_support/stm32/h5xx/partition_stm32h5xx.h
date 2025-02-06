@@ -36,23 +36,24 @@
 #define PARTITION_STM32H5XX_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C"
+{
 #endif /* __cplusplus */
 
-/** @addtogroup Secure_configuration_section
+    /** @addtogroup Secure_configuration_section
   * @{
   */
 
 #if defined(STM32H573xx)
-  #include "partition_stm32h573xx.h"
+#include "partition_stm32h573xx.h"
 #elif defined(STM32H563xx)
-  #include "partition_stm32h563xx.h"
+#include "partition_stm32h563xx.h"
 #elif defined(STM32H562xx)
-  #include "partition_stm32h562xx.h"
+#include "partition_stm32h562xx.h"
 #else
-  #error "Please select first the target STM32H5xx device used in your application (in stm32h5xx.h file)"
+#error \
+    "Please select first the target STM32H5xx device used in your application (in stm32h5xx.h file)"
 #endif
-
 
 #ifdef __cplusplus
 }

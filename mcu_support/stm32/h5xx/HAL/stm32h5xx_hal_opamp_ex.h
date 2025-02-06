@@ -21,7 +21,8 @@
 #define STM32H5xx_HAL_OPAMP_EX_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ----------------------------------------------------------------------------------------------------------*/
@@ -30,39 +31,39 @@ extern "C" {
 /** @addtogroup STM32H5xx_HAL_Driver
   * @{
   */
-#if defined (OPAMP1)
+#if defined(OPAMP1)
 
-/** @addtogroup OPAMPEx
+    /** @addtogroup OPAMPEx
   * @{
   */
-/* Exported types ----------------------------------------------------------------------------------------------------*/
-/* Exported constants ------------------------------------------------------------------------------------------------*/
-/* Exported macro ----------------------------------------------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------------------------------------------------*/
-/** @addtogroup OPAMPEx_Exported_Functions OPAMPEx Exported Functions
+    /* Exported types ----------------------------------------------------------------------------------------------------*/
+    /* Exported constants ------------------------------------------------------------------------------------------------*/
+    /* Exported macro ----------------------------------------------------------------------------------------------------*/
+    /* Exported functions ------------------------------------------------------------------------------------------------*/
+    /** @addtogroup OPAMPEx_Exported_Functions OPAMPEx Exported Functions
   * @{
   */
 
-/* Peripheral Control functions */
-/** @addtogroup OPAMPEx_Exported_Functions_Group1
+    /* Peripheral Control functions */
+    /** @addtogroup OPAMPEx_Exported_Functions_Group1
   * @{
   */
-HAL_StatusTypeDef HAL_OPAMPEx_Unlock(OPAMP_HandleTypeDef *hopamp);
-/**
+    HAL_StatusTypeDef HAL_OPAMPEx_Unlock(OPAMP_HandleTypeDef* hopamp);
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
 #endif /* OPAMP1 */
 
-/**
+    /**
   * @}
   */
 

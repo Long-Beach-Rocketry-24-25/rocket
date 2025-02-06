@@ -20,7 +20,8 @@
 #define STM32L4xx_HAL_FLASH_EX_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C"
+{
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -37,15 +38,17 @@
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported constants --------------------------------------------------------*/
-#if defined (FLASH_CFGR_LVEN)
+#if defined(FLASH_CFGR_LVEN)
 /** @addtogroup FLASHEx_Exported_Constants
   * @{
   */
 /** @defgroup FLASHEx_LVE_PIN_CFG FLASHEx LVE pin configuration
   * @{
   */
-#define FLASH_LVE_PIN_CTRL     0x00000000U       /*!< LVE FLASH pin controlled by power controller       */
-#define FLASH_LVE_PIN_FORCED   FLASH_CFGR_LVEN   /*!< LVE FLASH pin enforced to low (external SMPS used) */
+#define FLASH_LVE_PIN_CTRL \
+    0x00000000U /*!< LVE FLASH pin controlled by power controller       */
+#define FLASH_LVE_PIN_FORCED \
+    FLASH_CFGR_LVEN /*!< LVE FLASH pin enforced to low (external SMPS used) */
 /**
   * @}
   */
@@ -55,45 +58,47 @@
   */
 #endif /* FLASH_CFGR_LVEN */
 
-/* Exported macro ------------------------------------------------------------*/
+    /* Exported macro ------------------------------------------------------------*/
 
-/* Exported functions --------------------------------------------------------*/
-/** @addtogroup FLASHEx_Exported_Functions
+    /* Exported functions --------------------------------------------------------*/
+    /** @addtogroup FLASHEx_Exported_Functions
   * @{
   */
 
-/* Extended Program operation functions  *************************************/
-/** @addtogroup FLASHEx_Exported_Functions_Group1
+    /* Extended Program operation functions  *************************************/
+    /** @addtogroup FLASHEx_Exported_Functions_Group1
   * @{
   */
-HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError);
-HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit);
-HAL_StatusTypeDef HAL_FLASHEx_OBProgram(FLASH_OBProgramInitTypeDef *pOBInit);
-void              HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit);
-/**
+    HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef* pEraseInit,
+                                        uint32_t* PageError);
+    HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef* pEraseInit);
+    HAL_StatusTypeDef HAL_FLASHEx_OBProgram(
+        FLASH_OBProgramInitTypeDef* pOBInit);
+    void HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef* pOBInit);
+    /**
   * @}
   */
 
-#if defined (FLASH_CFGR_LVEN)
-/** @addtogroup FLASHEx_Exported_Functions_Group2
+#if defined(FLASH_CFGR_LVEN)
+    /** @addtogroup FLASHEx_Exported_Functions_Group2
   * @{
   */
-HAL_StatusTypeDef HAL_FLASHEx_ConfigLVEPin(uint32_t ConfigLVE);
+    HAL_StatusTypeDef HAL_FLASHEx_ConfigLVEPin(uint32_t ConfigLVE);
 /**
   * @}
   */
 #endif /* FLASH_CFGR_LVEN */
 
-/**
+    /**
   * @}
   */
 
-/* Private function ----------------------------------------------------------*/
-/** @addtogroup FLASHEx_Private_Functions FLASHEx Private Functions
+    /* Private function ----------------------------------------------------------*/
+    /** @addtogroup FLASHEx_Private_Functions FLASHEx Private Functions
  * @{
  */
-void FLASH_PageErase(uint32_t Page, uint32_t Banks);
-void FLASH_FlushCaches(void);
+    void FLASH_PageErase(uint32_t Page, uint32_t Banks);
+    void FLASH_FlushCaches(void);
 /**
   * @}
   */
@@ -102,18 +107,19 @@ void FLASH_FlushCaches(void);
 /**
   @cond 0
   */
-#if defined (FLASH_CFGR_LVEN)
-#define IS_FLASH_LVE_PIN(CFG)  (((CFG) == FLASH_LVE_PIN_CTRL) || ((CFG) == FLASH_LVE_PIN_FORCED))
+#if defined(FLASH_CFGR_LVEN)
+#define IS_FLASH_LVE_PIN(CFG) \
+    (((CFG) == FLASH_LVE_PIN_CTRL) || ((CFG) == FLASH_LVE_PIN_FORCED))
 #endif /* FLASH_CFGR_LVEN */
-/**
+    /**
   @endcond
   */
 
-/**
+    /**
   * @}
   */
 
-/**
+    /**
   * @}
   */
 
@@ -122,4 +128,3 @@ void FLASH_FlushCaches(void);
 #endif
 
 #endif /* STM32L4xx_HAL_FLASH_EX_H */
-

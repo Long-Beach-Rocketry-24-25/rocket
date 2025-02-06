@@ -20,10 +20,10 @@ bool StGpioInit(Gpio* gpio, StGpioParams* params)
         return false;
     }
 
-    params->priv.instance = (GPIO_TypeDef *) params->base_addr;
+    params->priv.instance = (GPIO_TypeDef*)params->base_addr;
     params->priv.pin_num = params->pin_num;
     params->priv.config = &params->conf;
-    gpio->priv = (void *) &params->priv;
+    gpio->priv = (void*)&params->priv;
     gpio->config = StGpioConfig;
     gpio->toggle = StGpioToggle;
     gpio->set = StGpioSet;
@@ -34,7 +34,7 @@ bool StGpioInit(Gpio* gpio, StGpioParams* params)
 
 void StGpioConfig(Gpio* gpio)
 {
-    StPrivGpio *dev = (StPrivGpio *) gpio->priv;
+    StPrivGpio* dev = (StPrivGpio*)gpio->priv;
 
     /*
      * Pins >= 8 use AFR[1], pins < 8 use AFR[0].
@@ -52,7 +52,7 @@ void StGpioConfig(Gpio* gpio)
 
 static bool StGpioOut_Status(Gpio* gpio)
 {
-    StPrivGpio *dev = (StPrivGpio *) gpio->priv;
+    StPrivGpio* dev = (StPrivGpio*)gpio->priv;
 
     return dev->instance->ODR & (0x1 << dev->pin_num);
 }
@@ -60,7 +60,7 @@ static bool StGpioOut_Status(Gpio* gpio)
 bool StGpioToggle(Gpio* gpio)
 {
     bool state = StGpioOut_Status(gpio);
-    
+
     StGpioSet(gpio, !state);
 
     return !state;
@@ -68,7 +68,7 @@ bool StGpioToggle(Gpio* gpio)
 
 void StGpioSet(Gpio* gpio, bool active)
 {
-    StPrivGpio *dev = (StPrivGpio *) gpio->priv;
+    StPrivGpio* dev = (StPrivGpio*)gpio->priv;
 
     if (active)
     {
@@ -78,12 +78,11 @@ void StGpioSet(Gpio* gpio, bool active)
     {
         dev->instance->ODR &= ~(0x1 << dev->pin_num);
     }
-    
 }
 
 bool StGpioRead(Gpio* gpio)
 {
-    StPrivGpio *dev = (StPrivGpio *) gpio->priv;
+    StPrivGpio* dev = (StPrivGpio*)gpio->priv;
 
     return dev->instance->IDR & (0x1 << dev->pin_num);
 }

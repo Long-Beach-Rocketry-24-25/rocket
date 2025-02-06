@@ -159,11 +159,13 @@
 /** @defgroup CORDIC_Private_Functions CORDIC Private Functions
   * @{
   */
-static void CORDIC_WriteInDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, const int32_t **ppInBuff);
-static void CORDIC_ReadOutDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, int32_t **ppOutBuff);
-static void CORDIC_DMAInCplt(DMA_HandleTypeDef *hdma);
-static void CORDIC_DMAOutCplt(DMA_HandleTypeDef *hdma);
-static void CORDIC_DMAError(DMA_HandleTypeDef *hdma);
+static void CORDIC_WriteInDataIncrementPtr(const CORDIC_HandleTypeDef* hcordic,
+                                           const int32_t** ppInBuff);
+static void CORDIC_ReadOutDataIncrementPtr(const CORDIC_HandleTypeDef* hcordic,
+                                           int32_t** ppOutBuff);
+static void CORDIC_DMAInCplt(DMA_HandleTypeDef* hdma);
+static void CORDIC_DMAOutCplt(DMA_HandleTypeDef* hdma);
+static void CORDIC_DMAError(DMA_HandleTypeDef* hdma);
 /**
   * @}
   */
@@ -198,66 +200,69 @@ static void CORDIC_DMAError(DMA_HandleTypeDef *hdma);
   * @param  hcordic pointer to a CORDIC_HandleTypeDef structure.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_Init(CORDIC_HandleTypeDef *hcordic)
+HAL_StatusTypeDef HAL_CORDIC_Init(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Check the CORDIC handle allocation */
-  if (hcordic == NULL)
-  {
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  /* Check the instance */
-  assert_param(IS_CORDIC_ALL_INSTANCE(hcordic->Instance));
-
-#if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
-  if (hcordic->State == HAL_CORDIC_STATE_RESET)
-  {
-    /* Allocate lock resource and initialize it */
-    hcordic->Lock = HAL_UNLOCKED;
-
-    /* Reset callbacks to legacy functions */
-    hcordic->ErrorCallback         = HAL_CORDIC_ErrorCallback;         /* Legacy weak ErrorCallback */
-    hcordic->CalculateCpltCallback = HAL_CORDIC_CalculateCpltCallback; /* Legacy weak CalculateCpltCallback */
-
-    if (hcordic->MspInitCallback == NULL)
+    /* Check the CORDIC handle allocation */
+    if (hcordic == NULL)
     {
-      hcordic->MspInitCallback = HAL_CORDIC_MspInit;                   /* Legacy weak MspInit */
+        /* Return error status */
+        return HAL_ERROR;
     }
 
-    /* Initialize the low level hardware */
-    hcordic->MspInitCallback(hcordic);
-  }
-#else
-  if (hcordic->State == HAL_CORDIC_STATE_RESET)
-  {
-    /* Allocate lock resource and initialize it */
-    hcordic->Lock = HAL_UNLOCKED;
+    /* Check the instance */
+    assert_param(IS_CORDIC_ALL_INSTANCE(hcordic->Instance));
 
-    /* Initialize the low level hardware */
-    HAL_CORDIC_MspInit(hcordic);
-  }
+#if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
+    if (hcordic->State == HAL_CORDIC_STATE_RESET)
+    {
+        /* Allocate lock resource and initialize it */
+        hcordic->Lock = HAL_UNLOCKED;
+
+        /* Reset callbacks to legacy functions */
+        hcordic->ErrorCallback =
+            HAL_CORDIC_ErrorCallback; /* Legacy weak ErrorCallback */
+        hcordic->CalculateCpltCallback =
+            HAL_CORDIC_CalculateCpltCallback; /* Legacy weak CalculateCpltCallback */
+
+        if (hcordic->MspInitCallback == NULL)
+        {
+            hcordic->MspInitCallback =
+                HAL_CORDIC_MspInit; /* Legacy weak MspInit */
+        }
+
+        /* Initialize the low level hardware */
+        hcordic->MspInitCallback(hcordic);
+    }
+#else
+    if (hcordic->State == HAL_CORDIC_STATE_RESET)
+    {
+        /* Allocate lock resource and initialize it */
+        hcordic->Lock = HAL_UNLOCKED;
+
+        /* Initialize the low level hardware */
+        HAL_CORDIC_MspInit(hcordic);
+    }
 #endif /* (USE_HAL_CORDIC_REGISTER_CALLBACKS) */
 
-  /* Set CORDIC error code to none */
-  hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
+    /* Set CORDIC error code to none */
+    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
 
-  /* Reset pInBuff and pOutBuff */
-  hcordic->pInBuff = NULL;
-  hcordic->pOutBuff = NULL;
+    /* Reset pInBuff and pOutBuff */
+    hcordic->pInBuff = NULL;
+    hcordic->pOutBuff = NULL;
 
-  /* Reset NbCalcToOrder and NbCalcToGet */
-  hcordic->NbCalcToOrder = 0U;
-  hcordic->NbCalcToGet = 0U;
+    /* Reset NbCalcToOrder and NbCalcToGet */
+    hcordic->NbCalcToOrder = 0U;
+    hcordic->NbCalcToGet = 0U;
 
-  /* Reset DMADirection */
-  hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
+    /* Reset DMADirection */
+    hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
 
-  /* Change CORDIC peripheral state */
-  hcordic->State = HAL_CORDIC_STATE_READY;
+    /* Change CORDIC peripheral state */
+    hcordic->State = HAL_CORDIC_STATE_READY;
 
-  /* Return function status */
-  return HAL_OK;
+    /* Return function status */
+    return HAL_OK;
 }
 
 /**
@@ -265,56 +270,56 @@ HAL_StatusTypeDef HAL_CORDIC_Init(CORDIC_HandleTypeDef *hcordic)
   * @param  hcordic pointer to a CORDIC_HandleTypeDef structure.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_DeInit(CORDIC_HandleTypeDef *hcordic)
+HAL_StatusTypeDef HAL_CORDIC_DeInit(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Check the CORDIC handle allocation */
-  if (hcordic == NULL)
-  {
-    /* Return error status */
-    return HAL_ERROR;
-  }
+    /* Check the CORDIC handle allocation */
+    if (hcordic == NULL)
+    {
+        /* Return error status */
+        return HAL_ERROR;
+    }
 
-  /* Check the parameters */
-  assert_param(IS_CORDIC_ALL_INSTANCE(hcordic->Instance));
+    /* Check the parameters */
+    assert_param(IS_CORDIC_ALL_INSTANCE(hcordic->Instance));
 
-  /* Change CORDIC peripheral state */
-  hcordic->State = HAL_CORDIC_STATE_BUSY;
+    /* Change CORDIC peripheral state */
+    hcordic->State = HAL_CORDIC_STATE_BUSY;
 
 #if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
-  if (hcordic->MspDeInitCallback == NULL)
-  {
-    hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
-  }
+    if (hcordic->MspDeInitCallback == NULL)
+    {
+        hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
+    }
 
-  /* De-Initialize the low level hardware */
-  hcordic->MspDeInitCallback(hcordic);
+    /* De-Initialize the low level hardware */
+    hcordic->MspDeInitCallback(hcordic);
 #else
-  /* De-Initialize the low level hardware: CLOCK, NVIC, DMA */
-  HAL_CORDIC_MspDeInit(hcordic);
+    /* De-Initialize the low level hardware: CLOCK, NVIC, DMA */
+    HAL_CORDIC_MspDeInit(hcordic);
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
 
-  /* Set CORDIC error code to none */
-  hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
+    /* Set CORDIC error code to none */
+    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
 
-  /* Reset pInBuff and pOutBuff */
-  hcordic->pInBuff = NULL;
-  hcordic->pOutBuff = NULL;
+    /* Reset pInBuff and pOutBuff */
+    hcordic->pInBuff = NULL;
+    hcordic->pOutBuff = NULL;
 
-  /* Reset NbCalcToOrder and NbCalcToGet */
-  hcordic->NbCalcToOrder = 0U;
-  hcordic->NbCalcToGet = 0U;
+    /* Reset NbCalcToOrder and NbCalcToGet */
+    hcordic->NbCalcToOrder = 0U;
+    hcordic->NbCalcToGet = 0U;
 
-  /* Reset DMADirection */
-  hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
+    /* Reset DMADirection */
+    hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
 
-  /* Change CORDIC peripheral state */
-  hcordic->State = HAL_CORDIC_STATE_RESET;
+    /* Change CORDIC peripheral state */
+    hcordic->State = HAL_CORDIC_STATE_RESET;
 
-  /* Reset Lock */
-  hcordic->Lock = HAL_UNLOCKED;
+    /* Reset Lock */
+    hcordic->Lock = HAL_UNLOCKED;
 
-  /* Return function status */
-  return HAL_OK;
+    /* Return function status */
+    return HAL_OK;
 }
 
 /**
@@ -322,12 +327,12 @@ HAL_StatusTypeDef HAL_CORDIC_DeInit(CORDIC_HandleTypeDef *hcordic)
   * @param  hcordic CORDIC handle
   * @retval None
   */
-__weak void HAL_CORDIC_MspInit(CORDIC_HandleTypeDef *hcordic)
+__weak void HAL_CORDIC_MspInit(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcordic);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcordic);
 
-  /* NOTE : This function should not be modified, when the callback is needed,
+    /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_CORDIC_MspInit can be implemented in the user file
    */
 }
@@ -337,12 +342,12 @@ __weak void HAL_CORDIC_MspInit(CORDIC_HandleTypeDef *hcordic)
   * @param  hcordic CORDIC handle
   * @retval None
   */
-__weak void HAL_CORDIC_MspDeInit(CORDIC_HandleTypeDef *hcordic)
+__weak void HAL_CORDIC_MspDeInit(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcordic);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcordic);
 
-  /* NOTE : This function should not be modified, when the callback is needed,
+    /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_CORDIC_MspDeInit can be implemented in the user file
    */
 }
@@ -362,80 +367,81 @@ __weak void HAL_CORDIC_MspDeInit(CORDIC_HandleTypeDef *hcordic)
   * @param  pCallback pointer to the Callback function
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_RegisterCallback(CORDIC_HandleTypeDef *hcordic, HAL_CORDIC_CallbackIDTypeDef CallbackID,
-                                              void (* pCallback)(CORDIC_HandleTypeDef *_hcordic))
+HAL_StatusTypeDef HAL_CORDIC_RegisterCallback(
+    CORDIC_HandleTypeDef* hcordic, HAL_CORDIC_CallbackIDTypeDef CallbackID,
+    void (*pCallback)(CORDIC_HandleTypeDef* _hcordic))
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  if (pCallback == NULL)
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
-
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    switch (CallbackID)
+    if (pCallback == NULL)
     {
-      case HAL_CORDIC_ERROR_CB_ID :
-        hcordic->ErrorCallback = pCallback;
-        break;
+        /* Update the error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
 
-      case HAL_CORDIC_CALCULATE_CPLT_CB_ID :
-        hcordic->CalculateCpltCallback = pCallback;
-        break;
+        /* Return error status */
+        return HAL_ERROR;
+    }
 
-      case HAL_CORDIC_MSPINIT_CB_ID :
-        hcordic->MspInitCallback = pCallback;
-        break;
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        switch (CallbackID)
+        {
+            case HAL_CORDIC_ERROR_CB_ID:
+                hcordic->ErrorCallback = pCallback;
+                break;
 
-      case HAL_CORDIC_MSPDEINIT_CB_ID :
-        hcordic->MspDeInitCallback = pCallback;
-        break;
+            case HAL_CORDIC_CALCULATE_CPLT_CB_ID:
+                hcordic->CalculateCpltCallback = pCallback;
+                break;
 
-      default :
+            case HAL_CORDIC_MSPINIT_CB_ID:
+                hcordic->MspInitCallback = pCallback;
+                break;
+
+            case HAL_CORDIC_MSPDEINIT_CB_ID:
+                hcordic->MspDeInitCallback = pCallback;
+                break;
+
+            default:
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else if (hcordic->State == HAL_CORDIC_STATE_RESET)
+    {
+        switch (CallbackID)
+        {
+            case HAL_CORDIC_MSPINIT_CB_ID:
+                hcordic->MspInitCallback = pCallback;
+                break;
+
+            case HAL_CORDIC_MSPDEINIT_CB_ID:
+                hcordic->MspDeInitCallback = pCallback;
+                break;
+
+            default:
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else
+    {
         /* Update the error code */
         hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
 
         /* Return error status */
         status = HAL_ERROR;
-        break;
     }
-  }
-  else if (hcordic->State == HAL_CORDIC_STATE_RESET)
-  {
-    switch (CallbackID)
-    {
-      case HAL_CORDIC_MSPINIT_CB_ID :
-        hcordic->MspInitCallback = pCallback;
-        break;
 
-      case HAL_CORDIC_MSPDEINIT_CB_ID :
-        hcordic->MspDeInitCallback = pCallback;
-        break;
-
-      default :
-        /* Update the error code */
-        hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
-
-        /* Return error status */
-        status = HAL_ERROR;
-        break;
-    }
-  }
-  else
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
-
-    /* Return error status */
-    status = HAL_ERROR;
-  }
-
-  return status;
+    return status;
 }
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
 
@@ -453,70 +459,72 @@ HAL_StatusTypeDef HAL_CORDIC_RegisterCallback(CORDIC_HandleTypeDef *hcordic, HAL
   *           @arg @ref HAL_CORDIC_MSPDEINIT_CB_ID MspDeInit callback ID
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_UnRegisterCallback(CORDIC_HandleTypeDef *hcordic, HAL_CORDIC_CallbackIDTypeDef CallbackID)
+HAL_StatusTypeDef HAL_CORDIC_UnRegisterCallback(
+    CORDIC_HandleTypeDef* hcordic, HAL_CORDIC_CallbackIDTypeDef CallbackID)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    switch (CallbackID)
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
     {
-      case HAL_CORDIC_ERROR_CB_ID :
-        hcordic->ErrorCallback = HAL_CORDIC_ErrorCallback;
-        break;
+        switch (CallbackID)
+        {
+            case HAL_CORDIC_ERROR_CB_ID:
+                hcordic->ErrorCallback = HAL_CORDIC_ErrorCallback;
+                break;
 
-      case HAL_CORDIC_CALCULATE_CPLT_CB_ID :
-        hcordic->CalculateCpltCallback = HAL_CORDIC_CalculateCpltCallback;
-        break;
+            case HAL_CORDIC_CALCULATE_CPLT_CB_ID:
+                hcordic->CalculateCpltCallback =
+                    HAL_CORDIC_CalculateCpltCallback;
+                break;
 
-      case HAL_CORDIC_MSPINIT_CB_ID :
-        hcordic->MspInitCallback = HAL_CORDIC_MspInit;
-        break;
+            case HAL_CORDIC_MSPINIT_CB_ID:
+                hcordic->MspInitCallback = HAL_CORDIC_MspInit;
+                break;
 
-      case HAL_CORDIC_MSPDEINIT_CB_ID :
-        hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
-        break;
+            case HAL_CORDIC_MSPDEINIT_CB_ID:
+                hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
+                break;
 
-      default :
+            default:
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else if (hcordic->State == HAL_CORDIC_STATE_RESET)
+    {
+        switch (CallbackID)
+        {
+            case HAL_CORDIC_MSPINIT_CB_ID:
+                hcordic->MspInitCallback = HAL_CORDIC_MspInit;
+                break;
+
+            case HAL_CORDIC_MSPDEINIT_CB_ID:
+                hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
+                break;
+
+            default:
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
+
+                /* Return error status */
+                status = HAL_ERROR;
+                break;
+        }
+    }
+    else
+    {
         /* Update the error code */
         hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
 
         /* Return error status */
         status = HAL_ERROR;
-        break;
     }
-  }
-  else if (hcordic->State == HAL_CORDIC_STATE_RESET)
-  {
-    switch (CallbackID)
-    {
-      case HAL_CORDIC_MSPINIT_CB_ID :
-        hcordic->MspInitCallback = HAL_CORDIC_MspInit;
-        break;
 
-      case HAL_CORDIC_MSPDEINIT_CB_ID :
-        hcordic->MspDeInitCallback = HAL_CORDIC_MspDeInit;
-        break;
-
-      default :
-        /* Update the error code */
-        hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
-
-        /* Return error status */
-        status = HAL_ERROR;
-        break;
-    }
-  }
-  else
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_INVALID_CALLBACK;
-
-    /* Return error status */
-    status = HAL_ERROR;
-  }
-
-  return status;
+    return status;
 }
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
 
@@ -555,40 +563,43 @@ HAL_StatusTypeDef HAL_CORDIC_UnRegisterCallback(CORDIC_HandleTypeDef *hcordic, H
   *         contains the CORDIC configuration information.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_Configure(CORDIC_HandleTypeDef *hcordic, const CORDIC_ConfigTypeDef *sConfig)
+HAL_StatusTypeDef HAL_CORDIC_Configure(CORDIC_HandleTypeDef* hcordic,
+                                       const CORDIC_ConfigTypeDef* sConfig)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the parameters */
-  assert_param(IS_CORDIC_FUNCTION(sConfig->Function));
-  assert_param(IS_CORDIC_PRECISION(sConfig->Precision));
-  assert_param(IS_CORDIC_SCALE(sConfig->Scale));
-  assert_param(IS_CORDIC_NBWRITE(sConfig->NbWrite));
-  assert_param(IS_CORDIC_NBREAD(sConfig->NbRead));
-  assert_param(IS_CORDIC_INSIZE(sConfig->InSize));
-  assert_param(IS_CORDIC_OUTSIZE(sConfig->OutSize));
+    /* Check the parameters */
+    assert_param(IS_CORDIC_FUNCTION(sConfig->Function));
+    assert_param(IS_CORDIC_PRECISION(sConfig->Precision));
+    assert_param(IS_CORDIC_SCALE(sConfig->Scale));
+    assert_param(IS_CORDIC_NBWRITE(sConfig->NbWrite));
+    assert_param(IS_CORDIC_NBREAD(sConfig->NbRead));
+    assert_param(IS_CORDIC_INSIZE(sConfig->InSize));
+    assert_param(IS_CORDIC_OUTSIZE(sConfig->OutSize));
 
-  /* Check handle state is ready */
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    /* Apply all configuration parameters in CORDIC control register */
-    MODIFY_REG(hcordic->Instance->CSR,                                                         \
-               (CORDIC_CSR_FUNC | CORDIC_CSR_PRECISION | CORDIC_CSR_SCALE |                    \
-                CORDIC_CSR_NARGS | CORDIC_CSR_NRES | CORDIC_CSR_ARGSIZE | CORDIC_CSR_RESSIZE), \
-               (sConfig->Function | sConfig->Precision | sConfig->Scale |                      \
-                sConfig->NbWrite | sConfig->NbRead | sConfig->InSize | sConfig->OutSize));
-  }
-  else
-  {
-    /* Set CORDIC error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+    /* Check handle state is ready */
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        /* Apply all configuration parameters in CORDIC control register */
+        MODIFY_REG(hcordic->Instance->CSR,
+                   (CORDIC_CSR_FUNC | CORDIC_CSR_PRECISION | CORDIC_CSR_SCALE |
+                    CORDIC_CSR_NARGS | CORDIC_CSR_NRES | CORDIC_CSR_ARGSIZE |
+                    CORDIC_CSR_RESSIZE),
+                   (sConfig->Function | sConfig->Precision | sConfig->Scale |
+                    sConfig->NbWrite | sConfig->NbRead | sConfig->InSize |
+                    sConfig->OutSize));
+    }
+    else
+    {
+        /* Set CORDIC error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
 
-    /* Return error status */
-    status = HAL_ERROR;
-  }
+        /* Return error status */
+        status = HAL_ERROR;
+    }
 
-  /* Return function status */
-  return status;
+    /* Return function status */
+    return status;
 }
 
 /**
@@ -602,87 +613,89 @@ HAL_StatusTypeDef HAL_CORDIC_Configure(CORDIC_HandleTypeDef *hcordic, const CORD
   * @param  Timeout Specify Timeout value
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_Calculate(CORDIC_HandleTypeDef *hcordic, const int32_t *pInBuff, int32_t *pOutBuff,
-                                       uint32_t NbCalc, uint32_t Timeout)
+HAL_StatusTypeDef HAL_CORDIC_Calculate(CORDIC_HandleTypeDef* hcordic,
+                                       const int32_t* pInBuff,
+                                       int32_t* pOutBuff, uint32_t NbCalc,
+                                       uint32_t Timeout)
 {
-  uint32_t tickstart;
-  uint32_t index;
-  const int32_t *p_tmp_in_buff = pInBuff;
-  int32_t *p_tmp_out_buff = pOutBuff;
+    uint32_t tickstart;
+    uint32_t index;
+    const int32_t* p_tmp_in_buff = pInBuff;
+    int32_t* p_tmp_out_buff = pOutBuff;
 
-  /* Check parameters setting */
-  if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  /* Check handle state is ready */
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    /* Reset CORDIC error code */
-    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
-
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_BUSY;
-
-    /* Get tick */
-    tickstart = HAL_GetTick();
-
-    /* Write of input data in Write Data register, and increment input buffer pointer */
-    CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
-
-    /* Calculation is started.
-       Provide next set of input data, until number of calculation is achieved */
-    for (index = (NbCalc - 1U); index > 0U; index--)
+    /* Check parameters setting */
+    if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
     {
-      /* Write of input data in Write Data register, and increment input buffer pointer */
-      CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+        /* Update the error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
 
-      /* Wait for RRDY flag to be raised */
-      do
-      {
-        /* Check for the Timeout */
-        if (Timeout != HAL_MAX_DELAY)
-        {
-          if ((HAL_GetTick() - tickstart) > Timeout)
-          {
-            /* Set CORDIC error code */
-            hcordic->ErrorCode = HAL_CORDIC_ERROR_TIMEOUT;
-
-            /* Change the CORDIC state */
-            hcordic->State = HAL_CORDIC_STATE_READY;
-
-            /* Return function status */
-            return HAL_ERROR;
-          }
-        }
-      } while (HAL_IS_BIT_CLR(hcordic->Instance->CSR, CORDIC_CSR_RRDY));
-
-      /* Read output data from Read Data register, and increment output buffer pointer */
-      CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+        /* Return error status */
+        return HAL_ERROR;
     }
 
-    /* Read output data from Read Data register, and increment output buffer pointer */
-    CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+    /* Check handle state is ready */
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        /* Reset CORDIC error code */
+        hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
 
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_READY;
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_BUSY;
 
-    /* Return function status */
-    return HAL_OK;
-  }
-  else
-  {
-    /* Set CORDIC error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+        /* Get tick */
+        tickstart = HAL_GetTick();
 
-    /* Return function status */
-    return HAL_ERROR;
-  }
+        /* Write of input data in Write Data register, and increment input buffer pointer */
+        CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+
+        /* Calculation is started.
+       Provide next set of input data, until number of calculation is achieved */
+        for (index = (NbCalc - 1U); index > 0U; index--)
+        {
+            /* Write of input data in Write Data register, and increment input buffer pointer */
+            CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+
+            /* Wait for RRDY flag to be raised */
+            do
+            {
+                /* Check for the Timeout */
+                if (Timeout != HAL_MAX_DELAY)
+                {
+                    if ((HAL_GetTick() - tickstart) > Timeout)
+                    {
+                        /* Set CORDIC error code */
+                        hcordic->ErrorCode = HAL_CORDIC_ERROR_TIMEOUT;
+
+                        /* Change the CORDIC state */
+                        hcordic->State = HAL_CORDIC_STATE_READY;
+
+                        /* Return function status */
+                        return HAL_ERROR;
+                    }
+                }
+            } while (HAL_IS_BIT_CLR(hcordic->Instance->CSR, CORDIC_CSR_RRDY));
+
+            /* Read output data from Read Data register, and increment output buffer pointer */
+            CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+        }
+
+        /* Read output data from Read Data register, and increment output buffer pointer */
+        CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_READY;
+
+        /* Return function status */
+        return HAL_OK;
+    }
+    else
+    {
+        /* Set CORDIC error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+
+        /* Return function status */
+        return HAL_ERROR;
+    }
 }
 
 /**
@@ -696,87 +709,89 @@ HAL_StatusTypeDef HAL_CORDIC_Calculate(CORDIC_HandleTypeDef *hcordic, const int3
   * @param  Timeout Specify Timeout value
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_CalculateZO(CORDIC_HandleTypeDef *hcordic, const int32_t *pInBuff, int32_t *pOutBuff,
-                                         uint32_t NbCalc, uint32_t Timeout)
+HAL_StatusTypeDef HAL_CORDIC_CalculateZO(CORDIC_HandleTypeDef* hcordic,
+                                         const int32_t* pInBuff,
+                                         int32_t* pOutBuff, uint32_t NbCalc,
+                                         uint32_t Timeout)
 {
-  uint32_t tickstart;
-  uint32_t index;
-  const int32_t *p_tmp_in_buff = pInBuff;
-  int32_t *p_tmp_out_buff = pOutBuff;
+    uint32_t tickstart;
+    uint32_t index;
+    const int32_t* p_tmp_in_buff = pInBuff;
+    int32_t* p_tmp_out_buff = pOutBuff;
 
-  /* Check parameters setting */
-  if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  /* Check handle state is ready */
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    /* Reset CORDIC error code */
-    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
-
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_BUSY;
-
-    /* Get tick */
-    tickstart = HAL_GetTick();
-
-    /* Write of input data in Write Data register, and increment input buffer pointer */
-    CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
-
-    /* Calculation is started.
-       Provide next set of input data, until number of calculation is achieved */
-    for (index = (NbCalc - 1U); index > 0U; index--)
+    /* Check parameters setting */
+    if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
     {
-      /* Write of input data in Write Data register, and increment input buffer pointer */
-      CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+        /* Update the error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
 
-      /* Read output data from Read Data register, and increment output buffer pointer
-         The reading is performed in Zero-Overhead mode:
-         reading is ordered immediately without waiting result ready flag */
-      CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
-
-      /* Check for the Timeout */
-      if (Timeout != HAL_MAX_DELAY)
-      {
-        if ((HAL_GetTick() - tickstart) > Timeout)
-        {
-          /* Set CORDIC error code */
-          hcordic->ErrorCode = HAL_CORDIC_ERROR_TIMEOUT;
-
-          /* Change the CORDIC state */
-          hcordic->State = HAL_CORDIC_STATE_READY;
-
-          /* Return function status */
-          return HAL_ERROR;
-        }
-      }
+        /* Return error status */
+        return HAL_ERROR;
     }
 
-    /* Read output data from Read Data register, and increment output buffer pointer
+    /* Check handle state is ready */
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        /* Reset CORDIC error code */
+        hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
+
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_BUSY;
+
+        /* Get tick */
+        tickstart = HAL_GetTick();
+
+        /* Write of input data in Write Data register, and increment input buffer pointer */
+        CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+
+        /* Calculation is started.
+       Provide next set of input data, until number of calculation is achieved */
+        for (index = (NbCalc - 1U); index > 0U; index--)
+        {
+            /* Write of input data in Write Data register, and increment input buffer pointer */
+            CORDIC_WriteInDataIncrementPtr(hcordic, &p_tmp_in_buff);
+
+            /* Read output data from Read Data register, and increment output buffer pointer
+         The reading is performed in Zero-Overhead mode:
+         reading is ordered immediately without waiting result ready flag */
+            CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+
+            /* Check for the Timeout */
+            if (Timeout != HAL_MAX_DELAY)
+            {
+                if ((HAL_GetTick() - tickstart) > Timeout)
+                {
+                    /* Set CORDIC error code */
+                    hcordic->ErrorCode = HAL_CORDIC_ERROR_TIMEOUT;
+
+                    /* Change the CORDIC state */
+                    hcordic->State = HAL_CORDIC_STATE_READY;
+
+                    /* Return function status */
+                    return HAL_ERROR;
+                }
+            }
+        }
+
+        /* Read output data from Read Data register, and increment output buffer pointer
        The reading is performed in Zero-Overhead mode:
        reading is ordered immediately without waiting result ready flag */
-    CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
+        CORDIC_ReadOutDataIncrementPtr(hcordic, &p_tmp_out_buff);
 
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_READY;
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_READY;
 
-    /* Return function status */
-    return HAL_OK;
-  }
-  else
-  {
-    /* Set CORDIC error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+        /* Return function status */
+        return HAL_OK;
+    }
+    else
+    {
+        /* Set CORDIC error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
 
-    /* Return function status */
-    return HAL_ERROR;
-  }
+        /* Return function status */
+        return HAL_ERROR;
+    }
 }
 
 /**
@@ -789,79 +804,80 @@ HAL_StatusTypeDef HAL_CORDIC_CalculateZO(CORDIC_HandleTypeDef *hcordic, const in
   * @param  NbCalc Number of CORDIC calculation to process.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_Calculate_IT(CORDIC_HandleTypeDef *hcordic, const int32_t *pInBuff, int32_t *pOutBuff,
-                                          uint32_t NbCalc)
+HAL_StatusTypeDef HAL_CORDIC_Calculate_IT(CORDIC_HandleTypeDef* hcordic,
+                                          const int32_t* pInBuff,
+                                          int32_t* pOutBuff, uint32_t NbCalc)
 {
-  const int32_t *tmp_pInBuff = pInBuff;
+    const int32_t* tmp_pInBuff = pInBuff;
 
-  /* Check parameters setting */
-  if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  /* Check handle state is ready */
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    /* Reset CORDIC error code */
-    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
-
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_BUSY;
-
-    /* Store the buffers addresses and number of calculations in handle,
-       provisioning initial write of input data that will be done */
-    if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
+    /* Check parameters setting */
+    if ((pInBuff == NULL) || (pOutBuff == NULL) || (NbCalc == 0U))
     {
-      /* Two writes of input data are expected */
-      tmp_pInBuff++;
-      tmp_pInBuff++;
+        /* Update the error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
+
+        /* Return error status */
+        return HAL_ERROR;
+    }
+
+    /* Check handle state is ready */
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        /* Reset CORDIC error code */
+        hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
+
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_BUSY;
+
+        /* Store the buffers addresses and number of calculations in handle,
+       provisioning initial write of input data that will be done */
+        if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
+        {
+            /* Two writes of input data are expected */
+            tmp_pInBuff++;
+            tmp_pInBuff++;
+        }
+        else
+        {
+            /* One write of input data is expected */
+            tmp_pInBuff++;
+        }
+        hcordic->pInBuff = tmp_pInBuff;
+        hcordic->pOutBuff = pOutBuff;
+        hcordic->NbCalcToOrder = NbCalc - 1U;
+        hcordic->NbCalcToGet = NbCalc;
+
+        /* Enable Result Ready Interrupt */
+        __HAL_CORDIC_ENABLE_IT(hcordic, CORDIC_IT_IEN);
+
+        /* Set back pointer to start of input data buffer */
+        tmp_pInBuff = pInBuff;
+
+        /* Initiate the processing by providing input data
+       in the Write Data register */
+        WRITE_REG(hcordic->Instance->WDATA, (uint32_t)*tmp_pInBuff);
+
+        /* Check if second write of input data is expected */
+        if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
+        {
+            /* Increment pointer to input data */
+            tmp_pInBuff++;
+
+            /* Perform second write of input data */
+            WRITE_REG(hcordic->Instance->WDATA, (uint32_t)*tmp_pInBuff);
+        }
+
+        /* Return function status */
+        return HAL_OK;
     }
     else
     {
-      /* One write of input data is expected */
-      tmp_pInBuff++;
+        /* Set CORDIC error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+
+        /* Return function status */
+        return HAL_ERROR;
     }
-    hcordic->pInBuff = tmp_pInBuff;
-    hcordic->pOutBuff = pOutBuff;
-    hcordic->NbCalcToOrder = NbCalc - 1U;
-    hcordic->NbCalcToGet = NbCalc;
-
-    /* Enable Result Ready Interrupt */
-    __HAL_CORDIC_ENABLE_IT(hcordic, CORDIC_IT_IEN);
-
-    /* Set back pointer to start of input data buffer */
-    tmp_pInBuff = pInBuff;
-
-    /* Initiate the processing by providing input data
-       in the Write Data register */
-    WRITE_REG(hcordic->Instance->WDATA, (uint32_t)*tmp_pInBuff);
-
-    /* Check if second write of input data is expected */
-    if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
-    {
-      /* Increment pointer to input data */
-      tmp_pInBuff++;
-
-      /* Perform second write of input data */
-      WRITE_REG(hcordic->Instance->WDATA, (uint32_t)*tmp_pInBuff);
-    }
-
-    /* Return function status */
-    return HAL_OK;
-  }
-  else
-  {
-    /* Set CORDIC error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
-
-    /* Return function status */
-    return HAL_ERROR;
-  }
 }
 
 /**
@@ -881,151 +897,159 @@ HAL_StatusTypeDef HAL_CORDIC_Calculate_IT(CORDIC_HandleTypeDef *hcordic, const i
   *         DMA transfer to and from the Peripheral.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CORDIC_Calculate_DMA(CORDIC_HandleTypeDef *hcordic, const int32_t *pInBuff, int32_t *pOutBuff,
-                                           uint32_t NbCalc, uint32_t DMADirection)
+HAL_StatusTypeDef HAL_CORDIC_Calculate_DMA(CORDIC_HandleTypeDef* hcordic,
+                                           const int32_t* pInBuff,
+                                           int32_t* pOutBuff, uint32_t NbCalc,
+                                           uint32_t DMADirection)
 {
-  uint32_t sizeinbuff;
-  uint32_t sizeoutbuff;
+    uint32_t sizeinbuff;
+    uint32_t sizeoutbuff;
 
-  /* Check the parameters */
-  assert_param(IS_CORDIC_DMA_DIRECTION(DMADirection));
+    /* Check the parameters */
+    assert_param(IS_CORDIC_DMA_DIRECTION(DMADirection));
 
-  /* Check parameters setting */
-  if (NbCalc == 0U)
-  {
-    /* Update the error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-    /* Return error status */
-    return HAL_ERROR;
-  }
-
-  /* Check if CORDIC DMA direction "Out" is requested */
-  if ((DMADirection == CORDIC_DMA_DIR_OUT) || (DMADirection == CORDIC_DMA_DIR_IN_OUT))
-  {
     /* Check parameters setting */
-    if (pOutBuff == NULL)
+    if (NbCalc == 0U)
     {
-      /* Update the error code */
-      hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-      /* Return error status */
-      return HAL_ERROR;
-    }
-  }
-
-  /* Check if CORDIC DMA direction "In" is requested */
-  if ((DMADirection == CORDIC_DMA_DIR_IN) || (DMADirection == CORDIC_DMA_DIR_IN_OUT))
-  {
-    /* Check parameters setting */
-    if (pInBuff == NULL)
-    {
-      /* Update the error code */
-      hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
-
-      /* Return error status */
-      return HAL_ERROR;
-    }
-  }
-
-  if (hcordic->State == HAL_CORDIC_STATE_READY)
-  {
-    /* Reset CORDIC error code */
-    hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
-
-    /* Change the CORDIC state */
-    hcordic->State = HAL_CORDIC_STATE_BUSY;
-
-    /* Get DMA direction */
-    hcordic->DMADirection = DMADirection;
-
-    /* Check if CORDIC DMA direction "Out" is requested */
-    if ((DMADirection == CORDIC_DMA_DIR_OUT) || (DMADirection == CORDIC_DMA_DIR_IN_OUT))
-    {
-      /* Set the CORDIC DMA transfer complete callback */
-      hcordic->hdmaOut->XferCpltCallback = CORDIC_DMAOutCplt;
-      /* Set the DMA error callback */
-      hcordic->hdmaOut->XferErrorCallback = CORDIC_DMAError;
-
-      /* Check number of output data at each calculation,
-         to retrieve the size of output data buffer */
-      if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NRES))
-      {
-        sizeoutbuff = 2U * NbCalc;
-      }
-      else
-      {
-        sizeoutbuff = NbCalc;
-      }
-
-      /* Convert the output buffer size into corresponding number of bytes.
-         This is necessary as the DMA handles the data at byte-level. */
-      sizeoutbuff = 4U * sizeoutbuff;
-
-      /* Enable the DMA stream managing CORDIC output data read */
-      if (HAL_DMA_Start_IT(hcordic->hdmaOut, (uint32_t)&hcordic->Instance->RDATA, (uint32_t) pOutBuff, sizeoutbuff)
-          != HAL_OK)
-      {
         /* Update the error code */
-        hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
 
         /* Return error status */
         return HAL_ERROR;
-      }
+    }
 
-      /* Enable output data Read DMA requests */
-      SET_BIT(hcordic->Instance->CSR, CORDIC_DMA_REN);
+    /* Check if CORDIC DMA direction "Out" is requested */
+    if ((DMADirection == CORDIC_DMA_DIR_OUT) ||
+        (DMADirection == CORDIC_DMA_DIR_IN_OUT))
+    {
+        /* Check parameters setting */
+        if (pOutBuff == NULL)
+        {
+            /* Update the error code */
+            hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
+
+            /* Return error status */
+            return HAL_ERROR;
+        }
     }
 
     /* Check if CORDIC DMA direction "In" is requested */
-    if ((DMADirection == CORDIC_DMA_DIR_IN) || (DMADirection == CORDIC_DMA_DIR_IN_OUT))
+    if ((DMADirection == CORDIC_DMA_DIR_IN) ||
+        (DMADirection == CORDIC_DMA_DIR_IN_OUT))
     {
-      /* Set the CORDIC DMA transfer complete callback */
-      hcordic->hdmaIn->XferCpltCallback = CORDIC_DMAInCplt;
-      /* Set the DMA error callback */
-      hcordic->hdmaIn->XferErrorCallback = CORDIC_DMAError;
+        /* Check parameters setting */
+        if (pInBuff == NULL)
+        {
+            /* Update the error code */
+            hcordic->ErrorCode |= HAL_CORDIC_ERROR_PARAM;
 
-      /* Check number of input data expected for each calculation,
-         to retrieve the size of input data buffer */
-      if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
-      {
-        sizeinbuff = 2U * NbCalc;
-      }
-      else
-      {
-        sizeinbuff = NbCalc;
-      }
-
-      /* Convert the input buffer size into corresponding number of bytes.
-         This is necessary as the DMA handles the data at byte-level. */
-      sizeinbuff = 4U * sizeinbuff;
-
-      /* Enable the DMA stream managing CORDIC input data write */
-      if (HAL_DMA_Start_IT(hcordic->hdmaIn, (uint32_t) pInBuff, (uint32_t)&hcordic->Instance->WDATA, sizeinbuff)
-          != HAL_OK)
-      {
-        /* Update the error code */
-        hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
-
-        /* Return error status */
-        return HAL_ERROR;
-      }
-
-      /* Enable input data Write DMA request */
-      SET_BIT(hcordic->Instance->CSR, CORDIC_DMA_WEN);
+            /* Return error status */
+            return HAL_ERROR;
+        }
     }
 
-    /* Return function status */
-    return HAL_OK;
-  }
-  else
-  {
-    /* Set CORDIC error code */
-    hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+    if (hcordic->State == HAL_CORDIC_STATE_READY)
+    {
+        /* Reset CORDIC error code */
+        hcordic->ErrorCode = HAL_CORDIC_ERROR_NONE;
 
-    /* Return function status */
-    return HAL_ERROR;
-  }
+        /* Change the CORDIC state */
+        hcordic->State = HAL_CORDIC_STATE_BUSY;
+
+        /* Get DMA direction */
+        hcordic->DMADirection = DMADirection;
+
+        /* Check if CORDIC DMA direction "Out" is requested */
+        if ((DMADirection == CORDIC_DMA_DIR_OUT) ||
+            (DMADirection == CORDIC_DMA_DIR_IN_OUT))
+        {
+            /* Set the CORDIC DMA transfer complete callback */
+            hcordic->hdmaOut->XferCpltCallback = CORDIC_DMAOutCplt;
+            /* Set the DMA error callback */
+            hcordic->hdmaOut->XferErrorCallback = CORDIC_DMAError;
+
+            /* Check number of output data at each calculation,
+         to retrieve the size of output data buffer */
+            if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NRES))
+            {
+                sizeoutbuff = 2U * NbCalc;
+            }
+            else
+            {
+                sizeoutbuff = NbCalc;
+            }
+
+            /* Convert the output buffer size into corresponding number of bytes.
+         This is necessary as the DMA handles the data at byte-level. */
+            sizeoutbuff = 4U * sizeoutbuff;
+
+            /* Enable the DMA stream managing CORDIC output data read */
+            if (HAL_DMA_Start_IT(hcordic->hdmaOut,
+                                 (uint32_t)&hcordic->Instance->RDATA,
+                                 (uint32_t)pOutBuff, sizeoutbuff) != HAL_OK)
+            {
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
+
+                /* Return error status */
+                return HAL_ERROR;
+            }
+
+            /* Enable output data Read DMA requests */
+            SET_BIT(hcordic->Instance->CSR, CORDIC_DMA_REN);
+        }
+
+        /* Check if CORDIC DMA direction "In" is requested */
+        if ((DMADirection == CORDIC_DMA_DIR_IN) ||
+            (DMADirection == CORDIC_DMA_DIR_IN_OUT))
+        {
+            /* Set the CORDIC DMA transfer complete callback */
+            hcordic->hdmaIn->XferCpltCallback = CORDIC_DMAInCplt;
+            /* Set the DMA error callback */
+            hcordic->hdmaIn->XferErrorCallback = CORDIC_DMAError;
+
+            /* Check number of input data expected for each calculation,
+         to retrieve the size of input data buffer */
+            if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
+            {
+                sizeinbuff = 2U * NbCalc;
+            }
+            else
+            {
+                sizeinbuff = NbCalc;
+            }
+
+            /* Convert the input buffer size into corresponding number of bytes.
+         This is necessary as the DMA handles the data at byte-level. */
+            sizeinbuff = 4U * sizeinbuff;
+
+            /* Enable the DMA stream managing CORDIC input data write */
+            if (HAL_DMA_Start_IT(hcordic->hdmaIn, (uint32_t)pInBuff,
+                                 (uint32_t)&hcordic->Instance->WDATA,
+                                 sizeinbuff) != HAL_OK)
+            {
+                /* Update the error code */
+                hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
+
+                /* Return error status */
+                return HAL_ERROR;
+            }
+
+            /* Enable input data Write DMA request */
+            SET_BIT(hcordic->Instance->CSR, CORDIC_DMA_WEN);
+        }
+
+        /* Return function status */
+        return HAL_OK;
+    }
+    else
+    {
+        /* Set CORDIC error code */
+        hcordic->ErrorCode |= HAL_CORDIC_ERROR_NOT_READY;
+
+        /* Return function status */
+        return HAL_ERROR;
+    }
 }
 
 /**
@@ -1053,12 +1077,12 @@ HAL_StatusTypeDef HAL_CORDIC_Calculate_DMA(CORDIC_HandleTypeDef *hcordic, const 
   *         the configuration information for CORDIC module
   * @retval None
   */
-__weak void HAL_CORDIC_ErrorCallback(CORDIC_HandleTypeDef *hcordic)
+__weak void HAL_CORDIC_ErrorCallback(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcordic);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcordic);
 
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             the HAL_CORDIC_ErrorCallback can be implemented in the user file
    */
 }
@@ -1069,12 +1093,12 @@ __weak void HAL_CORDIC_ErrorCallback(CORDIC_HandleTypeDef *hcordic)
   *         the configuration information for CORDIC module
   * @retval None
   */
-__weak void HAL_CORDIC_CalculateCpltCallback(CORDIC_HandleTypeDef *hcordic)
+__weak void HAL_CORDIC_CalculateCpltCallback(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Prevent unused argument(s) compilation warning */
-  UNUSED(hcordic);
+    /* Prevent unused argument(s) compilation warning */
+    UNUSED(hcordic);
 
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             the HAL_CORDIC_CalculateCpltCallback can be implemented in the user file
    */
 }
@@ -1102,51 +1126,51 @@ __weak void HAL_CORDIC_CalculateCpltCallback(CORDIC_HandleTypeDef *hcordic)
   *         the configuration information for CORDIC module
   * @retval None
   */
-void HAL_CORDIC_IRQHandler(CORDIC_HandleTypeDef *hcordic)
+void HAL_CORDIC_IRQHandler(CORDIC_HandleTypeDef* hcordic)
 {
-  /* Check if calculation complete interrupt is enabled and if result ready
+    /* Check if calculation complete interrupt is enabled and if result ready
      flag is raised */
-  if (__HAL_CORDIC_GET_IT_SOURCE(hcordic, CORDIC_IT_IEN) != 0U)
-  {
-    if (__HAL_CORDIC_GET_FLAG(hcordic, CORDIC_FLAG_RRDY) != 0U)
+    if (__HAL_CORDIC_GET_IT_SOURCE(hcordic, CORDIC_IT_IEN) != 0U)
     {
-      /* Decrement number of calculations to get */
-      hcordic->NbCalcToGet--;
+        if (__HAL_CORDIC_GET_FLAG(hcordic, CORDIC_FLAG_RRDY) != 0U)
+        {
+            /* Decrement number of calculations to get */
+            hcordic->NbCalcToGet--;
 
-      /* Read output data from Read Data register, and increment output buffer pointer */
-      CORDIC_ReadOutDataIncrementPtr(hcordic, &(hcordic->pOutBuff));
+            /* Read output data from Read Data register, and increment output buffer pointer */
+            CORDIC_ReadOutDataIncrementPtr(hcordic, &(hcordic->pOutBuff));
 
-      /* Check if calculations are still to be ordered */
-      if (hcordic->NbCalcToOrder > 0U)
-      {
-        /* Decrement number of calculations to order */
-        hcordic->NbCalcToOrder--;
+            /* Check if calculations are still to be ordered */
+            if (hcordic->NbCalcToOrder > 0U)
+            {
+                /* Decrement number of calculations to order */
+                hcordic->NbCalcToOrder--;
 
-        /* Continue the processing by providing another write of input data
+                /* Continue the processing by providing another write of input data
            in the Write Data register, and increment input buffer pointer */
-        CORDIC_WriteInDataIncrementPtr(hcordic, &(hcordic->pInBuff));
-      }
+                CORDIC_WriteInDataIncrementPtr(hcordic, &(hcordic->pInBuff));
+            }
 
-      /* Check if all calculations results are got */
-      if (hcordic->NbCalcToGet == 0U)
-      {
-        /* Disable Result Ready Interrupt */
-        __HAL_CORDIC_DISABLE_IT(hcordic, CORDIC_IT_IEN);
+            /* Check if all calculations results are got */
+            if (hcordic->NbCalcToGet == 0U)
+            {
+                /* Disable Result Ready Interrupt */
+                __HAL_CORDIC_DISABLE_IT(hcordic, CORDIC_IT_IEN);
 
-        /* Change the CORDIC state */
-        hcordic->State = HAL_CORDIC_STATE_READY;
+                /* Change the CORDIC state */
+                hcordic->State = HAL_CORDIC_STATE_READY;
 
-        /* Call calculation complete callback */
+                /* Call calculation complete callback */
 #if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
-        /*Call registered callback*/
-        hcordic->CalculateCpltCallback(hcordic);
+                /*Call registered callback*/
+                hcordic->CalculateCpltCallback(hcordic);
 #else
-        /*Call legacy weak (surcharged) callback*/
-        HAL_CORDIC_CalculateCpltCallback(hcordic);
+                /*Call legacy weak (surcharged) callback*/
+                HAL_CORDIC_CalculateCpltCallback(hcordic);
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
-      }
+            }
+        }
     }
-  }
 }
 
 /**
@@ -1173,10 +1197,10 @@ void HAL_CORDIC_IRQHandler(CORDIC_HandleTypeDef *hcordic)
   *         the configuration information for CORDIC module
   * @retval HAL state
   */
-HAL_CORDIC_StateTypeDef HAL_CORDIC_GetState(const CORDIC_HandleTypeDef *hcordic)
+HAL_CORDIC_StateTypeDef HAL_CORDIC_GetState(const CORDIC_HandleTypeDef* hcordic)
 {
-  /* Return CORDIC handle state */
-  return hcordic->State;
+    /* Return CORDIC handle state */
+    return hcordic->State;
 }
 
 /**
@@ -1186,10 +1210,10 @@ HAL_CORDIC_StateTypeDef HAL_CORDIC_GetState(const CORDIC_HandleTypeDef *hcordic)
   * @note   The returned error is a bit-map combination of possible errors
   * @retval Error bit-map
   */
-uint32_t HAL_CORDIC_GetError(const CORDIC_HandleTypeDef *hcordic)
+uint32_t HAL_CORDIC_GetError(const CORDIC_HandleTypeDef* hcordic)
 {
-  /* Return CORDIC error code */
-  return hcordic->ErrorCode;
+    /* Return CORDIC error code */
+    return hcordic->ErrorCode;
 }
 
 /**
@@ -1211,23 +1235,24 @@ uint32_t HAL_CORDIC_GetError(const CORDIC_HandleTypeDef *hcordic)
   * @param  ppInBuff Pointer to pointer to input buffer.
   * @retval none
   */
-static void CORDIC_WriteInDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, const int32_t **ppInBuff)
+static void CORDIC_WriteInDataIncrementPtr(const CORDIC_HandleTypeDef* hcordic,
+                                           const int32_t** ppInBuff)
 {
-  /* First write of input data in the Write Data register */
-  WRITE_REG(hcordic->Instance->WDATA, (uint32_t) **ppInBuff);
-
-  /* Increment input data pointer */
-  (*ppInBuff)++;
-
-  /* Check if second write of input data is expected */
-  if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
-  {
-    /* Second write of input data in the Write Data register */
-    WRITE_REG(hcordic->Instance->WDATA, (uint32_t) **ppInBuff);
+    /* First write of input data in the Write Data register */
+    WRITE_REG(hcordic->Instance->WDATA, (uint32_t)**ppInBuff);
 
     /* Increment input data pointer */
     (*ppInBuff)++;
-  }
+
+    /* Check if second write of input data is expected */
+    if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NARGS))
+    {
+        /* Second write of input data in the Write Data register */
+        WRITE_REG(hcordic->Instance->WDATA, (uint32_t)**ppInBuff);
+
+        /* Increment input data pointer */
+        (*ppInBuff)++;
+    }
 }
 
 /**
@@ -1237,23 +1262,24 @@ static void CORDIC_WriteInDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, 
   * @param  ppOutBuff Pointer to pointer to output buffer.
   * @retval none
   */
-static void CORDIC_ReadOutDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, int32_t **ppOutBuff)
+static void CORDIC_ReadOutDataIncrementPtr(const CORDIC_HandleTypeDef* hcordic,
+                                           int32_t** ppOutBuff)
 {
-  /* First read of output data from the Read Data register */
-  **ppOutBuff = (int32_t)READ_REG(hcordic->Instance->RDATA);
-
-  /* Increment output data pointer */
-  (*ppOutBuff)++;
-
-  /* Check if second read of output data is expected */
-  if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NRES))
-  {
-    /* Second read of output data from the Read Data register */
+    /* First read of output data from the Read Data register */
     **ppOutBuff = (int32_t)READ_REG(hcordic->Instance->RDATA);
 
     /* Increment output data pointer */
     (*ppOutBuff)++;
-  }
+
+    /* Check if second read of output data is expected */
+    if (HAL_IS_BIT_SET(hcordic->Instance->CSR, CORDIC_CSR_NRES))
+    {
+        /* Second read of output data from the Read Data register */
+        **ppOutBuff = (int32_t)READ_REG(hcordic->Instance->RDATA);
+
+        /* Increment output data pointer */
+        (*ppOutBuff)++;
+    }
 }
 
 /**
@@ -1261,16 +1287,47 @@ static void CORDIC_ReadOutDataIncrementPtr(const CORDIC_HandleTypeDef *hcordic, 
   * @param  hdma DMA handle.
   * @retval None
   */
-static void CORDIC_DMAInCplt(DMA_HandleTypeDef *hdma)
+static void CORDIC_DMAInCplt(DMA_HandleTypeDef* hdma)
 {
-  CORDIC_HandleTypeDef *hcordic = (CORDIC_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+    CORDIC_HandleTypeDef* hcordic =
+        (CORDIC_HandleTypeDef*)((DMA_HandleTypeDef*)hdma)->Parent;
 
-  /* Disable the DMA transfer for input request */
-  CLEAR_BIT(hcordic->Instance->CSR, CORDIC_DMA_WEN);
+    /* Disable the DMA transfer for input request */
+    CLEAR_BIT(hcordic->Instance->CSR, CORDIC_DMA_WEN);
 
-  /* Check if DMA direction is CORDIC Input only (no DMA for CORDIC Output) */
-  if (hcordic->DMADirection == CORDIC_DMA_DIR_IN)
-  {
+    /* Check if DMA direction is CORDIC Input only (no DMA for CORDIC Output) */
+    if (hcordic->DMADirection == CORDIC_DMA_DIR_IN)
+    {
+        /* Change the CORDIC DMA direction to none */
+        hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
+
+        /* Change the CORDIC state to ready */
+        hcordic->State = HAL_CORDIC_STATE_READY;
+
+        /* Call calculation complete callback */
+#if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
+        /*Call registered callback*/
+        hcordic->CalculateCpltCallback(hcordic);
+#else
+        /*Call legacy weak (surcharged) callback*/
+        HAL_CORDIC_CalculateCpltCallback(hcordic);
+#endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
+    }
+}
+
+/**
+  * @brief  DMA CORDIC Output Data process complete callback.
+  * @param  hdma DMA handle.
+  * @retval None
+  */
+static void CORDIC_DMAOutCplt(DMA_HandleTypeDef* hdma)
+{
+    CORDIC_HandleTypeDef* hcordic =
+        (CORDIC_HandleTypeDef*)((DMA_HandleTypeDef*)hdma)->Parent;
+
+    /* Disable the DMA transfer for output request */
+    CLEAR_BIT(hcordic->Instance->CSR, CORDIC_DMA_REN);
+
     /* Change the CORDIC DMA direction to none */
     hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
 
@@ -1285,35 +1342,6 @@ static void CORDIC_DMAInCplt(DMA_HandleTypeDef *hdma)
     /*Call legacy weak (surcharged) callback*/
     HAL_CORDIC_CalculateCpltCallback(hcordic);
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
-  }
-}
-
-/**
-  * @brief  DMA CORDIC Output Data process complete callback.
-  * @param  hdma DMA handle.
-  * @retval None
-  */
-static void CORDIC_DMAOutCplt(DMA_HandleTypeDef *hdma)
-{
-  CORDIC_HandleTypeDef *hcordic = (CORDIC_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
-
-  /* Disable the DMA transfer for output request */
-  CLEAR_BIT(hcordic->Instance->CSR, CORDIC_DMA_REN);
-
-  /* Change the CORDIC DMA direction to none */
-  hcordic->DMADirection = CORDIC_DMA_DIR_NONE;
-
-  /* Change the CORDIC state to ready */
-  hcordic->State = HAL_CORDIC_STATE_READY;
-
-  /* Call calculation complete callback */
-#if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
-  /*Call registered callback*/
-  hcordic->CalculateCpltCallback(hcordic);
-#else
-  /*Call legacy weak (surcharged) callback*/
-  HAL_CORDIC_CalculateCpltCallback(hcordic);
-#endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
 }
 
 /**
@@ -1321,23 +1349,24 @@ static void CORDIC_DMAOutCplt(DMA_HandleTypeDef *hdma)
   * @param  hdma DMA handle.
   * @retval None
   */
-static void CORDIC_DMAError(DMA_HandleTypeDef *hdma)
+static void CORDIC_DMAError(DMA_HandleTypeDef* hdma)
 {
-  CORDIC_HandleTypeDef *hcordic = (CORDIC_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent;
+    CORDIC_HandleTypeDef* hcordic =
+        (CORDIC_HandleTypeDef*)((DMA_HandleTypeDef*)hdma)->Parent;
 
-  /* Set CORDIC handle state to error */
-  hcordic->State = HAL_CORDIC_STATE_READY;
+    /* Set CORDIC handle state to error */
+    hcordic->State = HAL_CORDIC_STATE_READY;
 
-  /* Set CORDIC handle error code to DMA error */
-  hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
+    /* Set CORDIC handle error code to DMA error */
+    hcordic->ErrorCode |= HAL_CORDIC_ERROR_DMA;
 
-  /* Call user callback */
+    /* Call user callback */
 #if USE_HAL_CORDIC_REGISTER_CALLBACKS == 1
-  /*Call registered callback*/
-  hcordic->ErrorCallback(hcordic);
+    /*Call registered callback*/
+    hcordic->ErrorCallback(hcordic);
 #else
-  /*Call legacy weak (surcharged) callback*/
-  HAL_CORDIC_ErrorCallback(hcordic);
+    /*Call legacy weak (surcharged) callback*/
+    HAL_CORDIC_ErrorCallback(hcordic);
 #endif /* USE_HAL_CORDIC_REGISTER_CALLBACKS */
 }
 

@@ -1,11 +1,11 @@
 #include "forever_timer.h"
 
-void forever_timer_start(void * data)
+void forever_timer_start(void* data)
 {
     return;
 }
 
-bool forever_timer_tick(void * data)
+bool forever_timer_tick(void* data)
 {
     return true;
 }

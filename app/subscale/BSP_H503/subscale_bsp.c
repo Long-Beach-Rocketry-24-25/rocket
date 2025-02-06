@@ -5,28 +5,32 @@ static StPrivUsart st_usart;
 static StPrivSpi st_spi;
 static GpioChipSelect st_spi_cs;
 static StPrivI2c st_i2c;
-static StGpioParams led_stgpio = {{ 0 }, GPIOA_BASE, 5, {1, 0, 0, 0, 0}};
-static StGpioParams spi_cs_io = {{ 0 }, GPIOC_BASE, 1, {1, 0, 0, 0, 0}};
+static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {1, 0, 0, 0, 0}};
+static StGpioParams spi_cs_io = {{0}, GPIOC_BASE, 1, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;
 static FrtTimerData frt;
 
-static StGpioParams uart_io1 = {{ 0 }, GPIOB_BASE, 6, 
-                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART1 AF 7
-static StGpioParams uart_io2 = {{ 0 }, GPIOB_BASE, 7,
-                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART1 AF 7
+static StGpioParams uart_io1 = {{0},
+                                GPIOB_BASE,
+                                6,
+                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART1 AF 7
+static StGpioParams uart_io2 = {{0},
+                                GPIOB_BASE,
+                                7,
+                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART1 AF 7
 
-static StGpioParams spi_io1 = {{ 0 }, GPIOC_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x5}};
-static StGpioParams spi_io2 = {{ 0 }, GPIOC_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x4}};
-static StGpioParams spi_io3 = {{ 0 }, GPIOC_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x4}};
+static StGpioParams spi_io1 = {{0}, GPIOC_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x5}};
+static StGpioParams spi_io2 = {{0}, GPIOC_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x4}};
+static StGpioParams spi_io3 = {{0}, GPIOC_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x4}};
 
 const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
-static StGpioParams i2c1_io1 = {{ 0 }, GPIOC_BASE, 8, i2c_io_conf};
-static StGpioParams i2c1_io2 = {{ 0 }, GPIOC_BASE, 9, i2c_io_conf};
+static StGpioParams i2c1_io1 = {{0}, GPIOC_BASE, 8, i2c_io_conf};
+static StGpioParams i2c1_io2 = {{0}, GPIOC_BASE, 9, i2c_io_conf};
 
-void BSP_Init(Usart *usart, Spi *spi, I2c *temp_i2c, Gpio *led_gpio)
+void BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
 {
     HAL_InitTick(0);
     SystemClock_Config();
@@ -99,12 +103,15 @@ void SystemClock_Config(void)
      */
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
-    while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+    while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY))
+    {
+    }
 
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_CSI;
+    RCC_OscInitStruct.OscillatorType =
+        RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_CSI;
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
     RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV2;
     RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -127,9 +134,9 @@ void SystemClock_Config(void)
 
     /** Initializes the CPU, AHB and APB buses clocks
      */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                                |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                                |RCC_CLOCKTYPE_PCLK3;
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                  RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 |
+                                  RCC_CLOCKTYPE_PCLK3;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;

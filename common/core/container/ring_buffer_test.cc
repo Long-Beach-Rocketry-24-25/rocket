@@ -8,7 +8,7 @@ extern "C"
 
 class RingBufferTest : public testing::Test
 {
-public:
+   public:
     static constexpr size_t BUF_SIZE = 5;
 
     RingBuffer buf;

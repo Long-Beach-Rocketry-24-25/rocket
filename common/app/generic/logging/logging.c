@@ -1,7 +1,8 @@
 
 #include "logging.h"
 
-void logger_init(Logger *log, LogBuilder *builder, LogSubscriber *subs, size_t num_subs, Send *comm)
+void logger_init(Logger* log, LogBuilder* builder, LogSubscriber* subs,
+                 size_t num_subs, Send* comm)
 {
     log->builder = builder;
     log->subs = subs;
@@ -10,7 +11,7 @@ void logger_init(Logger *log, LogBuilder *builder, LogSubscriber *subs, size_t n
     log->enabled = false;
 }
 
-bool logger_update(Logger *log)
+bool logger_update(Logger* log)
 {
     switch (log->enabled)
     {
@@ -26,7 +27,7 @@ bool logger_update(Logger *log)
             break;
         case true:
             log->builder->build_new(log->builder);
-            const uint8_t * data = log->builder->get_ptr(log->builder);
+            const uint8_t* data = log->builder->get_ptr(log->builder);
             size_t size = log->builder->get_size(log->builder);
 
             for (size_t i = 0; i < log->num_subs; ++i)
@@ -44,12 +45,12 @@ bool logger_update(Logger *log)
     return true;
 }
 
-void logger_enable(Logger *log, bool enable)
+void logger_enable(Logger* log, bool enable)
 {
     log->cmd_enable = enable;
 }
 
-bool logger_retrieve(Logger *log)
+bool logger_retrieve(Logger* log)
 {
     for (size_t i = 0; i < log->num_subs; ++i)
     {

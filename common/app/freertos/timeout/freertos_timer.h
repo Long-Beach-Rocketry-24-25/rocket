@@ -26,12 +26,12 @@ typedef struct
 /**
  * Start function for Timeout interface.
  */
-void frt_timer_start(void * data);
+void frt_timer_start(void* data);
 
 /**
  * Tick function for Timeout interface.
  */
-bool frt_timer_tick(void * data);
+bool frt_timer_tick(void* data);
 
 /**
  * Initializes a Timeout interface as a FreeRTOS Timer, that expires

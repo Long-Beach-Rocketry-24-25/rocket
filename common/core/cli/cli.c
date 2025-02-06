@@ -5,18 +5,18 @@
 
 #include "cli.h"
 
-void cli_init(Cli *cli, Send *driver)
+void cli_init(Cli* cli, Send* driver)
 {
     cli->comm = driver;
     cli->num_commands = 0;
 }
 
-Send *cli_get_sender(Cli *cli)
+Send* cli_get_sender(Cli* cli)
 {
     return cli->comm;
 }
 
-bool cli_register_command(Cli *cli, const Command *cmd)
+bool cli_register_command(Cli* cli, const Command* cmd)
 {
     if (cli->num_commands < MAX_ARGS)
     {
@@ -26,9 +26,10 @@ bool cli_register_command(Cli *cli, const Command *cmd)
     return false;
 }
 
-static void parse_command(char *input, int *argc, char *argv[]) {
+static void parse_command(char* input, int* argc, char* argv[])
+{
     *argc = 0;
-    char *token = strtok(input, " ");
+    char* token = strtok(input, " ");
     while (token != NULL && *argc < MAX_ARGS)
     {
         argv[(*argc)++] = token;
@@ -36,16 +37,17 @@ static void parse_command(char *input, int *argc, char *argv[]) {
     }
 }
 
-static void help(Cli *cli)
+static void help(Cli* cli)
 {
     cli->comm->fwrite(cli->comm, "Available commands:");
     for (int i = 0; i < cli->num_commands; i++)
     {
-        cli->comm->fwrite(cli->comm, "%s - %s", cli->commands[i].name, cli->commands[i].help);
+        cli->comm->fwrite(cli->comm, "%s - %s", cli->commands[i].name,
+                          cli->commands[i].help);
     }
 }
 
-bool cli_process(Cli *cli, const char * message)
+bool cli_process(Cli* cli, const char* message)
 {
     char input[MAX_CMD_LENGTH];
     bool found = false;
@@ -65,10 +67,11 @@ bool cli_process(Cli *cli, const char * message)
     }
 
     int argc;
-    char *argv[MAX_ARGS];
+    char* argv[MAX_ARGS];
     parse_command(input, &argc, argv);
 
-    if (argc > 0) {
+    if (argc > 0)
+    {
         for (int i = 0; i < cli->num_commands; i++)
         {
             if (strcmp(argv[0], cli->commands[i].name) == 0)
@@ -82,8 +85,8 @@ bool cli_process(Cli *cli, const char * message)
         {
             help(cli);
             return true;
-        } 
-        
+        }
+
         /*
          * Unknown command parsed.
          */

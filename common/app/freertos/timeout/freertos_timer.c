@@ -1,18 +1,18 @@
 
 #include "freertos_timer.h"
 
-void frt_timer_start(void * data)
+void frt_timer_start(void* data)
 {
-    FrtTimerData* timer_data = (FrtTimerData *) data;
+    FrtTimerData* timer_data = (FrtTimerData*)data;
     TickType_t now = xTaskGetTickCount();
     timer_data->end = now + timer_data->duration;
     timer_data->overflow = now > timer_data->end;
     timer_data->start = now;
 }
 
-bool frt_timer_tick(void * data)
+bool frt_timer_tick(void* data)
 {
-    FrtTimerData* timer_data = (FrtTimerData *) data;
+    FrtTimerData* timer_data = (FrtTimerData*)data;
     TickType_t now = xTaskGetTickCount();
     if (timer_data->overflow)
     {
@@ -22,7 +22,6 @@ bool frt_timer_tick(void * data)
     {
         return now < timer_data->end;
     }
-
 }
 
 void frt_timer_init(Timeout* timer, FrtTimerData* frt, TickType_t duration_ms)
@@ -32,7 +31,7 @@ void frt_timer_init(Timeout* timer, FrtTimerData* frt, TickType_t duration_ms)
     frt->start = 0;
     frt->end = 0;
 
-    timer->data = (void *) frt;
+    timer->data = (void*)frt;
     timer->start = frt_timer_start;
     timer->tick = frt_timer_tick;
 }

@@ -1,9 +1,9 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct
 {
@@ -27,7 +27,6 @@ typedef struct
     double z;
 } QuaternionVec;
 
-
 typedef struct NavData NavData;
 
 struct NavData
@@ -37,6 +36,6 @@ struct NavData
     EulerVec euler;
     float temperature;
     size_t tick;
-    bool (*update) (NavData *data);
-    void *priv;
+    bool (*update)(NavData* data);
+    void* priv;
 };

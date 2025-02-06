@@ -10,7 +10,7 @@ typedef struct
     Gpio pin;
 } GpioChipSelect;
 
-void GpioCsInit(ChipSelect *cs, GpioChipSelect *gpio_cs, bool activeLow);
-void GpioCsConfig(ChipSelect *cs);
-bool GpioCsSelect(ChipSelect *cs);
-bool GpioCsDeselect(ChipSelect *cs);
+void GpioCsInit(ChipSelect* cs, GpioChipSelect* gpio_cs, bool activeLow);
+void GpioCsConfig(ChipSelect* cs);
+bool GpioCsSelect(ChipSelect* cs);
+bool GpioCsDeselect(ChipSelect* cs);

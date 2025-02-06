@@ -1,7 +1,7 @@
 
 #include "mock_nav_data.h"
 
-bool MockNavDataInit(NavData *data, MockNavData *mock, const char *path)
+bool MockNavDataInit(NavData* data, MockNavData* mock, const char* path)
 {
     mock->fp = fopen(path, "r");
 
@@ -12,19 +12,19 @@ bool MockNavDataInit(NavData *data, MockNavData *mock, const char *path)
     }
     printf("File found: %s\n", path);
 
-    data->priv = (void *) mock;
+    data->priv = (void*)mock;
     data->update = MockNavDataUpdate;
 }
 
-void MockNavDataDeinit(NavData *data)
+void MockNavDataDeinit(NavData* data)
 {
-    MockNavData *mock = (MockNavData *) data->priv;
+    MockNavData* mock = (MockNavData*)data->priv;
     fclose(mock->fp);
 }
 
-bool MockNavDataUpdate(NavData *data)
+bool MockNavDataUpdate(NavData* data)
 {
-    MockNavData *mock = (MockNavData *) data->priv;
+    MockNavData* mock = (MockNavData*)data->priv;
     char buf[256];
     if (fgets(buf, 256, mock->fp))
     {

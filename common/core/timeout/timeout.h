@@ -7,7 +7,6 @@
  * Author: Nick Fan
  */
 
-
 #pragma once
 
 #include <stdbool.h>
@@ -22,18 +21,18 @@
  * @param ret The value to return if time runs out.
  *
  */
-#define WAIT(timer, cond, ret)          \
-do							            \
-{							            \
-	timer->start(timer->data);          \
-	while(!(cond))			            \
-	{						            \
-		if (!timer->tick(timer->data))  \
-		{                               \
-			return ret;                 \
-		}                               \
-	}                                   \
-} while (0)
+#define WAIT(timer, cond, ret)             \
+    do                                     \
+    {                                      \
+        timer->start(timer->data);         \
+        while (!(cond))                    \
+        {                                  \
+            if (!timer->tick(timer->data)) \
+            {                              \
+                return ret;                \
+            }                              \
+        }                                  \
+    } while (0)
 
 /**
  * Resets and "starts" the timer.
@@ -41,7 +40,7 @@ do							            \
  * @param data the timer data used to determine expiration,
  *             passed as the only argument of the function.
  */
-typedef void (*start) (void * data);
+typedef void (*start)(void* data);
 
 /**
  * To be called every iteration of the waiting loop. This
@@ -53,7 +52,7 @@ typedef void (*start) (void * data);
  * 
  * @returns True if still ticking, or false if expired.
  */
-typedef bool (*tick) (void * data);
+typedef bool (*tick)(void* data);
 
 /**
  * Timeout interface.
@@ -75,6 +74,6 @@ typedef struct
      * Implementation specific information for
      * the timer instance.
      */
-    void * data;
+    void* data;
 
 } Timeout;

@@ -7,8 +7,8 @@
 
 #include "stm32f7xx.h"
 
-#include "gpio.h"
 #include "can.h"
+#include "gpio.h"
 #include "timeout.h"
 
 #define CAN_NUM_TX_MAILBOXES 3
@@ -46,8 +46,8 @@ typedef struct
     CanId id;
 } StBxCanParams;
 
-bool StBxCanInit(CanBus *can, StBxCanParams *params, Timeout *timer);
-void StBxCanConfig(CanBus *can);
-bool StBxCanSend(CanBus *can, uint8_t *data, size_t size);
-bool StBxCanRecv(CanBus *can, uint8_t *data, size_t size);
-void StBxCanSetId(CanBus *can, CanId new_id);
+bool StBxCanInit(CanBus* can, StBxCanParams* params, Timeout* timer);
+void StBxCanConfig(CanBus* can);
+bool StBxCanSend(CanBus* can, uint8_t* data, size_t size);
+bool StBxCanRecv(CanBus* can, uint8_t* data, size_t size);
+void StBxCanSetId(CanBus* can, CanId new_id);

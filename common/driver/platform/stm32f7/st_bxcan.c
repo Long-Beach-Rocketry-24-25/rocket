@@ -60,7 +60,7 @@ static bool enter_init_mode(StPrivBxCan* can)
     return true;
 }
 
-static bool enter_normal_mode(StPrivBxCan *can)
+static bool enter_normal_mode(StPrivBxCan* can)
 {
     /*
      * If not INAK return false.
@@ -78,12 +78,14 @@ static bool enter_normal_mode(StPrivBxCan *can)
     /*
      * Wait INAK/SLAK = 0;
      */
-    WAIT(can->timer, !(can->instance->MSR & (CAN_MSR_INAK | CAN_MSR_SLAK)), false);
+    WAIT(can->timer, !(can->instance->MSR & (CAN_MSR_INAK | CAN_MSR_SLAK)),
+         false);
 
     return true;
 }
 
-bool set_bit_timing(StPrivBxCan *can, uint8_t sjw, uint8_t ts1, uint8_t ts2, uint16_t brp)
+bool set_bit_timing(StPrivBxCan* can, uint8_t sjw, uint8_t ts1, uint8_t ts2,
+                    uint16_t brp)
 {
     /*
      * Return false if not in init mode.
@@ -96,7 +98,8 @@ bool set_bit_timing(StPrivBxCan *can, uint8_t sjw, uint8_t ts1, uint8_t ts2, uin
     /*
      * BTR - BRP, TS1, TS2, SJW.
      */
-    can->instance->BTR &= ~(CAN_BTR_SJW | CAN_BTR_TS2 | CAN_BTR_TS1 | CAN_BTR_BRP);
+    can->instance->BTR &=
+        ~(CAN_BTR_SJW | CAN_BTR_TS2 | CAN_BTR_TS1 | CAN_BTR_BRP);
     can->instance->BTR |= ((sjw << CAN_BTR_SJW_Pos) & CAN_BTR_SJW);
     can->instance->BTR |= ((ts2 << CAN_BTR_TS2_Pos) & CAN_BTR_TS2);
     can->instance->BTR |= ((ts1 << CAN_BTR_TS1_Pos) & CAN_BTR_TS1);
@@ -105,7 +108,7 @@ bool set_bit_timing(StPrivBxCan *can, uint8_t sjw, uint8_t ts1, uint8_t ts2, uin
     return true;
 }
 
-static bool set_filters(StPrivBxCan *can)
+static bool set_filters(StPrivBxCan* can)
 {
     /*
      * WIP...
@@ -136,7 +139,7 @@ static bool set_filters(StPrivBxCan *can)
     return true;
 }
 
-static bool set_mode(StPrivBxCan *can)
+static bool set_mode(StPrivBxCan* can)
 {
     /*
      * Return false if not in init mode.
@@ -154,7 +157,7 @@ static bool set_mode(StPrivBxCan *can)
     return true;
 }
 
-bool StBxCanInit(CanBus *can, StBxCanParams *params, Timeout *timer)
+bool StBxCanInit(CanBus* can, StBxCanParams* params, Timeout* timer)
 {
     if (params->tx_box >= CAN_NUM_TX_MAILBOXES ||
         params->rx_box >= CAN_NUM_RX_MAILBOXES)
@@ -163,14 +166,14 @@ bool StBxCanInit(CanBus *can, StBxCanParams *params, Timeout *timer)
     }
 
     params->priv.id = params->id;
-    params->priv.instance = (CAN_TypeDef *) params->base_addr;
+    params->priv.instance = (CAN_TypeDef*)params->base_addr;
     params->priv.timer = timer;
     params->priv.tx_box = params->tx_box;
     params->priv.rx_box = params->rx_box;
     params->priv.bit_timing = params->timing;
     params->priv.remote = false;
 
-    can->priv = (void *) &params->priv;
+    can->priv = (void*)&params->priv;
     can->send = StBxCanSend;
     can->recv = StBxCanRecv;
     can->set_id = StBxCanSetId;
@@ -178,41 +181,39 @@ bool StBxCanInit(CanBus *can, StBxCanParams *params, Timeout *timer)
     return true;
 }
 
-void StBxCanConfig(CanBus *can)
+void StBxCanConfig(CanBus* can)
 {
-    StPrivBxCan *dev = (StPrivBxCan *) can->priv;
+    StPrivBxCan* dev = (StPrivBxCan*)can->priv;
 
     dev->rx.config(&dev->rx);
     dev->tx.config(&dev->tx);
 
     enter_init_mode(dev);
     set_mode(dev);
-    set_bit_timing(dev, dev->bit_timing.sjw,
-                        dev->bit_timing.ts1,
-                        dev->bit_timing.ts2,
-                        dev->bit_timing.brp);
+    set_bit_timing(dev, dev->bit_timing.sjw, dev->bit_timing.ts1,
+                   dev->bit_timing.ts2, dev->bit_timing.brp);
     set_filters(dev);
     enter_normal_mode(dev);
 
     dev->instance->IER |= CAN_IER_FMPIE0 | CAN_IER_FMPIE1;
 }
 
-void StBxCanSetId(CanBus *can, CanId new_id)
+void StBxCanSetId(CanBus* can, CanId new_id)
 {
-    StPrivBxCan *dev = (StPrivBxCan *) can->priv;
+    StPrivBxCan* dev = (StPrivBxCan*)can->priv;
     dev->id = new_id;
 }
 
-bool StBxCanSend(CanBus* can, uint8_t *data, size_t size)
+bool StBxCanSend(CanBus* can, uint8_t* data, size_t size)
 {
-    StPrivBxCan *dev = (StPrivBxCan *) can->priv;
+    StPrivBxCan* dev = (StPrivBxCan*)can->priv;
 
     if (size > CAN_MAX_DATA_BYTES)
     {
         return false;
     }
 
-    CAN_TxMailBox_TypeDef *box = &dev->instance->sTxMailBox[dev->tx_box];
+    CAN_TxMailBox_TypeDef* box = &dev->instance->sTxMailBox[dev->tx_box];
 
     /*
      * Return false if mailbox not empty.
@@ -268,7 +269,6 @@ bool StBxCanSend(CanBus* can, uint8_t *data, size_t size)
 
     tir |= CAN_TI0R_TXRQ;
 
-
     box->TIR = tir;
 
     uint32_t mask = tx_status_mask(dev->tx_box);
@@ -277,9 +277,9 @@ bool StBxCanSend(CanBus* can, uint8_t *data, size_t size)
     return true;
 }
 
-bool StBxCanRecv(CanBus *can, uint8_t *data, size_t size)
+bool StBxCanRecv(CanBus* can, uint8_t* data, size_t size)
 {
-    StPrivBxCan *dev = (StPrivBxCan *) can->priv;
+    StPrivBxCan* dev = (StPrivBxCan*)can->priv;
 
     /*
      * No data ready.
@@ -289,7 +289,7 @@ bool StBxCanRecv(CanBus *can, uint8_t *data, size_t size)
         return false;
     }
 
-    CAN_FIFOMailBox_TypeDef *box = &dev->instance->sFIFOMailBox[dev->rx_box];
+    CAN_FIFOMailBox_TypeDef* box = &dev->instance->sFIFOMailBox[dev->rx_box];
 
     uint32_t low = box->RDLR;
     uint32_t high = box->RDHR;

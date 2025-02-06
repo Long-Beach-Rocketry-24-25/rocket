@@ -17,18 +17,18 @@
 typedef struct
 {
     size_t reset;
-	volatile size_t counter;
+    volatile size_t counter;
 } RetryData;
 
 /**
  * Start function for Timeout interface.
  */
-void retry_timer_start(void * data);
+void retry_timer_start(void* data);
 
 /**
  * Tick function for Timeout interface.
  */
-bool retry_timer_tick(void * data);
+bool retry_timer_tick(void* data);
 
 /**
  * Initializes a Timeout interface as a Retry Timer, that expires

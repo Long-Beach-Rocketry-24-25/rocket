@@ -1,8 +1,7 @@
 
 #include "arm32_usart.h"
 
-
-bool Arm32UsartInit(Usart *usart, Arm32PrivUsart *arm32_usart, const char* path)
+bool Arm32UsartInit(Usart* usart, Arm32PrivUsart* arm32_usart, const char* path)
 {
     int fd = open(path, O_RDWR | O_NDELAY | O_NOCTTY);
     arm32_usart->file_handle = fd;
@@ -19,22 +18,22 @@ bool Arm32UsartInit(Usart *usart, Arm32PrivUsart *arm32_usart, const char* path)
     options.c_lflag = 0;
     tcflush(fd, TCIFLUSH);
     tcsetattr(fd, TCSANOW, &options);
-    usart->priv = (void *) arm32_usart;
+    usart->priv = (void*)arm32_usart;
     usart->send = Arm32UsartSend;
     usart->recv = Arm32UsartRecv;
 
     return true;
 }
 
-void Arm32UsartClose(Usart *usart)
+void Arm32UsartClose(Usart* usart)
 {
-    Arm32PrivUsart * dev = (Arm32PrivUsart *) usart->priv;
+    Arm32PrivUsart* dev = (Arm32PrivUsart*)usart->priv;
     close(dev->file_handle);
 }
 
-bool Arm32UsartSend(Usart *usart, uint8_t *data, size_t size)
+bool Arm32UsartSend(Usart* usart, uint8_t* data, size_t size)
 {
-    Arm32PrivUsart * dev = (Arm32PrivUsart *) usart->priv;
+    Arm32PrivUsart* dev = (Arm32PrivUsart*)usart->priv;
     if (dev->file_handle < 0)
     {
         return false;
@@ -43,9 +42,9 @@ bool Arm32UsartSend(Usart *usart, uint8_t *data, size_t size)
     return write(dev->file_handle, data, size) >= 0;
 }
 
-bool Arm32UsartRecv(Usart *usart, uint8_t *data, size_t size)
+bool Arm32UsartRecv(Usart* usart, uint8_t* data, size_t size)
 {
-    Arm32PrivUsart * dev = (Arm32PrivUsart *) usart->priv;
+    Arm32PrivUsart* dev = (Arm32PrivUsart*)usart->priv;
     if (dev->file_handle < 0)
     {
         return false;

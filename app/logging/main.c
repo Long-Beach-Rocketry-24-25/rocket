@@ -1,9 +1,9 @@
 
 #include "logging.h"
-#include "w25q_logger.h"
-#include "mock_w25q.h"
 #include "mock_nav_data.h"
+#include "mock_w25q.h"
 #include "nav_logbuilder.h"
+#include "w25q_logger.h"
 
 #include <stdio.h>
 
@@ -16,7 +16,7 @@ NavDataLogBuilder nav_builder;
 NavData nav;
 MockNavData mock_nav;
 
-bool logprint(const char * msg)
+bool logprint(const char* msg)
 {
     printf("%s\n", msg);
     return true;

@@ -3,23 +3,27 @@
 
 static StPrivUsart st_usart;
 static StPrivI2c st_i2c1;
-static StGpioParams led_stgpio = {{ 0 }, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
+static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;
 static FrtTimerData frt;
 
-static StGpioParams uart_io1 = {{ 0 }, GPIOA_BASE, 2,
-                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART2 AF 7
-static StGpioParams uart_io2 = {{ 0 }, GPIOA_BASE, 3,
-                                {ALT_FUNC, 0, 0, 0, 0x7}}; // USART2 AF 7
+static StGpioParams uart_io1 = {{0},
+                                GPIOA_BASE,
+                                2,
+                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
+static StGpioParams uart_io2 = {{0},
+                                GPIOA_BASE,
+                                3,
+                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
 
 const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
-static StGpioParams i2c1_io1 = {{ 0 }, GPIOB_BASE, 8, i2c_io_conf};
-static StGpioParams i2c1_io2 = {{ 0 }, GPIOB_BASE, 9, i2c_io_conf};
+static StGpioParams i2c1_io1 = {{0}, GPIOB_BASE, 8, i2c_io_conf};
+static StGpioParams i2c1_io2 = {{0}, GPIOB_BASE, 9, i2c_io_conf};
 
-void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
+void BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
 {
 
     HAL_InitTick(0);
@@ -63,13 +67,13 @@ void BSP_Init(Usart *usart, I2c *temp_i2c, Gpio *led_gpio)
 
 void USART2_IRQHandler(void)
 {
-	usart_rx_callback();
+    usart_rx_callback();
 }
 
 void TIM1_UP_TIM16_IRQHandler(void)
-{                                  
-	HAL_TIM_IRQHandler(&htim1);    
-}                                  
+{
+    HAL_TIM_IRQHandler(&htim1);
+}
 
 void SystemClock_Config(void)
 {
@@ -103,8 +107,8 @@ void SystemClock_Config(void)
 
     /** Initializes the CPU, AHB and APB buses clocks
      */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                                |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                  RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;

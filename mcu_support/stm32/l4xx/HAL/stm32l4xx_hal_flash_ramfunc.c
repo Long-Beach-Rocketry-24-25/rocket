@@ -90,11 +90,10 @@
   */
 __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_EnableRunPowerDown(void)
 {
-  /* Enable the Power Down in Run mode*/
-  __HAL_FLASH_POWER_DOWN_ENABLE();
+    /* Enable the Power Down in Run mode*/
+    __HAL_FLASH_POWER_DOWN_ENABLE();
 
-  return HAL_OK;
-
+    return HAL_OK;
 }
 
 /**
@@ -104,13 +103,15 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_EnableRunPowerDown(void)
   */
 __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableRunPowerDown(void)
 {
-  /* Disable the Power Down in Run mode*/
-  __HAL_FLASH_POWER_DOWN_DISABLE();
+    /* Disable the Power Down in Run mode*/
+    __HAL_FLASH_POWER_DOWN_DISABLE();
 
-  return HAL_OK;
+    return HAL_OK;
 }
 
-#if defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
+#if defined(STM32L4P5xx) || defined(STM32L4Q5xx) || defined(STM32L4R5xx) || \
+    defined(STM32L4R7xx) || defined(STM32L4R9xx) || defined(STM32L4S5xx) || \
+    defined(STM32L4S7xx) || defined(STM32L4S9xx)
 /**
   * @brief  Program the FLASH DBANK User Option Byte.
   *
@@ -128,102 +129,114 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableRunPowerDown(void)
   */
 __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
 {
-  uint32_t count, reg;
-  HAL_StatusTypeDef status = HAL_ERROR;
+    uint32_t count, reg;
+    HAL_StatusTypeDef status = HAL_ERROR;
 
-  /* Process Locked */
-  __HAL_LOCK(&pFlash);
+    /* Process Locked */
+    __HAL_LOCK(&pFlash);
 
-  /* Check if the PCROP is disabled */
-  reg = FLASH->PCROP1SR;
-  if (reg > FLASH->PCROP1ER)
-  {
-    reg = FLASH->PCROP2SR;
-    if (reg > FLASH->PCROP2ER)
+    /* Check if the PCROP is disabled */
+    reg = FLASH->PCROP1SR;
+    if (reg > FLASH->PCROP1ER)
     {
-      /* Disable Flash prefetch */
-      __HAL_FLASH_PREFETCH_BUFFER_DISABLE();
-
-      if (READ_BIT(FLASH->ACR, FLASH_ACR_ICEN) != 0U)
-      {
-        /* Disable Flash instruction cache */
-        __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
-
-        /* Flush Flash instruction cache */
-        __HAL_FLASH_INSTRUCTION_CACHE_RESET();
-      }
-
-      if (READ_BIT(FLASH->ACR, FLASH_ACR_DCEN) != 0U)
-      {
-        /* Disable Flash data cache */
-        __HAL_FLASH_DATA_CACHE_DISABLE();
-
-        /* Flush Flash data cache */
-        __HAL_FLASH_DATA_CACHE_RESET();
-      }
-
-      /* Disable WRP zone 1 of 1st bank if needed */
-      reg = FLASH->WRP1AR;
-      if (((reg & FLASH_WRP1AR_WRP1A_STRT) >> FLASH_WRP1AR_WRP1A_STRT_Pos) <=
-          ((reg & FLASH_WRP1AR_WRP1A_END) >> FLASH_WRP1AR_WRP1A_END_Pos))
-      {
-        MODIFY_REG(FLASH->WRP1AR, (FLASH_WRP1AR_WRP1A_STRT | FLASH_WRP1AR_WRP1A_END), FLASH_WRP1AR_WRP1A_STRT);
-      }
-
-      /* Disable WRP zone 2 of 1st bank if needed */
-      reg = FLASH->WRP1BR;
-      if (((reg & FLASH_WRP1BR_WRP1B_STRT) >> FLASH_WRP1BR_WRP1B_STRT_Pos) <=
-          ((reg & FLASH_WRP1BR_WRP1B_END) >> FLASH_WRP1BR_WRP1B_END_Pos))
-      {
-        MODIFY_REG(FLASH->WRP1BR, (FLASH_WRP1BR_WRP1B_STRT | FLASH_WRP1BR_WRP1B_END), FLASH_WRP1BR_WRP1B_STRT);
-      }
-
-      /* Disable WRP zone 1 of 2nd bank if needed */
-      reg = FLASH->WRP2AR;
-      if (((reg & FLASH_WRP2AR_WRP2A_STRT) >> FLASH_WRP2AR_WRP2A_STRT_Pos) <=
-          ((reg & FLASH_WRP2AR_WRP2A_END) >> FLASH_WRP2AR_WRP2A_END_Pos))
-      {
-        MODIFY_REG(FLASH->WRP2AR, (FLASH_WRP2AR_WRP2A_STRT | FLASH_WRP2AR_WRP2A_END), FLASH_WRP2AR_WRP2A_STRT);
-      }
-
-      /* Disable WRP zone 2 of 2nd bank if needed */
-      reg = FLASH->WRP2BR;
-      if (((reg & FLASH_WRP2BR_WRP2B_STRT) >> FLASH_WRP2BR_WRP2B_STRT_Pos) <=
-          ((reg & FLASH_WRP2BR_WRP2B_END) >> FLASH_WRP2BR_WRP2B_END_Pos))
-      {
-        MODIFY_REG(FLASH->WRP2BR, (FLASH_WRP2BR_WRP2B_STRT | FLASH_WRP2BR_WRP2B_END), FLASH_WRP2BR_WRP2B_STRT);
-      }
-
-      /* Modify the DBANK user option byte */
-      MODIFY_REG(FLASH->OPTR, FLASH_OPTR_DBANK, DBankConfig);
-
-      /* Set OPTSTRT Bit */
-      SET_BIT(FLASH->CR, FLASH_CR_OPTSTRT);
-
-      /* Wait for last operation to be completed */
-      /* 8 is the number of required instruction cycles for the below loop statement (timeout expressed in ms) */
-      count = FLASH_TIMEOUT_VALUE * (SystemCoreClock / 8U / 1000U);
-      do
-      {
-        if (count == 0U)
+        reg = FLASH->PCROP2SR;
+        if (reg > FLASH->PCROP2ER)
         {
-          break;
+            /* Disable Flash prefetch */
+            __HAL_FLASH_PREFETCH_BUFFER_DISABLE();
+
+            if (READ_BIT(FLASH->ACR, FLASH_ACR_ICEN) != 0U)
+            {
+                /* Disable Flash instruction cache */
+                __HAL_FLASH_INSTRUCTION_CACHE_DISABLE();
+
+                /* Flush Flash instruction cache */
+                __HAL_FLASH_INSTRUCTION_CACHE_RESET();
+            }
+
+            if (READ_BIT(FLASH->ACR, FLASH_ACR_DCEN) != 0U)
+            {
+                /* Disable Flash data cache */
+                __HAL_FLASH_DATA_CACHE_DISABLE();
+
+                /* Flush Flash data cache */
+                __HAL_FLASH_DATA_CACHE_RESET();
+            }
+
+            /* Disable WRP zone 1 of 1st bank if needed */
+            reg = FLASH->WRP1AR;
+            if (((reg & FLASH_WRP1AR_WRP1A_STRT) >>
+                 FLASH_WRP1AR_WRP1A_STRT_Pos) <=
+                ((reg & FLASH_WRP1AR_WRP1A_END) >> FLASH_WRP1AR_WRP1A_END_Pos))
+            {
+                MODIFY_REG(FLASH->WRP1AR,
+                           (FLASH_WRP1AR_WRP1A_STRT | FLASH_WRP1AR_WRP1A_END),
+                           FLASH_WRP1AR_WRP1A_STRT);
+            }
+
+            /* Disable WRP zone 2 of 1st bank if needed */
+            reg = FLASH->WRP1BR;
+            if (((reg & FLASH_WRP1BR_WRP1B_STRT) >>
+                 FLASH_WRP1BR_WRP1B_STRT_Pos) <=
+                ((reg & FLASH_WRP1BR_WRP1B_END) >> FLASH_WRP1BR_WRP1B_END_Pos))
+            {
+                MODIFY_REG(FLASH->WRP1BR,
+                           (FLASH_WRP1BR_WRP1B_STRT | FLASH_WRP1BR_WRP1B_END),
+                           FLASH_WRP1BR_WRP1B_STRT);
+            }
+
+            /* Disable WRP zone 1 of 2nd bank if needed */
+            reg = FLASH->WRP2AR;
+            if (((reg & FLASH_WRP2AR_WRP2A_STRT) >>
+                 FLASH_WRP2AR_WRP2A_STRT_Pos) <=
+                ((reg & FLASH_WRP2AR_WRP2A_END) >> FLASH_WRP2AR_WRP2A_END_Pos))
+            {
+                MODIFY_REG(FLASH->WRP2AR,
+                           (FLASH_WRP2AR_WRP2A_STRT | FLASH_WRP2AR_WRP2A_END),
+                           FLASH_WRP2AR_WRP2A_STRT);
+            }
+
+            /* Disable WRP zone 2 of 2nd bank if needed */
+            reg = FLASH->WRP2BR;
+            if (((reg & FLASH_WRP2BR_WRP2B_STRT) >>
+                 FLASH_WRP2BR_WRP2B_STRT_Pos) <=
+                ((reg & FLASH_WRP2BR_WRP2B_END) >> FLASH_WRP2BR_WRP2B_END_Pos))
+            {
+                MODIFY_REG(FLASH->WRP2BR,
+                           (FLASH_WRP2BR_WRP2B_STRT | FLASH_WRP2BR_WRP2B_END),
+                           FLASH_WRP2BR_WRP2B_STRT);
+            }
+
+            /* Modify the DBANK user option byte */
+            MODIFY_REG(FLASH->OPTR, FLASH_OPTR_DBANK, DBankConfig);
+
+            /* Set OPTSTRT Bit */
+            SET_BIT(FLASH->CR, FLASH_CR_OPTSTRT);
+
+            /* Wait for last operation to be completed */
+            /* 8 is the number of required instruction cycles for the below loop statement (timeout expressed in ms) */
+            count = FLASH_TIMEOUT_VALUE * (SystemCoreClock / 8U / 1000U);
+            do
+            {
+                if (count == 0U)
+                {
+                    break;
+                }
+                count--;
+            } while (__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
+
+            /* If the option byte program operation is completed, disable the OPTSTRT Bit */
+            CLEAR_BIT(FLASH->CR, FLASH_CR_OPTSTRT);
+
+            /* Set the bit to force the option byte reloading */
+            SET_BIT(FLASH->CR, FLASH_CR_OBL_LAUNCH);
         }
-        count--;
-      } while (__HAL_FLASH_GET_FLAG(FLASH_FLAG_BSY) != RESET);
-
-      /* If the option byte program operation is completed, disable the OPTSTRT Bit */
-      CLEAR_BIT(FLASH->CR, FLASH_CR_OPTSTRT);
-
-      /* Set the bit to force the option byte reloading */
-      SET_BIT(FLASH->CR, FLASH_CR_OBL_LAUNCH);
     }
-  }
 
-  /* Process Unlocked */
-  __HAL_UNLOCK(&pFlash);
+    /* Process Unlocked */
+    __HAL_UNLOCK(&pFlash);
 
-  return status;
+    return status;
 }
 #endif
 
@@ -236,8 +249,6 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
   */
 #endif /* HAL_FLASH_MODULE_ENABLED */
 
-
-
 /**
   * @}
   */
@@ -245,7 +256,3 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_OB_DBankConfig(uint32_t DBankConfig)
 /**
   * @}
   */
-
-
-
-

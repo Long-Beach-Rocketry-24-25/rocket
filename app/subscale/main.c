@@ -4,10 +4,10 @@
 
 #include "subscale_bsp.h"
 
+#include "gpio.h"
 #include "i2c.h"
 #include "spi.h"
 #include "usart.h"
-#include "gpio.h"
 
 #include "debug_app.h"
 #include "subscale_app.h"
@@ -28,6 +28,7 @@ int main(void)
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
 
-    while (1);
+    while (1)
+        ;
     return 0;
 }

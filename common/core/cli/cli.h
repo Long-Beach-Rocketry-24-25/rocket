@@ -5,38 +5,37 @@
 
 #pragma once
 
-
 #include "send.h"
 
-#include <stdio.h>
 #include <stdarg.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
-
 
 #define MAX_CMD_LENGTH 64
 #define MAX_RSP_LENGTH 64
 #define MAX_ARGS 8
 
-typedef void (*CommandHandler)(int argc, char *argv[]);
+typedef void (*CommandHandler)(int argc, char* argv[]);
 
-typedef struct {
-    const char *name;
+typedef struct
+{
+    const char* name;
     CommandHandler handler;
-    const char *help;
+    const char* help;
 } Command;
 
 typedef struct Cli Cli;
 
 struct Cli
 {
-    Send *comm;
+    Send* comm;
     Command commands[MAX_ARGS];
     uint32_t num_commands;
 };
 
-void cli_init(Cli *cli, Send *comm);
-Send *cli_get_sender(Cli *cli);
-bool cli_process(Cli *cli, const char * message);
-bool cli_register_command(Cli *cli, const Command *cmd);
+void cli_init(Cli* cli, Send* comm);
+Send* cli_get_sender(Cli* cli);
+bool cli_process(Cli* cli, const char* message);
+bool cli_register_command(Cli* cli, const Command* cmd);

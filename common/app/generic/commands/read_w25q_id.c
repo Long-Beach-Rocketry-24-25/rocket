@@ -1,10 +1,10 @@
 
 #include "read_w25q_id.h"
 
-static Send *send;
-static Spi *dev;
+static Send* send;
+static Spi* dev;
 
-void init_read_w25q_id(Send *sender, Spi *spi)
+void init_read_w25q_id(Send* sender, Spi* spi)
 {
     send = sender;
     dev = spi;

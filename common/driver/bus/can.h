@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum
 {
@@ -23,10 +23,10 @@ typedef struct CanBus CanBus;
 
 struct CanBus
 {
-    void (*set_id) (CanBus *can, CanId id);
+    void (*set_id)(CanBus* can, CanId id);
     // void (*add_filter) (CanBus *can, CanId id);
-    bool (*send) (CanBus *can, uint8_t *data, size_t size);
-    bool (*recv) (CanBus *can, uint8_t *data, size_t size);
+    bool (*send)(CanBus* can, uint8_t* data, size_t size);
+    bool (*recv)(CanBus* can, uint8_t* data, size_t size);
 
-    void * priv;
+    void* priv;
 };

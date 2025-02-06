@@ -1,6 +1,6 @@
 
-#include <stdio.h>
 #include <pthread.h>
+#include <stdio.h>
 
 #include "arm32_usart.h"
 
@@ -10,7 +10,7 @@ pthread_mutex_t lock;
 
 #define RECV_BUF_SIZE 0x1000
 
-void *receive(void *args)
+void* receive(void* args)
 {
     while (1)
     {
@@ -24,14 +24,15 @@ void *receive(void *args)
     }
 }
 
-void *send(void *args)
+void* send(void* args)
 {
     while (1)
     {
         char msg[RECV_BUF_SIZE];
         scanf("%s", &msg);
         size_t size = 0;
-        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1));
+        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1))
+            ;
         msg[size] = '\n';
         pthread_mutex_lock(&lock);
         usart.send(&usart, msg, size + 1);
@@ -43,7 +44,7 @@ int main()
 {
     bool success = Arm32UsartInit(&usart, &arm32_usart, "/dev/serial0");
     success = success && (pthread_mutex_init(&lock, NULL) == 0);
-  
+
     if (success)
     {
         printf("Opening FD: %d\n", arm32_usart.file_handle);

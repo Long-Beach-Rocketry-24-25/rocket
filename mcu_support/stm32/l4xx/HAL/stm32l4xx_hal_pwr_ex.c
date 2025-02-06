@@ -38,18 +38,27 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
-#if defined (STM32L412xx) || defined (STM32L422xx) || defined (STM32L431xx) || defined (STM32L432xx) || defined (STM32L433xx) || defined (STM32L442xx) || defined (STM32L443xx)
-#define PWR_PORTH_AVAILABLE_PINS   ((uint32_t)0x0000000B) /* PH0/PH1/PH3 */
-#elif defined (STM32L451xx) || defined (STM32L452xx) || defined (STM32L462xx)
-#define PWR_PORTH_AVAILABLE_PINS   ((uint32_t)0x0000000B) /* PH0/PH1/PH3 */
-#elif defined (STM32L471xx) || defined (STM32L475xx) || defined (STM32L476xx) || defined (STM32L485xx) || defined (STM32L486xx)
-#define PWR_PORTH_AVAILABLE_PINS   ((uint32_t)0x00000003) /* PH0/PH1 */
-#elif defined (STM32L496xx) || defined (STM32L4A6xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
-#define PWR_PORTH_AVAILABLE_PINS   ((uint32_t)0x0000FFFF) /* PH0..PH15 */
+#if defined(STM32L412xx) || defined(STM32L422xx) || defined(STM32L431xx) || \
+    defined(STM32L432xx) || defined(STM32L433xx) || defined(STM32L442xx) || \
+    defined(STM32L443xx)
+#define PWR_PORTH_AVAILABLE_PINS ((uint32_t)0x0000000B) /* PH0/PH1/PH3 */
+#elif defined(STM32L451xx) || defined(STM32L452xx) || defined(STM32L462xx)
+#define PWR_PORTH_AVAILABLE_PINS ((uint32_t)0x0000000B) /* PH0/PH1/PH3 */
+#elif defined(STM32L471xx) || defined(STM32L475xx) || defined(STM32L476xx) || \
+    defined(STM32L485xx) || defined(STM32L486xx)
+#define PWR_PORTH_AVAILABLE_PINS ((uint32_t)0x00000003) /* PH0/PH1 */
+#elif defined(STM32L496xx) || defined(STM32L4A6xx) || defined(STM32L4P5xx) || \
+    defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) ||   \
+    defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) ||   \
+    defined(STM32L4S9xx)
+#define PWR_PORTH_AVAILABLE_PINS ((uint32_t)0x0000FFFF) /* PH0..PH15 */
 #endif
 
-#if defined (STM32L496xx) || defined (STM32L4A6xx) || defined (STM32L4P5xx) || defined (STM32L4Q5xx) || defined (STM32L4R5xx) || defined (STM32L4R7xx) || defined (STM32L4R9xx) || defined (STM32L4S5xx) || defined (STM32L4S7xx) || defined (STM32L4S9xx)
-#define PWR_PORTI_AVAILABLE_PINS   ((uint32_t)0x00000FFF) /* PI0..PI11 */
+#if defined(STM32L496xx) || defined(STM32L4A6xx) || defined(STM32L4P5xx) || \
+    defined(STM32L4Q5xx) || defined(STM32L4R5xx) || defined(STM32L4R7xx) || \
+    defined(STM32L4R9xx) || defined(STM32L4S5xx) || defined(STM32L4S7xx) || \
+    defined(STM32L4S9xx)
+#define PWR_PORTI_AVAILABLE_PINS ((uint32_t)0x00000FFF) /* PI0..PI11 */
 #endif
 
 /** @defgroup PWR_Extended_Private_Defines PWR Extended Private Defines
@@ -59,10 +68,14 @@
 /** @defgroup PWREx_PVM_Mode_Mask PWR PVM Mode Mask
   * @{
   */
-#define PVM_MODE_IT               ((uint32_t)0x00010000)  /*!< Mask for interruption yielded by PVM threshold crossing */
-#define PVM_MODE_EVT              ((uint32_t)0x00020000)  /*!< Mask for event yielded by PVM threshold crossing        */
-#define PVM_RISING_EDGE           ((uint32_t)0x00000001)  /*!< Mask for rising edge set as PVM trigger                 */
-#define PVM_FALLING_EDGE          ((uint32_t)0x00000002)  /*!< Mask for falling edge set as PVM trigger                */
+#define PVM_MODE_IT \
+    ((uint32_t)0x00010000) /*!< Mask for interruption yielded by PVM threshold crossing */
+#define PVM_MODE_EVT \
+    ((uint32_t)0x00020000) /*!< Mask for event yielded by PVM threshold crossing        */
+#define PVM_RISING_EDGE \
+    ((uint32_t)0x00000001) /*!< Mask for rising edge set as PVM trigger                 */
+#define PVM_FALLING_EDGE \
+    ((uint32_t)0x00000002) /*!< Mask for falling edge set as PVM trigger                */
 /**
   * @}
   */
@@ -70,18 +83,15 @@
 /** @defgroup PWREx_TimeOut_Value PWR Extended Flag Setting Time Out Value
   * @{
   */
-#define PWR_FLAG_SETTING_DELAY_US                      50UL   /*!< Time out value for REGLPF and VOSF flags setting */
+#define PWR_FLAG_SETTING_DELAY_US \
+    50UL /*!< Time out value for REGLPF and VOSF flags setting */
 /**
   * @}
   */
 
-
-
 /**
   * @}
   */
-
-
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -105,7 +115,6 @@
   * @{
   */
 
-
 /**
   * @brief Return Voltage Scaling Range.
   * @retval VOS bit field (PWR_REGULATOR_VOLTAGE_SCALE1 or PWR_REGULATOR_VOLTAGE_SCALE2
@@ -116,23 +125,21 @@ uint32_t HAL_PWREx_GetVoltageRange(void)
 #if defined(PWR_CR5_R1MODE)
     if (READ_BIT(PWR->CR1, PWR_CR1_VOS) == PWR_REGULATOR_VOLTAGE_SCALE2)
     {
-      return PWR_REGULATOR_VOLTAGE_SCALE2;
+        return PWR_REGULATOR_VOLTAGE_SCALE2;
     }
     else if (READ_BIT(PWR->CR5, PWR_CR5_R1MODE) == PWR_CR5_R1MODE)
     {
-      /* PWR_CR5_R1MODE bit set means that Range 1 Boost is disabled */
-      return PWR_REGULATOR_VOLTAGE_SCALE1;
+        /* PWR_CR5_R1MODE bit set means that Range 1 Boost is disabled */
+        return PWR_REGULATOR_VOLTAGE_SCALE1;
     }
     else
     {
-      return PWR_REGULATOR_VOLTAGE_SCALE1_BOOST;
+        return PWR_REGULATOR_VOLTAGE_SCALE1_BOOST;
     }
 #else
-  return  (PWR->CR1 & PWR_CR1_VOS);
+    return (PWR->CR1 & PWR_CR1_VOS);
 #endif
 }
-
-
 
 /**
   * @brief Configure the main internal regulator output voltage.
@@ -162,113 +169,118 @@ uint32_t HAL_PWREx_GetVoltageRange(void)
   */
 HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling)
 {
-  uint32_t wait_loop_index;
+    uint32_t wait_loop_index;
 
-  assert_param(IS_PWR_VOLTAGE_SCALING_RANGE(VoltageScaling));
+    assert_param(IS_PWR_VOLTAGE_SCALING_RANGE(VoltageScaling));
 
 #if defined(PWR_CR5_R1MODE)
-  if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1_BOOST)
-  {
-    /* If current range is range 2 */
-    if (READ_BIT(PWR->CR1, PWR_CR1_VOS) == PWR_REGULATOR_VOLTAGE_SCALE2)
+    if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1_BOOST)
     {
-      /* Make sure Range 1 Boost is enabled */
-      CLEAR_BIT(PWR->CR5, PWR_CR5_R1MODE);
+        /* If current range is range 2 */
+        if (READ_BIT(PWR->CR1, PWR_CR1_VOS) == PWR_REGULATOR_VOLTAGE_SCALE2)
+        {
+            /* Make sure Range 1 Boost is enabled */
+            CLEAR_BIT(PWR->CR5, PWR_CR5_R1MODE);
 
-      /* Set Range 1 */
-      MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
+            /* Set Range 1 */
+            MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
 
-      /* Wait until VOSF is cleared */
-      wait_loop_index = ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1;
-      while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) && (wait_loop_index != 0U))
-      {
-        wait_loop_index--;
-      }
-      if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
-      {
-        return HAL_TIMEOUT;
-      }
+            /* Wait until VOSF is cleared */
+            wait_loop_index =
+                ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1;
+            while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) &&
+                   (wait_loop_index != 0U))
+            {
+                wait_loop_index--;
+            }
+            if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
+            {
+                return HAL_TIMEOUT;
+            }
+        }
+        /* If current range is range 1 normal or boost mode */
+        else
+        {
+            /* Enable Range 1 Boost (no issue if bit already reset) */
+            CLEAR_BIT(PWR->CR5, PWR_CR5_R1MODE);
+        }
     }
-    /* If current range is range 1 normal or boost mode */
+    else if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1)
+    {
+        /* If current range is range 2 */
+        if (READ_BIT(PWR->CR1, PWR_CR1_VOS) == PWR_REGULATOR_VOLTAGE_SCALE2)
+        {
+            /* Make sure Range 1 Boost is disabled */
+            SET_BIT(PWR->CR5, PWR_CR5_R1MODE);
+
+            /* Set Range 1 */
+            MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
+
+            /* Wait until VOSF is cleared */
+            wait_loop_index =
+                ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1;
+            while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) &&
+                   (wait_loop_index != 0U))
+            {
+                wait_loop_index--;
+            }
+            if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
+            {
+                return HAL_TIMEOUT;
+            }
+        }
+        /* If current range is range 1 normal or boost mode */
+        else
+        {
+            /* Disable Range 1 Boost (no issue if bit already set) */
+            SET_BIT(PWR->CR5, PWR_CR5_R1MODE);
+        }
+    }
     else
     {
-      /* Enable Range 1 Boost (no issue if bit already reset) */
-      CLEAR_BIT(PWR->CR5, PWR_CR5_R1MODE);
+        /* Set Range 2 */
+        MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE2);
+        /* No need to wait for VOSF to be cleared for this transition */
+        /* PWR_CR5_R1MODE bit setting has no effect in Range 2        */
     }
-  }
-  else if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1)
-  {
-    /* If current range is range 2 */
-    if (READ_BIT(PWR->CR1, PWR_CR1_VOS) == PWR_REGULATOR_VOLTAGE_SCALE2)
-    {
-      /* Make sure Range 1 Boost is disabled */
-      SET_BIT(PWR->CR5, PWR_CR5_R1MODE);
-
-      /* Set Range 1 */
-      MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
-
-      /* Wait until VOSF is cleared */
-      wait_loop_index = ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1;
-      while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) && (wait_loop_index != 0U))
-      {
-        wait_loop_index--;
-      }
-      if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
-      {
-        return HAL_TIMEOUT;
-      }
-    }
-     /* If current range is range 1 normal or boost mode */
-    else
-    {
-      /* Disable Range 1 Boost (no issue if bit already set) */
-      SET_BIT(PWR->CR5, PWR_CR5_R1MODE);
-    }
-  }
-  else
-  {
-    /* Set Range 2 */
-    MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE2);
-    /* No need to wait for VOSF to be cleared for this transition */
-    /* PWR_CR5_R1MODE bit setting has no effect in Range 2        */
-  }
 
 #else
 
-  /* If Set Range 1 */
-  if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1)
-  {
-    if (READ_BIT(PWR->CR1, PWR_CR1_VOS) != PWR_REGULATOR_VOLTAGE_SCALE1)
+    /* If Set Range 1 */
+    if (VoltageScaling == PWR_REGULATOR_VOLTAGE_SCALE1)
     {
-      /* Set Range 1 */
-      MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
+        if (READ_BIT(PWR->CR1, PWR_CR1_VOS) != PWR_REGULATOR_VOLTAGE_SCALE1)
+        {
+            /* Set Range 1 */
+            MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE1);
 
-      /* Wait until VOSF is cleared */
-      wait_loop_index = ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1U;
-      while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) && (wait_loop_index != 0U))
-      {
-        wait_loop_index--;
-      }
-      if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
-      {
-        return HAL_TIMEOUT;
-      }
+            /* Wait until VOSF is cleared */
+            wait_loop_index =
+                ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1U;
+            while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF)) &&
+                   (wait_loop_index != 0U))
+            {
+                wait_loop_index--;
+            }
+            if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_VOSF))
+            {
+                return HAL_TIMEOUT;
+            }
+        }
     }
-  }
-  else
-  {
-    if (READ_BIT(PWR->CR1, PWR_CR1_VOS) != PWR_REGULATOR_VOLTAGE_SCALE2)
+    else
     {
-      /* Set Range 2 */
-      MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE2);
-      /* No need to wait for VOSF to be cleared for this transition */
+        if (READ_BIT(PWR->CR1, PWR_CR1_VOS) != PWR_REGULATOR_VOLTAGE_SCALE2)
+        {
+            /* Set Range 2 */
+            MODIFY_REG(PWR->CR1, PWR_CR1_VOS, PWR_REGULATOR_VOLTAGE_SCALE2);
+            /* No need to wait for VOSF to be cleared for this transition */
+        }
     }
-  }
 #endif
 
-  return HAL_OK;
+    return HAL_OK;
 }
-
 
 /**
   * @brief Enable battery charging.
@@ -281,15 +293,14 @@ HAL_StatusTypeDef HAL_PWREx_ControlVoltageScaling(uint32_t VoltageScaling)
   */
 void HAL_PWREx_EnableBatteryCharging(uint32_t ResistorSelection)
 {
-  assert_param(IS_PWR_BATTERY_RESISTOR_SELECT(ResistorSelection));
+    assert_param(IS_PWR_BATTERY_RESISTOR_SELECT(ResistorSelection));
 
-  /* Specify resistor selection */
-  MODIFY_REG(PWR->CR4, PWR_CR4_VBRS, ResistorSelection);
+    /* Specify resistor selection */
+    MODIFY_REG(PWR->CR4, PWR_CR4_VBRS, ResistorSelection);
 
-  /* Enable battery charging */
-  SET_BIT(PWR->CR4, PWR_CR4_VBE);
+    /* Enable battery charging */
+    SET_BIT(PWR->CR4, PWR_CR4_VBE);
 }
-
 
 /**
   * @brief Disable battery charging.
@@ -297,9 +308,8 @@ void HAL_PWREx_EnableBatteryCharging(uint32_t ResistorSelection)
   */
 void HAL_PWREx_DisableBatteryCharging(void)
 {
-  CLEAR_BIT(PWR->CR4, PWR_CR4_VBE);
+    CLEAR_BIT(PWR->CR4, PWR_CR4_VBE);
 }
-
 
 #if defined(PWR_CR2_USV)
 /**
@@ -309,9 +319,8 @@ void HAL_PWREx_DisableBatteryCharging(void)
   */
 void HAL_PWREx_EnableVddUSB(void)
 {
-  SET_BIT(PWR->CR2, PWR_CR2_USV);
+    SET_BIT(PWR->CR2, PWR_CR2_USV);
 }
-
 
 /**
   * @brief Disable VDDUSB supply.
@@ -319,7 +328,7 @@ void HAL_PWREx_EnableVddUSB(void)
   */
 void HAL_PWREx_DisableVddUSB(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_CR2_USV);
+    CLEAR_BIT(PWR->CR2, PWR_CR2_USV);
 }
 #endif /* PWR_CR2_USV */
 
@@ -331,9 +340,8 @@ void HAL_PWREx_DisableVddUSB(void)
   */
 void HAL_PWREx_EnableVddIO2(void)
 {
-  SET_BIT(PWR->CR2, PWR_CR2_IOSV);
+    SET_BIT(PWR->CR2, PWR_CR2_IOSV);
 }
-
 
 /**
   * @brief Disable VDDIO2 supply.
@@ -341,10 +349,9 @@ void HAL_PWREx_EnableVddIO2(void)
   */
 void HAL_PWREx_DisableVddIO2(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_CR2_IOSV);
+    CLEAR_BIT(PWR->CR2, PWR_CR2_IOSV);
 }
 #endif /* PWR_CR2_IOSV */
-
 
 /**
   * @brief Enable Internal Wake-up Line.
@@ -352,9 +359,8 @@ void HAL_PWREx_DisableVddIO2(void)
   */
 void HAL_PWREx_EnableInternalWakeUpLine(void)
 {
-  SET_BIT(PWR->CR3, PWR_CR3_EIWF);
+    SET_BIT(PWR->CR3, PWR_CR3_EIWF);
 }
-
 
 /**
   * @brief Disable Internal Wake-up Line.
@@ -362,10 +368,8 @@ void HAL_PWREx_EnableInternalWakeUpLine(void)
   */
 void HAL_PWREx_DisableInternalWakeUpLine(void)
 {
-  CLEAR_BIT(PWR->CR3, PWR_CR3_EIWF);
+    CLEAR_BIT(PWR->CR3, PWR_CR3_EIWF);
 }
-
-
 
 /**
   * @brief Enable GPIO pull-up state in Standby and Shutdown modes.
@@ -390,71 +394,72 @@ void HAL_PWREx_DisableInternalWakeUpLine(void)
   */
 HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  assert_param(IS_PWR_GPIO(GPIO));
-  assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
+    assert_param(IS_PWR_GPIO(GPIO));
+    assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
 
-  switch (GPIO)
-  {
-    case PWR_GPIO_A:
-       SET_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
-       CLEAR_BIT(PWR->PDCRA, (GPIONumber & (~(PWR_GPIO_BIT_13|PWR_GPIO_BIT_15))));
-       break;
-    case PWR_GPIO_B:
-       SET_BIT(PWR->PUCRB, GPIONumber);
-       CLEAR_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
-       break;
-    case PWR_GPIO_C:
-       SET_BIT(PWR->PUCRC, GPIONumber);
-       CLEAR_BIT(PWR->PDCRC, GPIONumber);
-       break;
+    switch (GPIO)
+    {
+        case PWR_GPIO_A:
+            SET_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
+            CLEAR_BIT(PWR->PDCRA,
+                      (GPIONumber & (~(PWR_GPIO_BIT_13 | PWR_GPIO_BIT_15))));
+            break;
+        case PWR_GPIO_B:
+            SET_BIT(PWR->PUCRB, GPIONumber);
+            CLEAR_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
+            break;
+        case PWR_GPIO_C:
+            SET_BIT(PWR->PUCRC, GPIONumber);
+            CLEAR_BIT(PWR->PDCRC, GPIONumber);
+            break;
 #if defined(GPIOD)
-    case PWR_GPIO_D:
-       SET_BIT(PWR->PUCRD, GPIONumber);
-       CLEAR_BIT(PWR->PDCRD, GPIONumber);
-       break;
+        case PWR_GPIO_D:
+            SET_BIT(PWR->PUCRD, GPIONumber);
+            CLEAR_BIT(PWR->PDCRD, GPIONumber);
+            break;
 #endif
 #if defined(GPIOE)
-    case PWR_GPIO_E:
-       SET_BIT(PWR->PUCRE, GPIONumber);
-       CLEAR_BIT(PWR->PDCRE, GPIONumber);
-       break;
+        case PWR_GPIO_E:
+            SET_BIT(PWR->PUCRE, GPIONumber);
+            CLEAR_BIT(PWR->PDCRE, GPIONumber);
+            break;
 #endif
 #if defined(GPIOF)
-    case PWR_GPIO_F:
-       SET_BIT(PWR->PUCRF, GPIONumber);
-       CLEAR_BIT(PWR->PDCRF, GPIONumber);
-       break;
+        case PWR_GPIO_F:
+            SET_BIT(PWR->PUCRF, GPIONumber);
+            CLEAR_BIT(PWR->PDCRF, GPIONumber);
+            break;
 #endif
 #if defined(GPIOG)
-    case PWR_GPIO_G:
-       SET_BIT(PWR->PUCRG, GPIONumber);
-       CLEAR_BIT(PWR->PDCRG, GPIONumber);
-       break;
+        case PWR_GPIO_G:
+            SET_BIT(PWR->PUCRG, GPIONumber);
+            CLEAR_BIT(PWR->PDCRG, GPIONumber);
+            break;
 #endif
-    case PWR_GPIO_H:
-       SET_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
-#if defined (STM32L496xx) || defined (STM32L4A6xx)
-       CLEAR_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) & (~(PWR_GPIO_BIT_3))));
+        case PWR_GPIO_H:
+            SET_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+#if defined(STM32L496xx) || defined(STM32L4A6xx)
+            CLEAR_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) &
+                                   (~(PWR_GPIO_BIT_3))));
 #else
-       CLEAR_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+            CLEAR_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
 #endif
-       break;
+            break;
 #if defined(GPIOI)
-    case PWR_GPIO_I:
-       SET_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       CLEAR_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       break;
+        case PWR_GPIO_I:
+            SET_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            CLEAR_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            break;
 #endif
-    default:
-      status = HAL_ERROR;
-      break;
-  }
+        default:
+            status = HAL_ERROR;
+            break;
+    }
 
-  return status;
+    return status;
 }
-
 
 /**
   * @brief Disable GPIO pull-up state in Standby mode and Shutdown modes.
@@ -471,61 +476,60 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber)
   *         several bits for a given port in a single API call.
   * @retval HAL Status
   */
-HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber)
+HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullUp(uint32_t GPIO,
+                                              uint32_t GPIONumber)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  assert_param(IS_PWR_GPIO(GPIO));
-  assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
+    assert_param(IS_PWR_GPIO(GPIO));
+    assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
 
-  switch (GPIO)
-  {
-    case PWR_GPIO_A:
-       CLEAR_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
-       break;
-    case PWR_GPIO_B:
-       CLEAR_BIT(PWR->PUCRB, GPIONumber);
-       break;
-    case PWR_GPIO_C:
-       CLEAR_BIT(PWR->PUCRC, GPIONumber);
-       break;
+    switch (GPIO)
+    {
+        case PWR_GPIO_A:
+            CLEAR_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
+            break;
+        case PWR_GPIO_B:
+            CLEAR_BIT(PWR->PUCRB, GPIONumber);
+            break;
+        case PWR_GPIO_C:
+            CLEAR_BIT(PWR->PUCRC, GPIONumber);
+            break;
 #if defined(GPIOD)
-    case PWR_GPIO_D:
-       CLEAR_BIT(PWR->PUCRD, GPIONumber);
-       break;
+        case PWR_GPIO_D:
+            CLEAR_BIT(PWR->PUCRD, GPIONumber);
+            break;
 #endif
 #if defined(GPIOE)
-    case PWR_GPIO_E:
-       CLEAR_BIT(PWR->PUCRE, GPIONumber);
-       break;
+        case PWR_GPIO_E:
+            CLEAR_BIT(PWR->PUCRE, GPIONumber);
+            break;
 #endif
 #if defined(GPIOF)
-    case PWR_GPIO_F:
-       CLEAR_BIT(PWR->PUCRF, GPIONumber);
-       break;
+        case PWR_GPIO_F:
+            CLEAR_BIT(PWR->PUCRF, GPIONumber);
+            break;
 #endif
 #if defined(GPIOG)
-    case PWR_GPIO_G:
-       CLEAR_BIT(PWR->PUCRG, GPIONumber);
-       break;
+        case PWR_GPIO_G:
+            CLEAR_BIT(PWR->PUCRG, GPIONumber);
+            break;
 #endif
-    case PWR_GPIO_H:
-       CLEAR_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
-       break;
+        case PWR_GPIO_H:
+            CLEAR_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+            break;
 #if defined(GPIOI)
-    case PWR_GPIO_I:
-       CLEAR_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       break;
+        case PWR_GPIO_I:
+            CLEAR_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            break;
 #endif
-    default:
-       status = HAL_ERROR;
-       break;
-  }
+        default:
+            status = HAL_ERROR;
+            break;
+    }
 
-  return status;
+    return status;
 }
-
-
 
 /**
   * @brief Enable GPIO pull-down state in Standby and Shutdown modes.
@@ -548,73 +552,75 @@ HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullUp(uint32_t GPIO, uint32_t GPIONumber
   *         several bits for a given port in a single API call.
   * @retval HAL Status
   */
-HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumber)
+HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullDown(uint32_t GPIO,
+                                               uint32_t GPIONumber)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  assert_param(IS_PWR_GPIO(GPIO));
-  assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
+    assert_param(IS_PWR_GPIO(GPIO));
+    assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
 
-  switch (GPIO)
-  {
-    case PWR_GPIO_A:
-       SET_BIT(PWR->PDCRA, (GPIONumber & (~(PWR_GPIO_BIT_13|PWR_GPIO_BIT_15))));
-       CLEAR_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
-       break;
-    case PWR_GPIO_B:
-       SET_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
-       CLEAR_BIT(PWR->PUCRB, GPIONumber);
-       break;
-    case PWR_GPIO_C:
-       SET_BIT(PWR->PDCRC, GPIONumber);
-       CLEAR_BIT(PWR->PUCRC, GPIONumber);
-       break;
+    switch (GPIO)
+    {
+        case PWR_GPIO_A:
+            SET_BIT(PWR->PDCRA,
+                    (GPIONumber & (~(PWR_GPIO_BIT_13 | PWR_GPIO_BIT_15))));
+            CLEAR_BIT(PWR->PUCRA, (GPIONumber & (~(PWR_GPIO_BIT_14))));
+            break;
+        case PWR_GPIO_B:
+            SET_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
+            CLEAR_BIT(PWR->PUCRB, GPIONumber);
+            break;
+        case PWR_GPIO_C:
+            SET_BIT(PWR->PDCRC, GPIONumber);
+            CLEAR_BIT(PWR->PUCRC, GPIONumber);
+            break;
 #if defined(GPIOD)
-    case PWR_GPIO_D:
-       SET_BIT(PWR->PDCRD, GPIONumber);
-       CLEAR_BIT(PWR->PUCRD, GPIONumber);
-       break;
+        case PWR_GPIO_D:
+            SET_BIT(PWR->PDCRD, GPIONumber);
+            CLEAR_BIT(PWR->PUCRD, GPIONumber);
+            break;
 #endif
 #if defined(GPIOE)
-    case PWR_GPIO_E:
-       SET_BIT(PWR->PDCRE, GPIONumber);
-       CLEAR_BIT(PWR->PUCRE, GPIONumber);
-       break;
+        case PWR_GPIO_E:
+            SET_BIT(PWR->PDCRE, GPIONumber);
+            CLEAR_BIT(PWR->PUCRE, GPIONumber);
+            break;
 #endif
 #if defined(GPIOF)
-    case PWR_GPIO_F:
-       SET_BIT(PWR->PDCRF, GPIONumber);
-       CLEAR_BIT(PWR->PUCRF, GPIONumber);
-       break;
+        case PWR_GPIO_F:
+            SET_BIT(PWR->PDCRF, GPIONumber);
+            CLEAR_BIT(PWR->PUCRF, GPIONumber);
+            break;
 #endif
 #if defined(GPIOG)
-    case PWR_GPIO_G:
-       SET_BIT(PWR->PDCRG, GPIONumber);
-       CLEAR_BIT(PWR->PUCRG, GPIONumber);
-       break;
+        case PWR_GPIO_G:
+            SET_BIT(PWR->PDCRG, GPIONumber);
+            CLEAR_BIT(PWR->PUCRG, GPIONumber);
+            break;
 #endif
-    case PWR_GPIO_H:
-#if defined (STM32L496xx) || defined (STM32L4A6xx)
-       SET_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) & (~(PWR_GPIO_BIT_3))));
+        case PWR_GPIO_H:
+#if defined(STM32L496xx) || defined(STM32L4A6xx)
+            SET_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) &
+                                 (~(PWR_GPIO_BIT_3))));
 #else
-       SET_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+            SET_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
 #endif
-       CLEAR_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
-       break;
+            CLEAR_BIT(PWR->PUCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+            break;
 #if defined(GPIOI)
-    case PWR_GPIO_I:
-       SET_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       CLEAR_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       break;
+        case PWR_GPIO_I:
+            SET_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            CLEAR_BIT(PWR->PUCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            break;
 #endif
-    default:
-      status = HAL_ERROR;
-      break;
-  }
+        default:
+            status = HAL_ERROR;
+            break;
+    }
 
-  return status;
+    return status;
 }
-
 
 /**
   * @brief Disable GPIO pull-down state in Standby and Shutdown modes.
@@ -631,65 +637,66 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumbe
   *         several bits for a given port in a single API call.
   * @retval HAL Status
   */
-HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumber)
+HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullDown(uint32_t GPIO,
+                                                uint32_t GPIONumber)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  assert_param(IS_PWR_GPIO(GPIO));
-  assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
+    assert_param(IS_PWR_GPIO(GPIO));
+    assert_param(IS_PWR_GPIO_BIT_NUMBER(GPIONumber));
 
-  switch (GPIO)
-  {
-    case PWR_GPIO_A:
-       CLEAR_BIT(PWR->PDCRA, (GPIONumber & (~(PWR_GPIO_BIT_13|PWR_GPIO_BIT_15))));
-       break;
-    case PWR_GPIO_B:
-       CLEAR_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
-       break;
-    case PWR_GPIO_C:
-       CLEAR_BIT(PWR->PDCRC, GPIONumber);
-       break;
+    switch (GPIO)
+    {
+        case PWR_GPIO_A:
+            CLEAR_BIT(PWR->PDCRA,
+                      (GPIONumber & (~(PWR_GPIO_BIT_13 | PWR_GPIO_BIT_15))));
+            break;
+        case PWR_GPIO_B:
+            CLEAR_BIT(PWR->PDCRB, (GPIONumber & (~(PWR_GPIO_BIT_4))));
+            break;
+        case PWR_GPIO_C:
+            CLEAR_BIT(PWR->PDCRC, GPIONumber);
+            break;
 #if defined(GPIOD)
-    case PWR_GPIO_D:
-       CLEAR_BIT(PWR->PDCRD, GPIONumber);
-       break;
+        case PWR_GPIO_D:
+            CLEAR_BIT(PWR->PDCRD, GPIONumber);
+            break;
 #endif
 #if defined(GPIOE)
-    case PWR_GPIO_E:
-       CLEAR_BIT(PWR->PDCRE, GPIONumber);
-       break;
+        case PWR_GPIO_E:
+            CLEAR_BIT(PWR->PDCRE, GPIONumber);
+            break;
 #endif
 #if defined(GPIOF)
-    case PWR_GPIO_F:
-       CLEAR_BIT(PWR->PDCRF, GPIONumber);
-       break;
+        case PWR_GPIO_F:
+            CLEAR_BIT(PWR->PDCRF, GPIONumber);
+            break;
 #endif
 #if defined(GPIOG)
-    case PWR_GPIO_G:
-       CLEAR_BIT(PWR->PDCRG, GPIONumber);
-       break;
+        case PWR_GPIO_G:
+            CLEAR_BIT(PWR->PDCRG, GPIONumber);
+            break;
 #endif
-    case PWR_GPIO_H:
-#if defined (STM32L496xx) || defined (STM32L4A6xx)
-       CLEAR_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) & (~(PWR_GPIO_BIT_3))));
+        case PWR_GPIO_H:
+#if defined(STM32L496xx) || defined(STM32L4A6xx)
+            CLEAR_BIT(PWR->PDCRH, ((GPIONumber & PWR_PORTH_AVAILABLE_PINS) &
+                                   (~(PWR_GPIO_BIT_3))));
 #else
-       CLEAR_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
+            CLEAR_BIT(PWR->PDCRH, (GPIONumber & PWR_PORTH_AVAILABLE_PINS));
 #endif
-       break;
+            break;
 #if defined(GPIOI)
-    case PWR_GPIO_I:
-       CLEAR_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
-       break;
+        case PWR_GPIO_I:
+            CLEAR_BIT(PWR->PDCRI, (GPIONumber & PWR_PORTI_AVAILABLE_PINS));
+            break;
 #endif
-    default:
-      status = HAL_ERROR;
-      break;
-  }
+        default:
+            status = HAL_ERROR;
+            break;
+    }
 
-  return status;
+    return status;
 }
-
-
 
 /**
   * @brief Enable pull-up and pull-down configuration.
@@ -703,9 +710,8 @@ HAL_StatusTypeDef HAL_PWREx_DisableGPIOPullDown(uint32_t GPIO, uint32_t GPIONumb
   */
 void HAL_PWREx_EnablePullUpPullDownConfig(void)
 {
-  SET_BIT(PWR->CR3, PWR_CR3_APC);
+    SET_BIT(PWR->CR3, PWR_CR3_APC);
 }
-
 
 /**
   * @brief Disable pull-up and pull-down configuration.
@@ -715,10 +721,8 @@ void HAL_PWREx_EnablePullUpPullDownConfig(void)
   */
 void HAL_PWREx_DisablePullUpPullDownConfig(void)
 {
-  CLEAR_BIT(PWR->CR3, PWR_CR3_APC);
+    CLEAR_BIT(PWR->CR3, PWR_CR3_APC);
 }
-
-
 
 /**
   * @brief Enable Full SRAM2 content retention in Standby mode.
@@ -726,7 +730,7 @@ void HAL_PWREx_DisablePullUpPullDownConfig(void)
   */
 void HAL_PWREx_EnableSRAM2ContentRetention(void)
 {
-  (void) HAL_PWREx_SetSRAM2ContentRetention(PWR_FULL_SRAM2_RETENTION);
+    (void)HAL_PWREx_SetSRAM2ContentRetention(PWR_FULL_SRAM2_RETENTION);
 }
 
 /**
@@ -735,7 +739,7 @@ void HAL_PWREx_EnableSRAM2ContentRetention(void)
   */
 void HAL_PWREx_DisableSRAM2ContentRetention(void)
 {
-  (void) HAL_PWREx_SetSRAM2ContentRetention(PWR_NO_SRAM2_RETENTION);
+    (void)HAL_PWREx_SetSRAM2ContentRetention(PWR_NO_SRAM2_RETENTION);
 }
 
 /**
@@ -750,29 +754,29 @@ void HAL_PWREx_DisableSRAM2ContentRetention(void)
   */
 HAL_StatusTypeDef HAL_PWREx_SetSRAM2ContentRetention(uint32_t SRAM2Size)
 {
-  assert_param(IS_PWR_SRAM2_RETENTION(SRAM2Size));
+    assert_param(IS_PWR_SRAM2_RETENTION(SRAM2Size));
 
-  if (SRAM2Size == PWR_NO_SRAM2_RETENTION)
-  {
-    CLEAR_BIT(PWR->CR3, PWR_CR3_RRS);
-  }
-  else if (SRAM2Size == PWR_FULL_SRAM2_RETENTION)
-  {
-    MODIFY_REG(PWR->CR3, PWR_CR3_RRS, PWR_FULL_SRAM2_RETENTION);
-  }
+    if (SRAM2Size == PWR_NO_SRAM2_RETENTION)
+    {
+        CLEAR_BIT(PWR->CR3, PWR_CR3_RRS);
+    }
+    else if (SRAM2Size == PWR_FULL_SRAM2_RETENTION)
+    {
+        MODIFY_REG(PWR->CR3, PWR_CR3_RRS, PWR_FULL_SRAM2_RETENTION);
+    }
 #if defined(PWR_CR3_RRS_1)
-  else if (SRAM2Size == PWR_4KBYTES_SRAM2_RETENTION)
-  {
-    MODIFY_REG(PWR->CR3, PWR_CR3_RRS, PWR_4KBYTES_SRAM2_RETENTION);
-  }
+    else if (SRAM2Size == PWR_4KBYTES_SRAM2_RETENTION)
+    {
+        MODIFY_REG(PWR->CR3, PWR_CR3_RRS, PWR_4KBYTES_SRAM2_RETENTION);
+    }
 #endif /* PWR_CR3_RRS_1 */
-  else {
-    return HAL_ERROR;
-  }
+    else
+    {
+        return HAL_ERROR;
+    }
 
-  return HAL_OK;
+    return HAL_OK;
 }
-
 
 #if defined(PWR_CR3_ENULP)
 /**
@@ -782,9 +786,8 @@ HAL_StatusTypeDef HAL_PWREx_SetSRAM2ContentRetention(uint32_t SRAM2Size)
   */
 void HAL_PWREx_EnableBORPVD_ULP(void)
 {
-  SET_BIT(PWR->CR3, PWR_CR3_ENULP);
+    SET_BIT(PWR->CR3, PWR_CR3_ENULP);
 }
-
 
 /**
   * @brief Disable Ultra Low Power BORL, BORH and PVD for STOP2 and Standby modes.
@@ -793,10 +796,9 @@ void HAL_PWREx_EnableBORPVD_ULP(void)
   */
 void HAL_PWREx_DisableBORPVD_ULP(void)
 {
-  CLEAR_BIT(PWR->CR3, PWR_CR3_ENULP);
+    CLEAR_BIT(PWR->CR3, PWR_CR3_ENULP);
 }
 #endif /* PWR_CR3_ENULP */
-
 
 #if defined(PWR_CR4_EXT_SMPS_ON)
 /**
@@ -807,7 +809,7 @@ void HAL_PWREx_DisableBORPVD_ULP(void)
   */
 void HAL_PWREx_EnableExtSMPS_0V95(void)
 {
-  SET_BIT(PWR->CR4, PWR_CR4_EXT_SMPS_ON);
+    SET_BIT(PWR->CR4, PWR_CR4_EXT_SMPS_ON);
 }
 
 /**
@@ -819,10 +821,9 @@ void HAL_PWREx_EnableExtSMPS_0V95(void)
   */
 void HAL_PWREx_DisableExtSMPS_0V95(void)
 {
-  CLEAR_BIT(PWR->CR4, PWR_CR4_EXT_SMPS_ON);
+    CLEAR_BIT(PWR->CR4, PWR_CR4_EXT_SMPS_ON);
 }
 #endif /* PWR_CR4_EXT_SMPS_ON */
-
 
 #if defined(PWR_CR1_RRSTP)
 /**
@@ -833,9 +834,8 @@ void HAL_PWREx_DisableExtSMPS_0V95(void)
   */
 void HAL_PWREx_EnableSRAM3ContentRetention(void)
 {
-  SET_BIT(PWR->CR1, PWR_CR1_RRSTP);
+    SET_BIT(PWR->CR1, PWR_CR1_RRSTP);
 }
-
 
 /**
   * @brief Disable SRAM3 content retention in Stop 2 mode.
@@ -845,7 +845,7 @@ void HAL_PWREx_EnableSRAM3ContentRetention(void)
   */
 void HAL_PWREx_DisableSRAM3ContentRetention(void)
 {
-  CLEAR_BIT(PWR->CR1, PWR_CR1_RRSTP);
+    CLEAR_BIT(PWR->CR1, PWR_CR1_RRSTP);
 }
 #endif /* PWR_CR1_RRSTP */
 
@@ -856,9 +856,8 @@ void HAL_PWREx_DisableSRAM3ContentRetention(void)
   */
 void HAL_PWREx_EnableDSIPinsPDActivation(void)
 {
-  SET_BIT(PWR->CR3, PWR_CR3_DSIPDEN);
+    SET_BIT(PWR->CR3, PWR_CR3_DSIPDEN);
 }
-
 
 /**
   * @brief Disable pull-down activation on DSI pins.
@@ -866,7 +865,7 @@ void HAL_PWREx_EnableDSIPinsPDActivation(void)
   */
 void HAL_PWREx_DisableDSIPinsPDActivation(void)
 {
-  CLEAR_BIT(PWR->CR3, PWR_CR3_DSIPDEN);
+    CLEAR_BIT(PWR->CR3, PWR_CR3_DSIPDEN);
 }
 #endif /* PWR_CR3_DSIPDEN */
 
@@ -877,7 +876,7 @@ void HAL_PWREx_DisableDSIPinsPDActivation(void)
   */
 void HAL_PWREx_EnablePVM1(void)
 {
-  SET_BIT(PWR->CR2, PWR_PVM_1);
+    SET_BIT(PWR->CR2, PWR_PVM_1);
 }
 
 /**
@@ -886,10 +885,9 @@ void HAL_PWREx_EnablePVM1(void)
   */
 void HAL_PWREx_DisablePVM1(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_PVM_1);
+    CLEAR_BIT(PWR->CR2, PWR_PVM_1);
 }
 #endif /* PWR_CR2_PVME1 */
-
 
 #if defined(PWR_CR2_PVME2)
 /**
@@ -898,7 +896,7 @@ void HAL_PWREx_DisablePVM1(void)
   */
 void HAL_PWREx_EnablePVM2(void)
 {
-  SET_BIT(PWR->CR2, PWR_PVM_2);
+    SET_BIT(PWR->CR2, PWR_PVM_2);
 }
 
 /**
@@ -907,10 +905,9 @@ void HAL_PWREx_EnablePVM2(void)
   */
 void HAL_PWREx_DisablePVM2(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_PVM_2);
+    CLEAR_BIT(PWR->CR2, PWR_PVM_2);
 }
 #endif /* PWR_CR2_PVME2 */
-
 
 /**
   * @brief Enable the Power Voltage Monitoring 3: VDDA versus 1.62V.
@@ -918,7 +915,7 @@ void HAL_PWREx_DisablePVM2(void)
   */
 void HAL_PWREx_EnablePVM3(void)
 {
-  SET_BIT(PWR->CR2, PWR_PVM_3);
+    SET_BIT(PWR->CR2, PWR_PVM_3);
 }
 
 /**
@@ -927,9 +924,8 @@ void HAL_PWREx_EnablePVM3(void)
   */
 void HAL_PWREx_DisablePVM3(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_PVM_3);
+    CLEAR_BIT(PWR->CR2, PWR_PVM_3);
 }
-
 
 /**
   * @brief Enable the Power Voltage Monitoring 4:  VDDA versus 2.2V.
@@ -937,7 +933,7 @@ void HAL_PWREx_DisablePVM3(void)
   */
 void HAL_PWREx_EnablePVM4(void)
 {
-  SET_BIT(PWR->CR2, PWR_PVM_4);
+    SET_BIT(PWR->CR2, PWR_PVM_4);
 }
 
 /**
@@ -946,11 +942,8 @@ void HAL_PWREx_EnablePVM4(void)
   */
 void HAL_PWREx_DisablePVM4(void)
 {
-  CLEAR_BIT(PWR->CR2, PWR_PVM_4);
+    CLEAR_BIT(PWR->CR2, PWR_PVM_4);
 }
-
-
-
 
 /**
   * @brief Configure the Peripheral Voltage Monitoring (PVM).
@@ -964,157 +957,154 @@ void HAL_PWREx_DisablePVM4(void)
   *         detection level and to each monitored supply.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
+HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef* sConfigPVM)
 {
-  HAL_StatusTypeDef status = HAL_OK;
+    HAL_StatusTypeDef status = HAL_OK;
 
-  /* Check the parameters */
-  assert_param(IS_PWR_PVM_TYPE(sConfigPVM->PVMType));
-  assert_param(IS_PWR_PVM_MODE(sConfigPVM->Mode));
+    /* Check the parameters */
+    assert_param(IS_PWR_PVM_TYPE(sConfigPVM->PVMType));
+    assert_param(IS_PWR_PVM_MODE(sConfigPVM->Mode));
 
-
-  /* Configure EXTI 35 to 38 interrupts if so required:
+    /* Configure EXTI 35 to 38 interrupts if so required:
      scan through PVMType to detect which PVMx is set and
      configure the corresponding EXTI line accordingly. */
-  switch (sConfigPVM->PVMType)
-  {
+    switch (sConfigPVM->PVMType)
+    {
 #if defined(PWR_CR2_PVME1)
-    case PWR_PVM_1:
-      /* Clear any previous config. Keep it clear if no event or IT mode is selected */
-      __HAL_PWR_PVM1_EXTI_DISABLE_EVENT();
-      __HAL_PWR_PVM1_EXTI_DISABLE_IT();
-      __HAL_PWR_PVM1_EXTI_DISABLE_FALLING_EDGE();
-      __HAL_PWR_PVM1_EXTI_DISABLE_RISING_EDGE();
+        case PWR_PVM_1:
+            /* Clear any previous config. Keep it clear if no event or IT mode is selected */
+            __HAL_PWR_PVM1_EXTI_DISABLE_EVENT();
+            __HAL_PWR_PVM1_EXTI_DISABLE_IT();
+            __HAL_PWR_PVM1_EXTI_DISABLE_FALLING_EDGE();
+            __HAL_PWR_PVM1_EXTI_DISABLE_RISING_EDGE();
 
-      /* Configure interrupt mode */
-      if((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
-      {
-        __HAL_PWR_PVM1_EXTI_ENABLE_IT();
-      }
+            /* Configure interrupt mode */
+            if ((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
+            {
+                __HAL_PWR_PVM1_EXTI_ENABLE_IT();
+            }
 
-      /* Configure event mode */
-      if((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
-      {
-        __HAL_PWR_PVM1_EXTI_ENABLE_EVENT();
-      }
+            /* Configure event mode */
+            if ((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
+            {
+                __HAL_PWR_PVM1_EXTI_ENABLE_EVENT();
+            }
 
-      /* Configure the edge */
-      if((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
-      {
-        __HAL_PWR_PVM1_EXTI_ENABLE_RISING_EDGE();
-      }
+            /* Configure the edge */
+            if ((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
+            {
+                __HAL_PWR_PVM1_EXTI_ENABLE_RISING_EDGE();
+            }
 
-      if((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
-      {
-        __HAL_PWR_PVM1_EXTI_ENABLE_FALLING_EDGE();
-      }
-      break;
+            if ((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
+            {
+                __HAL_PWR_PVM1_EXTI_ENABLE_FALLING_EDGE();
+            }
+            break;
 #endif /* PWR_CR2_PVME1 */
 
 #if defined(PWR_CR2_PVME2)
-    case PWR_PVM_2:
-      /* Clear any previous config. Keep it clear if no event or IT mode is selected */
-      __HAL_PWR_PVM2_EXTI_DISABLE_EVENT();
-      __HAL_PWR_PVM2_EXTI_DISABLE_IT();
-      __HAL_PWR_PVM2_EXTI_DISABLE_FALLING_EDGE();
-      __HAL_PWR_PVM2_EXTI_DISABLE_RISING_EDGE();
+        case PWR_PVM_2:
+            /* Clear any previous config. Keep it clear if no event or IT mode is selected */
+            __HAL_PWR_PVM2_EXTI_DISABLE_EVENT();
+            __HAL_PWR_PVM2_EXTI_DISABLE_IT();
+            __HAL_PWR_PVM2_EXTI_DISABLE_FALLING_EDGE();
+            __HAL_PWR_PVM2_EXTI_DISABLE_RISING_EDGE();
 
-      /* Configure interrupt mode */
-      if((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
-      {
-        __HAL_PWR_PVM2_EXTI_ENABLE_IT();
-      }
+            /* Configure interrupt mode */
+            if ((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
+            {
+                __HAL_PWR_PVM2_EXTI_ENABLE_IT();
+            }
 
-      /* Configure event mode */
-      if((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
-      {
-        __HAL_PWR_PVM2_EXTI_ENABLE_EVENT();
-      }
+            /* Configure event mode */
+            if ((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
+            {
+                __HAL_PWR_PVM2_EXTI_ENABLE_EVENT();
+            }
 
-      /* Configure the edge */
-      if((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
-      {
-        __HAL_PWR_PVM2_EXTI_ENABLE_RISING_EDGE();
-      }
+            /* Configure the edge */
+            if ((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
+            {
+                __HAL_PWR_PVM2_EXTI_ENABLE_RISING_EDGE();
+            }
 
-      if((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
-      {
-        __HAL_PWR_PVM2_EXTI_ENABLE_FALLING_EDGE();
-      }
-      break;
+            if ((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
+            {
+                __HAL_PWR_PVM2_EXTI_ENABLE_FALLING_EDGE();
+            }
+            break;
 #endif /* PWR_CR2_PVME2 */
 
-    case PWR_PVM_3:
-      /* Clear any previous config. Keep it clear if no event or IT mode is selected */
-      __HAL_PWR_PVM3_EXTI_DISABLE_EVENT();
-      __HAL_PWR_PVM3_EXTI_DISABLE_IT();
-      __HAL_PWR_PVM3_EXTI_DISABLE_FALLING_EDGE();
-      __HAL_PWR_PVM3_EXTI_DISABLE_RISING_EDGE();
+        case PWR_PVM_3:
+            /* Clear any previous config. Keep it clear if no event or IT mode is selected */
+            __HAL_PWR_PVM3_EXTI_DISABLE_EVENT();
+            __HAL_PWR_PVM3_EXTI_DISABLE_IT();
+            __HAL_PWR_PVM3_EXTI_DISABLE_FALLING_EDGE();
+            __HAL_PWR_PVM3_EXTI_DISABLE_RISING_EDGE();
 
-      /* Configure interrupt mode */
-      if((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
-      {
-        __HAL_PWR_PVM3_EXTI_ENABLE_IT();
-      }
+            /* Configure interrupt mode */
+            if ((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
+            {
+                __HAL_PWR_PVM3_EXTI_ENABLE_IT();
+            }
 
-      /* Configure event mode */
-      if((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
-      {
-        __HAL_PWR_PVM3_EXTI_ENABLE_EVENT();
-      }
+            /* Configure event mode */
+            if ((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
+            {
+                __HAL_PWR_PVM3_EXTI_ENABLE_EVENT();
+            }
 
-      /* Configure the edge */
-      if((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
-      {
-        __HAL_PWR_PVM3_EXTI_ENABLE_RISING_EDGE();
-      }
+            /* Configure the edge */
+            if ((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
+            {
+                __HAL_PWR_PVM3_EXTI_ENABLE_RISING_EDGE();
+            }
 
-      if((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
-      {
-        __HAL_PWR_PVM3_EXTI_ENABLE_FALLING_EDGE();
-      }
-      break;
+            if ((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
+            {
+                __HAL_PWR_PVM3_EXTI_ENABLE_FALLING_EDGE();
+            }
+            break;
 
-    case PWR_PVM_4:
-      /* Clear any previous config. Keep it clear if no event or IT mode is selected */
-      __HAL_PWR_PVM4_EXTI_DISABLE_EVENT();
-      __HAL_PWR_PVM4_EXTI_DISABLE_IT();
-      __HAL_PWR_PVM4_EXTI_DISABLE_FALLING_EDGE();
-      __HAL_PWR_PVM4_EXTI_DISABLE_RISING_EDGE();
+        case PWR_PVM_4:
+            /* Clear any previous config. Keep it clear if no event or IT mode is selected */
+            __HAL_PWR_PVM4_EXTI_DISABLE_EVENT();
+            __HAL_PWR_PVM4_EXTI_DISABLE_IT();
+            __HAL_PWR_PVM4_EXTI_DISABLE_FALLING_EDGE();
+            __HAL_PWR_PVM4_EXTI_DISABLE_RISING_EDGE();
 
-      /* Configure interrupt mode */
-      if((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
-      {
-        __HAL_PWR_PVM4_EXTI_ENABLE_IT();
-      }
+            /* Configure interrupt mode */
+            if ((sConfigPVM->Mode & PVM_MODE_IT) == PVM_MODE_IT)
+            {
+                __HAL_PWR_PVM4_EXTI_ENABLE_IT();
+            }
 
-      /* Configure event mode */
-      if((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
-      {
-        __HAL_PWR_PVM4_EXTI_ENABLE_EVENT();
-      }
+            /* Configure event mode */
+            if ((sConfigPVM->Mode & PVM_MODE_EVT) == PVM_MODE_EVT)
+            {
+                __HAL_PWR_PVM4_EXTI_ENABLE_EVENT();
+            }
 
-      /* Configure the edge */
-      if((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
-      {
-        __HAL_PWR_PVM4_EXTI_ENABLE_RISING_EDGE();
-      }
+            /* Configure the edge */
+            if ((sConfigPVM->Mode & PVM_RISING_EDGE) == PVM_RISING_EDGE)
+            {
+                __HAL_PWR_PVM4_EXTI_ENABLE_RISING_EDGE();
+            }
 
-      if((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
-      {
-        __HAL_PWR_PVM4_EXTI_ENABLE_FALLING_EDGE();
-      }
-      break;
+            if ((sConfigPVM->Mode & PVM_FALLING_EDGE) == PVM_FALLING_EDGE)
+            {
+                __HAL_PWR_PVM4_EXTI_ENABLE_FALLING_EDGE();
+            }
+            break;
 
-    default:
-      status = HAL_ERROR;
-      break;
-  }
+        default:
+            status = HAL_ERROR;
+            break;
+    }
 
-  return status;
+    return status;
 }
-
-
 
 /**
   * @brief Enter Low-power Run mode
@@ -1128,10 +1118,9 @@ HAL_StatusTypeDef HAL_PWREx_ConfigPVM(PWR_PVMTypeDef *sConfigPVM)
   */
 void HAL_PWREx_EnableLowPowerRunMode(void)
 {
-  /* Set Regulator parameter */
-  SET_BIT(PWR->CR1, PWR_CR1_LPR);
+    /* Set Regulator parameter */
+    SET_BIT(PWR->CR1, PWR_CR1_LPR);
 }
-
 
 /**
   * @brief Exit Low-power Run mode.
@@ -1143,25 +1132,26 @@ void HAL_PWREx_EnableLowPowerRunMode(void)
   */
 HAL_StatusTypeDef HAL_PWREx_DisableLowPowerRunMode(void)
 {
-  uint32_t wait_loop_index;
+    uint32_t wait_loop_index;
 
-  /* Clear LPR bit */
-  CLEAR_BIT(PWR->CR1, PWR_CR1_LPR);
+    /* Clear LPR bit */
+    CLEAR_BIT(PWR->CR1, PWR_CR1_LPR);
 
-  /* Wait until REGLPF is reset */
-  wait_loop_index = ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1U;
-  while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_REGLPF)) && (wait_loop_index != 0U))
-  {
-    wait_loop_index--;
-  }
-  if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_REGLPF))
-  {
-    return HAL_TIMEOUT;
-  }
+    /* Wait until REGLPF is reset */
+    wait_loop_index =
+        ((PWR_FLAG_SETTING_DELAY_US * SystemCoreClock) / 1000000U) + 1U;
+    while ((HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_REGLPF)) &&
+           (wait_loop_index != 0U))
+    {
+        wait_loop_index--;
+    }
+    if (HAL_IS_BIT_SET(PWR->SR2, PWR_SR2_REGLPF))
+    {
+        return HAL_TIMEOUT;
+    }
 
-  return HAL_OK;
+    return HAL_OK;
 }
-
 
 /**
   * @brief Enter Stop 0 mode.
@@ -1187,33 +1177,32 @@ HAL_StatusTypeDef HAL_PWREx_DisableLowPowerRunMode(void)
   */
 void HAL_PWREx_EnterSTOP0Mode(uint8_t STOPEntry)
 {
-  /* Check the parameters */
-  assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
+    /* Check the parameters */
+    assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
 
-  /* Stop 0 mode with Main Regulator */
-  MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP0);
+    /* Stop 0 mode with Main Regulator */
+    MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP0);
 
-  /* Set SLEEPDEEP bit of Cortex System Control Register */
-  SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 
-  /* Select Stop mode entry --------------------------------------------------*/
-  if(STOPEntry == PWR_STOPENTRY_WFI)
-  {
-    /* Request Wait For Interrupt */
-    __WFI();
-  }
-  else
-  {
-    /* Request Wait For Event */
-    __SEV();
-    __WFE();
-    __WFE();
-  }
+    /* Select Stop mode entry --------------------------------------------------*/
+    if (STOPEntry == PWR_STOPENTRY_WFI)
+    {
+        /* Request Wait For Interrupt */
+        __WFI();
+    }
+    else
+    {
+        /* Request Wait For Event */
+        __SEV();
+        __WFE();
+        __WFE();
+    }
 
-  /* Reset SLEEPDEEP bit of Cortex System Control Register */
-  CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
-
 
 /**
   * @brief Enter Stop 1 mode.
@@ -1238,33 +1227,32 @@ void HAL_PWREx_EnterSTOP0Mode(uint8_t STOPEntry)
   */
 void HAL_PWREx_EnterSTOP1Mode(uint8_t STOPEntry)
 {
-  /* Check the parameters */
-  assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
+    /* Check the parameters */
+    assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
 
-  /* Stop 1 mode with Low-Power Regulator */
-  MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP1);
+    /* Stop 1 mode with Low-Power Regulator */
+    MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP1);
 
-  /* Set SLEEPDEEP bit of Cortex System Control Register */
-  SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 
-  /* Select Stop mode entry --------------------------------------------------*/
-  if(STOPEntry == PWR_STOPENTRY_WFI)
-  {
-    /* Request Wait For Interrupt */
-    __WFI();
-  }
-  else
-  {
-    /* Request Wait For Event */
-    __SEV();
-    __WFE();
-    __WFE();
-  }
+    /* Select Stop mode entry --------------------------------------------------*/
+    if (STOPEntry == PWR_STOPENTRY_WFI)
+    {
+        /* Request Wait For Interrupt */
+        __WFI();
+    }
+    else
+    {
+        /* Request Wait For Event */
+        __SEV();
+        __WFE();
+        __WFE();
+    }
 
-  /* Reset SLEEPDEEP bit of Cortex System Control Register */
-  CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
-
 
 /**
   * @brief Enter Stop 2 mode.
@@ -1291,36 +1279,32 @@ void HAL_PWREx_EnterSTOP1Mode(uint8_t STOPEntry)
   */
 void HAL_PWREx_EnterSTOP2Mode(uint8_t STOPEntry)
 {
-  /* Check the parameter */
-  assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
+    /* Check the parameter */
+    assert_param(IS_PWR_STOP_ENTRY(STOPEntry));
 
-  /* Set Stop mode 2 */
-  MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP2);
+    /* Set Stop mode 2 */
+    MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_STOP2);
 
-  /* Set SLEEPDEEP bit of Cortex System Control Register */
-  SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 
-  /* Select Stop mode entry --------------------------------------------------*/
-  if(STOPEntry == PWR_STOPENTRY_WFI)
-  {
-    /* Request Wait For Interrupt */
-    __WFI();
-  }
-  else
-  {
-    /* Request Wait For Event */
-    __SEV();
-    __WFE();
-    __WFE();
-  }
+    /* Select Stop mode entry --------------------------------------------------*/
+    if (STOPEntry == PWR_STOPENTRY_WFI)
+    {
+        /* Request Wait For Interrupt */
+        __WFI();
+    }
+    else
+    {
+        /* Request Wait For Event */
+        __SEV();
+        __WFE();
+        __WFE();
+    }
 
-  /* Reset SLEEPDEEP bit of Cortex System Control Register */
-  CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 }
-
-
-
-
 
 /**
   * @brief Enter Shutdown mode.
@@ -1334,22 +1318,19 @@ void HAL_PWREx_EnterSTOP2Mode(uint8_t STOPEntry)
 void HAL_PWREx_EnterSHUTDOWNMode(void)
 {
 
-  /* Set Shutdown mode */
-  MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_SHUTDOWN);
+    /* Set Shutdown mode */
+    MODIFY_REG(PWR->CR1, PWR_CR1_LPMS, PWR_CR1_LPMS_SHUTDOWN);
 
-  /* Set SLEEPDEEP bit of Cortex System Control Register */
-  SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
+    /* Set SLEEPDEEP bit of Cortex System Control Register */
+    SET_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPDEEP_Msk));
 
 /* This option is used to ensure that store operations are completed */
-#if defined ( __CC_ARM)
-  __force_stores();
+#if defined(__CC_ARM)
+    __force_stores();
 #endif
-  /* Request Wait For Interrupt */
-  __WFI();
+    /* Request Wait For Interrupt */
+    __WFI();
 }
-
-
-
 
 /**
   * @brief This function handles the PWR PVD/PVMx interrupt request.
@@ -1358,54 +1339,53 @@ void HAL_PWREx_EnterSHUTDOWNMode(void)
   */
 void HAL_PWREx_PVD_PVM_IRQHandler(void)
 {
-  /* Check PWR exti flag */
-  if(__HAL_PWR_PVD_EXTI_GET_FLAG() != 0x0U)
-  {
-    /* PWR PVD interrupt user callback */
-    HAL_PWR_PVDCallback();
+    /* Check PWR exti flag */
+    if (__HAL_PWR_PVD_EXTI_GET_FLAG() != 0x0U)
+    {
+        /* PWR PVD interrupt user callback */
+        HAL_PWR_PVDCallback();
 
-    /* Clear PVD exti pending bit */
-    __HAL_PWR_PVD_EXTI_CLEAR_FLAG();
-  }
-  /* Next, successively check PVMx exti flags */
+        /* Clear PVD exti pending bit */
+        __HAL_PWR_PVD_EXTI_CLEAR_FLAG();
+    }
+    /* Next, successively check PVMx exti flags */
 #if defined(PWR_CR2_PVME1)
-  if(__HAL_PWR_PVM1_EXTI_GET_FLAG() != 0x0U)
-  {
-    /* PWR PVM1 interrupt user callback */
-    HAL_PWREx_PVM1Callback();
+    if (__HAL_PWR_PVM1_EXTI_GET_FLAG() != 0x0U)
+    {
+        /* PWR PVM1 interrupt user callback */
+        HAL_PWREx_PVM1Callback();
 
-    /* Clear PVM1 exti pending bit */
-    __HAL_PWR_PVM1_EXTI_CLEAR_FLAG();
-  }
+        /* Clear PVM1 exti pending bit */
+        __HAL_PWR_PVM1_EXTI_CLEAR_FLAG();
+    }
 #endif /* PWR_CR2_PVME1 */
 #if defined(PWR_CR2_PVME2)
-  if(__HAL_PWR_PVM2_EXTI_GET_FLAG() != 0x0U)
-  {
-    /* PWR PVM2 interrupt user callback */
-    HAL_PWREx_PVM2Callback();
+    if (__HAL_PWR_PVM2_EXTI_GET_FLAG() != 0x0U)
+    {
+        /* PWR PVM2 interrupt user callback */
+        HAL_PWREx_PVM2Callback();
 
-    /* Clear PVM2 exti pending bit */
-    __HAL_PWR_PVM2_EXTI_CLEAR_FLAG();
-  }
+        /* Clear PVM2 exti pending bit */
+        __HAL_PWR_PVM2_EXTI_CLEAR_FLAG();
+    }
 #endif /* PWR_CR2_PVME2 */
-  if(__HAL_PWR_PVM3_EXTI_GET_FLAG() != 0x0U)
-  {
-    /* PWR PVM3 interrupt user callback */
-    HAL_PWREx_PVM3Callback();
+    if (__HAL_PWR_PVM3_EXTI_GET_FLAG() != 0x0U)
+    {
+        /* PWR PVM3 interrupt user callback */
+        HAL_PWREx_PVM3Callback();
 
-    /* Clear PVM3 exti pending bit */
-    __HAL_PWR_PVM3_EXTI_CLEAR_FLAG();
-  }
-  if(__HAL_PWR_PVM4_EXTI_GET_FLAG() != 0x0U)
-  {
-    /* PWR PVM4 interrupt user callback */
-    HAL_PWREx_PVM4Callback();
+        /* Clear PVM3 exti pending bit */
+        __HAL_PWR_PVM3_EXTI_CLEAR_FLAG();
+    }
+    if (__HAL_PWR_PVM4_EXTI_GET_FLAG() != 0x0U)
+    {
+        /* PWR PVM4 interrupt user callback */
+        HAL_PWREx_PVM4Callback();
 
-    /* Clear PVM4 exti pending bit */
-    __HAL_PWR_PVM4_EXTI_CLEAR_FLAG();
-  }
+        /* Clear PVM4 exti pending bit */
+        __HAL_PWR_PVM4_EXTI_CLEAR_FLAG();
+    }
 }
-
 
 #if defined(PWR_CR2_PVME1)
 /**
@@ -1414,7 +1394,7 @@ void HAL_PWREx_PVD_PVM_IRQHandler(void)
   */
 __weak void HAL_PWREx_PVM1Callback(void)
 {
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             HAL_PWREx_PVM1Callback() API can be implemented in the user file
    */
 }
@@ -1427,7 +1407,7 @@ __weak void HAL_PWREx_PVM1Callback(void)
   */
 __weak void HAL_PWREx_PVM2Callback(void)
 {
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             HAL_PWREx_PVM2Callback() API can be implemented in the user file
    */
 }
@@ -1439,7 +1419,7 @@ __weak void HAL_PWREx_PVM2Callback(void)
   */
 __weak void HAL_PWREx_PVM3Callback(void)
 {
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             HAL_PWREx_PVM3Callback() API can be implemented in the user file
    */
 }
@@ -1450,11 +1430,10 @@ __weak void HAL_PWREx_PVM3Callback(void)
   */
 __weak void HAL_PWREx_PVM4Callback(void)
 {
-  /* NOTE : This function should not be modified; when the callback is needed,
+    /* NOTE : This function should not be modified; when the callback is needed,
             HAL_PWREx_PVM4Callback() API can be implemented in the user file
    */
 }
-
 
 /**
   * @}

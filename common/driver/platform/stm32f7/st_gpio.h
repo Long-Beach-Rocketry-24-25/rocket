@@ -9,13 +9,12 @@
 
 #include "gpio.h"
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-#define ST_GPIO_MAX_PINS                        16
+#define ST_GPIO_MAX_PINS 16
 
-
-typedef enum 
+typedef enum
 {
     INPUT = 0,
     GPOUT,
@@ -23,13 +22,13 @@ typedef enum
     ANALOG,
 } StGpioMode;
 
-typedef enum 
+typedef enum
 {
     PUSH_PULL = 0,
     OPEN_DRAIN
 } StGpioOtype;
 
-typedef enum 
+typedef enum
 {
     LOW = 0,
     MEDIUM,
@@ -37,7 +36,7 @@ typedef enum
     VERY_HIGH
 } StGpioOspeed;
 
-typedef enum 
+typedef enum
 {
     NO_PULL = 0,
     PULL_UP,
@@ -56,8 +55,8 @@ typedef struct
 typedef struct
 {
     uint8_t pin_num;
-    StGpioSettings *config;
-    GPIO_TypeDef * instance;
+    StGpioSettings* config;
+    GPIO_TypeDef* instance;
 } StPrivGpio;
 
 typedef struct
@@ -68,7 +67,7 @@ typedef struct
     StGpioSettings conf;
 } StGpioParams;
 
-bool StGpioInit(Gpio* gpio, StGpioParams *params);
+bool StGpioInit(Gpio* gpio, StGpioParams* params);
 void StGpioConfig(Gpio* gpio);
 bool StGpioToggle(Gpio* gpio);
 void StGpioSet(Gpio* gpio, bool active);
