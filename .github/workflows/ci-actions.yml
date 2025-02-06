@@ -20,4 +20,4 @@ jobs:
 
     - name: Run clang-format
       run: |
-        ./format_check.sh app common mcu_support
+        find app common mcu_support -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format --dry-run -Werror
