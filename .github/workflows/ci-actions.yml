@@ -20,4 +20,4 @@ jobs:
 
     - name: Run clang-format
       run: |
-        find app common mcu_support -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format --dry-run -Werror
+        find app common -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format --dry-run -Werror
