@@ -15,6 +15,7 @@ uint8_t char_to_hex(char data)
     {
         return data - 'a' + 10;
     }
+    return 255;
 }
 
 bool is_hex(char data)

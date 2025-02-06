@@ -1,3 +1,6 @@
 [submodule "external/FreeRTOS-Kernel"]
 	path = external/FreeRTOS-Kernel
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/nfan17/googletest

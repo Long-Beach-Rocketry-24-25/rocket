@@ -1,17 +1,22 @@
 
-file(GLOB_RECURSE CORE_SRCS "*.c")
+add_library(core INTERFACE)
 
-set(CORE_DIRS "")
-get_directories(CORE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
-
-add_library(core STATIC
-    ${CORE_SRCS}
+target_link_libraries(core INTERFACE
+    cli
+    container
+    math
+    mission
+    periph
+    string
+    timeout
 )
 
-target_include_directories(core PUBLIC
-    ${CORE_DIRS}
-)
+target_link_libraries(core INTERFACE driver)
 
-target_link_libraries(core PUBLIC
-    driver
-)
+add_subdirectory(cli)
+add_subdirectory(container)
+add_subdirectory(math)
+add_subdirectory(mission)
+add_subdirectory(periph)
+add_subdirectory(string)
+add_subdirectory(timeout)

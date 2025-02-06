@@ -86,3 +86,26 @@ function(get_directories VAR PATH)
     endforeach()
     set(${VAR} ${TEMP} PARENT_SCOPE)
 endfunction()
+
+function(add_tests LINK_LIB)
+    if ("${TARGET_DEVICE}" MATCHES "NATIVE")
+
+        include(GoogleTest)
+
+        foreach(SRC_NAME ${ARGN})
+
+            add_executable(${SRC_NAME}
+            ${SRC_NAME}.cc
+        )
+
+        target_link_libraries(${SRC_NAME}
+            GTest::gtest_main
+            ${LINK_LIB}
+        )
+
+        gtest_discover_tests(${SRC_NAME})
+
+        endforeach()
+
+    endif()
+endfunction()

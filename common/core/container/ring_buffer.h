@@ -15,6 +15,7 @@ typedef struct {
 	size_t head;
 	size_t tail;
 	size_t max_len;
+	size_t curr_size;
 } RingBuffer;
 
 void ring_buffer_init(RingBuffer *rb, uint8_t * data, size_t size);
