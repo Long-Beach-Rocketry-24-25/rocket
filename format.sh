@@ -1,1 +1,1 @@
-find $@ -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format -i
+find app common -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format -i
