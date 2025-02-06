@@ -5,7 +5,7 @@ if (NOT "${FREERTOS_PORT}" STREQUAL "")
     target_link_libraries(app INTERFACE freertos_app)
 endif()
 
-if (${NATIVE})
+if ("${TARGET_DEVICE}" MATCHES "${NATIVE}")
     add_subdirectory(native)
     target_link_libraries(app INTERFACE native_app)
 endif()
