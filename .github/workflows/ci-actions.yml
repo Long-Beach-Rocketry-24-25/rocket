@@ -1,0 +1,23 @@
+name: Repository CI Pipelines
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint:
+    name: Lint with clang-format
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Clang
+      uses: egor-tensin/setup-clang@v1
+
+    - name: Run clang-format
+      run: |
+        ./format_check.sh app common mcu_support
