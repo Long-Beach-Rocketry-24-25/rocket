@@ -20,4 +20,4 @@ jobs:
 
     - name: Run clang-format
       run: |
-        find app common -iname '*.h' -o -iname '*.c' -o -iname '*.cc' | xargs clang-format --dry-run -Werror
+        chmod +x format_check.sh ; ./format_check.sh
