@@ -21,6 +21,47 @@ jobs:
     - name: Run clang-format
       run: |
         chmod +x format_check.sh ; ./format_check.sh
+  
+  Build:
+    name: Build Embedded
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmake-version: '3.27'
+    
+    - name: Pull git submodules
+      run: |
+        git submodule update --init --recursive
+    
+    - name: Install GNU Arm Embedded Toolchain
+      uses: marvinschopf/install-gcc-arm-none-eabi@main
+
+    - name: Configure CMake for F7
+      run: |
+        cmake --preset=stm32f746 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build for F7
+      run: cd build/ && cmake --build .
+    
+    - name: Configure CMake for H5
+      run: |
+        rm -rf build/ && cmake --preset=stm32h503 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build for H5
+      run: cd build/ && cmake --build .
+    
+    - name: Configure CMake for L4
+      run: |
+        rm -rf build/ && cmake --preset=stm32hl476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build for L4
+      run: cd build/ && cmake --build .
     
   unit_test:
     name: Run Native Unit Tests
