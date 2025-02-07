@@ -60,7 +60,7 @@ jobs:
     
     - name: Configure CMake for L4
       run: |
-        rm -rf build/ && cmake --preset=stm32hl476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+        rm -rf build/ && cmake --preset=stm32l476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
     - name: Build for L4
       run: cd build/ && cmake --build .
