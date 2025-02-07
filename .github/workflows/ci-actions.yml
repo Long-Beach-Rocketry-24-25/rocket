@@ -7,6 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # Make sure code abides by the clang-format.
   lint:
     name: Lint with clang-format
     runs-on: ubuntu-latest
@@ -22,6 +23,7 @@ jobs:
       run: |
         chmod +x format_check.sh ; ./format_check.sh
   
+  # This ensures builds pass for each of the primary embedded targets.
   Build:
     name: Build Embedded
     runs-on: ubuntu-latest
@@ -44,27 +46,28 @@ jobs:
       with:
         release: '10.3-2021.10'
 
-    - name: Configure CMake for F7
+    - name: Configure CMake for F746
       run: |
         cmake --preset=stm32f746 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
-    - name: Build for F7
+    - name: Build for F746
       run: cd build/stm32f746 && cmake --build .
     
-    - name: Configure CMake for H5
+    - name: Configure CMake for H503
       run: |
         cmake --preset=stm32h503 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
-    - name: Build for H5
+    - name: Build for H503
       run: cd build/stm32h503 && cmake --build .
     
-    - name: Configure CMake for L4
+    - name: Configure CMake for L476
       run: |
         cmake --preset=stm32l476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
-    - name: Build for L4
+    - name: Build for L476
       run: cd build/stm32l476 && cmake --build .
-    
+  
+  # This runs native unit tests that verify functionality of non-HW specific code.
   unit_test:
     name: Run Native Unit Tests
     runs-on: ubuntu-latest

@@ -1,7 +1,5 @@
 # rocket
 
-(will add more later...)
-
 Welcome to our CMake build system for Embedded SW!
 
 ## Installing Prerequisites
@@ -28,10 +26,9 @@ Lastly, pull in external dependencies:
 ## Building
 To build:
 If you are on Windows, use the ```.ps1``` script in powershell. If on Linux, use the ```.sh``` script. The minimum parameters look like this: 
-```./make.ps1 -t <name of preset>```
+```./make.ps1 -t <name of preset>```.
+For example, ```./make.ps1 -t stm32f746``` (see CMakePresets.json).
 
-for example,
-```./make.ps1 -t stm32f746``` (see CMakePresets.json)
 It's also possible to specify a target application rather than building all available apps (which is the default), by using the -a parameter: ```./make.ps1 -t stm32f746 -a cli_app```. 
 
 for a clean build, do
@@ -47,4 +44,6 @@ There are reference launch.json files found in the repository already under .vsc
 
 
 ## Developing
-Install clang-format to auto-format your code - on Windows, try ```<python> -m pip install clang-format```. On Linux, try ```sudo apt install clang-format```.
+Install clang-format to auto-format your code - on Windows, try ```<python> -m pip install clang-format```. On Linux, try ```sudo apt install clang-format```. In VSCode, you can go to settings > Text Editor > Formatting > Format On Save to enable auto-formatting on save.
+
+To run native unit tests, you can open a PR on Github or build for native, then cd to build/native and run ```ctest```.
