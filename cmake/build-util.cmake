@@ -71,7 +71,6 @@ function(target_preprocess_for DEVICE EXECUTABLE SRC_FILE OUT_FILE)
         add_custom_command(TARGET ${EXECUTABLE}
             PRE_BUILD
             COMMAND arm-none-eabi-gcc -E -P -x c ${SRC_FILE} -o ${OUT_FILE} ${ARGN}
-            DEPENDS ${SRC_FILE}
         )
     endif()
 endfunction()
