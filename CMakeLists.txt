@@ -4,6 +4,8 @@ project(myapp
     LANGUAGES CXX C ASM
 )
 
+enable_testing()
+
 include(cmake/build-util.cmake)
 
 if(MCU_NAME MATCHES "^(STM32).*")

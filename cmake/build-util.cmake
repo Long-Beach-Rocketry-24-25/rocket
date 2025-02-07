@@ -90,22 +90,34 @@ endfunction()
 function(add_tests LINK_LIB)
     if ("${TARGET_DEVICE}" MATCHES "NATIVE")
 
+        include(CTest)
         include(GoogleTest)
 
         foreach(SRC_NAME ${ARGN})
 
             add_executable(${SRC_NAME}
-            ${SRC_NAME}.cc
-        )
+                ${SRC_NAME}.cc
+            )
 
-        target_link_libraries(${SRC_NAME}
-            GTest::gtest_main
-            ${LINK_LIB}
-        )
+            target_link_libraries(${SRC_NAME}
+                GTest::gtest_main
+                ${LINK_LIB}
+            )
 
-        gtest_discover_tests(${SRC_NAME})
+            gtest_discover_tests(${SRC_NAME})
+            add_test(NAME ${SRC_NAME} COMMAND ${SRC_NAME})
 
         endforeach()
-
     endif()
+endfunction()
+
+function(find_matching_targets pattern)
+    get_property(targets GLOBAL PROPERTY TARGETS)
+
+    foreach(target ${targets})
+        get_target_property(target_name ${target} NAME)
+        if(${target_name} MATCHES ${pattern})
+            message("Found target: ${target_name}")
+        endif()
+    endforeach()
 endfunction()

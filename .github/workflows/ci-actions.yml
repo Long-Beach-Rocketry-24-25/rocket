@@ -21,3 +21,26 @@ jobs:
     - name: Run clang-format
       run: |
         chmod +x format_check.sh ; ./format_check.sh
+    
+  unit_test:
+    name: Run GTest unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up CMake
+      uses: lukka/get-cmake-action@v2
+      with:
+        cmake-version: '3.27'
+
+    - name: Configure CMake for testing
+      run: |
+        cmake --preset=native -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build GTest unit tests
+      run: cd build/ && cmake --build .
+
+    - name: Run GTest unit tests
+      run: ctest
