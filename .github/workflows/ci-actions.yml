@@ -21,6 +21,30 @@ jobs:
     - name: Run clang-format
       run: |
         chmod +x format_check.sh ; ./format_check.sh
+  
+  Build:
+    name: Build Native
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up CMake
+      uses: lukka/get-cmake@latest
+      with:
+        cmake-version: '3.27'
+    
+    - name: Pull git submodules
+      run: |
+        git submodule update --init --recursive
+
+    - name: Configure CMake for F7
+      run: |
+        cmake --preset=stm32f746 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build for F7
+      run: cd build/ && cmake --build .
     
   unit_test:
     name: Run Native Unit Tests
