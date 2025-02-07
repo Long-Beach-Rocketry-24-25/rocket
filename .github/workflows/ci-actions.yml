@@ -34,6 +34,10 @@ jobs:
       uses: lukka/get-cmake@latest
       with:
         cmake-version: '3.27'
+    
+      - name: Pull git submodules
+      run: |
+        git submodule update --init --recursive
 
     - name: Configure CMake for testing
       run: |
