@@ -4,6 +4,9 @@ project(myapp
     LANGUAGES CXX C ASM
 )
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+
 enable_testing()
 
 include(cmake/build-util.cmake)

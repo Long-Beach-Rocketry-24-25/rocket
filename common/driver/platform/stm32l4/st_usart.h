@@ -22,9 +22,6 @@ typedef struct
 
 void StUsartInit(Usart* usart, StPrivUsart* st_usart, uint32_t base_addr,
                  Timeout* timer);
-
 void StUsartConfig(Usart* usart, uint32_t system_core_clk, uint32_t baudrate);
-
-bool StUsartSend(Usart* usart, uint8_t* data, size_t size);
-
+bool StUsartSend(Usart* usart, const uint8_t* data, size_t size);
 bool StUsartRecv(Usart* usart, uint8_t* data, size_t size);

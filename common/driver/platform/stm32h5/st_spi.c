@@ -51,12 +51,12 @@ void StSpiConfig(Spi* spi)
     HAL_SPI_Init(&dev->handle);
 }
 
-bool StSpiSend(Spi* spi, uint8_t* data, size_t size)
+bool StSpiSend(Spi* spi, const uint8_t* data, size_t size)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
-    HAL_StatusTypeDef status = HAL_SPI_Transmit(
-        &dev->handle, (const uint8_t*)data, size, dev->timeout_ms);
+    HAL_StatusTypeDef status =
+        HAL_SPI_Transmit(&dev->handle, data, size, dev->timeout_ms);
 
     return status == HAL_OK;
 }
@@ -71,12 +71,13 @@ bool StSpiRead(Spi* spi, uint8_t* data, size_t size)
     return status == HAL_OK;
 }
 
-bool StSpiTransact(Spi* spi, uint8_t* txdata, uint8_t* rxdata, size_t size)
+bool StSpiTransact(Spi* spi, const uint8_t* txdata, uint8_t* rxdata,
+                   size_t size)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
     HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(
-        &dev->handle, (const uint8_t*)txdata, rxdata, size, dev->timeout_ms);
+        &dev->handle, txdata, rxdata, size, dev->timeout_ms);
 
     return status == HAL_OK;
 }

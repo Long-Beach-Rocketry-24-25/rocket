@@ -23,8 +23,9 @@ typedef struct Spi Spi;
 struct Spi
 {
     ChipSelect cs;
-    bool (*send)(Spi* spi, uint8_t* data, size_t size);
+    bool (*send)(Spi* spi, const uint8_t* data, size_t size);
     bool (*read)(Spi* spi, uint8_t* data, size_t size);
-    bool (*transact)(Spi* spi, uint8_t* txdata, uint8_t* rxdata, size_t size);
+    bool (*transact)(Spi* spi, const uint8_t* txdata, uint8_t* rxdata,
+                     size_t size);
     void* priv;
 };

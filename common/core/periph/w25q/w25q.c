@@ -44,7 +44,8 @@ void W25qInit(W25q* flash, Spi* spi, size_t mem_size)
     flash->mem_size = mem_size;
 }
 
-bool W25qPageWrite(W25q* flash, size_t address, uint8_t* data, size_t size)
+bool W25qPageWrite(W25q* flash, size_t address, const uint8_t* data,
+                   size_t size)
 {
     // Enforce start addr + size < next sector addr, so no wrap around happens.
     if ((address + size) >

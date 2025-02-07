@@ -48,7 +48,7 @@ void StSpiConfig(Spi* spi)
     dev->instance->CR1 |= SPI_CR1_SPE;
 }
 
-bool StSpiSend(Spi* spi, uint8_t* data, size_t size)
+bool StSpiSend(Spi* spi, const uint8_t* data, size_t size)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 
@@ -78,7 +78,7 @@ bool StSpiSend(Spi* spi, uint8_t* data, size_t size)
          * Write access to SPI_DR stores data in TXFIFO at end of queue
          * Must be aligned with RXFIFO threshold conf by FRXTH, FTLVL and FRLVL indicate FIFO occupancy
          */
-        uint8_t dummy = *(DataReg)&dev->instance->DR;
+        *(DataReg)&dev->instance->DR;
     }
 
     WAIT(dev->timer, !(dev->instance->SR & SPI_SR_BSY), false);
@@ -124,7 +124,8 @@ bool StSpiRead(Spi* spi, uint8_t* data, size_t size)
     return true;
 }
 
-bool StSpiTransact(Spi* spi, uint8_t* txdata, uint8_t* rxdata, size_t size)
+bool StSpiTransact(Spi* spi, const uint8_t* txdata, uint8_t* rxdata,
+                   size_t size)
 {
     StPrivSpi* dev = (StPrivSpi*)spi->priv;
 

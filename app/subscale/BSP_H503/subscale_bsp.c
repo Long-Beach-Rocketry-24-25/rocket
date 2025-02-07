@@ -63,6 +63,10 @@ void BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
     PeriphClkInitStruct.Spi1ClockSelection = RCC_SPI1CLKSOURCE_PLL1Q;
     HAL_StatusTypeDef stat = HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct);
+    if (stat != HAL_OK)
+    {
+        Error_Handler();
+    }
 
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;

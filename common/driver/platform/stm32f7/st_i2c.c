@@ -59,7 +59,7 @@ bool StI2cSetTarget(I2c* i2c, uint8_t dev_addr)
     return true;
 }
 
-bool StI2cWrite(I2c* i2c, uint16_t addr, uint8_t* data, size_t size)
+bool StI2cWrite(I2c* i2c, uint16_t addr, const uint8_t* data, size_t size)
 {
     StPrivI2c* dev = (StPrivI2c*)i2c->priv;
 
