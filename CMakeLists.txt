@@ -15,6 +15,7 @@ if(MCU_NAME MATCHES "^(STM32).*")
     message("Found STM32 Device!")
     add_compile_definitions(
         ${MCU_NAME}=TRUE
+        ${MCU_FAMILY}=TRUE
         USE_HAL_DRIVER=TRUE
     )
 endif()

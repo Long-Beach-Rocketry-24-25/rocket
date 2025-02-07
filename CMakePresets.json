@@ -42,7 +42,8 @@
             "inherits": "build",
             "toolchainFile": "cmake/gcc-m7.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM7"
+                "FREERTOS_PORT": "GCC_ARM_CM7",
+                "MCU_FAMILY": "STM32F7"
             }
         },
         {
@@ -63,7 +64,7 @@
             "toolchainFile": "cmake/gcc-m4f.cmake",
             "cacheVariables": {
                 "FREERTOS_PORT": "GCC_ARM_CM4F",
-                "TARGET_DEVICE": "STM32L4"
+                "MCU_FAMILY": "STM32L4"
             }
         },
         {
@@ -94,7 +95,8 @@
             "inherits": "build",
             "toolchainFile": "cmake/gcc-m33.cmake",
             "cacheVariables": {
-                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE"
+                "FREERTOS_PORT": "GCC_ARM_CM33_NTZ_NONSECURE",
+                "MCU_FAMILY": "STM32H5"
             }
         },
         {
