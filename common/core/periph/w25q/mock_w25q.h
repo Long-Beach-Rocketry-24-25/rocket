@@ -12,7 +12,8 @@
 
 void MockW25qInit(W25q* flash);
 bool MockW25qRead(W25q* flash, size_t address, uint8_t* data, size_t size);
-bool MockW25qPageWrite(W25q* flash, size_t address, uint8_t* data, size_t size);
+bool MockW25qPageWrite(W25q* flash, size_t address, const uint8_t* data,
+                       size_t size);
 bool MockW25qSectorErase(W25q* flash, size_t address);
 bool MockW25qChipErase(W25q* flash);
 void MockW25qDumpMem(Send* sender);

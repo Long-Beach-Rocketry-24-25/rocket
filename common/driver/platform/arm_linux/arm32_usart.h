@@ -20,5 +20,5 @@ typedef struct
 bool Arm32UsartInit(Usart* usart, Arm32PrivUsart* arm32_usart,
                     const char* path);
 void Arm32UsartClose(Usart* usart);
-bool Arm32UsartSend(Usart* usart, uint8_t* data, size_t size);
+bool Arm32UsartSend(Usart* usart, const uint8_t* data, size_t size);
 bool Arm32UsartRecv(Usart* usart, uint8_t* data, size_t size);

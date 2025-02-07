@@ -25,7 +25,8 @@ bool MockW25qRead(W25q* flash, size_t address, uint8_t* data, size_t size)
     return true;
 }
 
-bool MockW25qPageWrite(W25q* flash, size_t address, uint8_t* data, size_t size)
+bool MockW25qPageWrite(W25q* flash, size_t address, const uint8_t* data,
+                       size_t size)
 {
     size_t page_begin = get_section_addr(address, flash->page_size);
     size_t index = address;

@@ -53,4 +53,6 @@ void UsageFault_Handler(void)
 /**
   * @brief This function handles Debug monitor.
   */
-void DebugMon_Handler(void) {}
+void DebugMon_Handler(void)
+{
+}

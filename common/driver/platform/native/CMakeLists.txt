@@ -1,12 +1,10 @@
-add_library(hal STATIC
-    nt_usart.c
-)
+add_library(hal INTERFACE)
 
-target_include_directories(hal PUBLIC
+target_include_directories(hal INTERFACE
     bus
     memory
     .
 )
-target_link_libraries(hal PUBLIC
+target_link_libraries(hal INTERFACE
     core
 )

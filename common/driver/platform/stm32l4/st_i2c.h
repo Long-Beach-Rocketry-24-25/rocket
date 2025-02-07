@@ -23,5 +23,5 @@ typedef struct
 void StI2cInit(I2c* i2c, StPrivI2c* st_i2c, uint32_t base_addr, Timeout* timer);
 void StI2cConfig(I2c* i2c, uint32_t timingr);
 bool StI2cSetTarget(I2c* i2c, uint8_t dev_addr);
-bool StI2cWrite(I2c* i2c, uint16_t addr, uint8_t* data, size_t size);
+bool StI2cWrite(I2c* i2c, uint16_t addr, const uint8_t* data, size_t size);
 bool StI2cRead(I2c* i2c, uint16_t addr, uint8_t* data, size_t size);

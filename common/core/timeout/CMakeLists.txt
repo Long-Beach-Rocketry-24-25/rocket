@@ -5,3 +5,7 @@ add_library(timeout STATIC
 )
 
 target_include_directories(timeout PUBLIC .)
+
+add_tests(timeout
+    retry_timer_test
+)

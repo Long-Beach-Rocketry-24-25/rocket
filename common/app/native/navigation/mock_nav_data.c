@@ -14,6 +14,8 @@ bool MockNavDataInit(NavData* data, MockNavData* mock, const char* path)
 
     data->priv = (void*)mock;
     data->update = MockNavDataUpdate;
+
+    return true;
 }
 
 void MockNavDataDeinit(NavData* data)
@@ -47,13 +49,13 @@ bool MockNavDataUpdate(NavData* data)
                     sscanf(value, "%f", &data->accel.z);
                     break;
                 case 4:
-                    sscanf(value, "%d", &data->euler.x);
+                    sscanf(value, "%hd", &data->euler.x);
                     break;
                 case 5:
-                    sscanf(value, "%d", &data->euler.y);
+                    sscanf(value, "%hd", &data->euler.y);
                     break;
                 case 6:
-                    sscanf(value, "%d", &data->euler.z);
+                    sscanf(value, "%hd", &data->euler.z);
                     break;
                 default:
                     return false;

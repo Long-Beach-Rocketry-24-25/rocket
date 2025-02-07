@@ -31,7 +31,7 @@ void Arm32UsartClose(Usart* usart)
     close(dev->file_handle);
 }
 
-bool Arm32UsartSend(Usart* usart, uint8_t* data, size_t size)
+bool Arm32UsartSend(Usart* usart, const uint8_t* data, size_t size)
 {
     Arm32PrivUsart* dev = (Arm32PrivUsart*)usart->priv;
     if (dev->file_handle < 0)

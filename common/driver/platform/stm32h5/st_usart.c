@@ -47,7 +47,7 @@ void StUsartConfig(Usart* usart, uint32_t system_core_clk, uint32_t baudrate)
     dev->instance->CR1 |= USART_CR1_RXNEIE;
 }
 
-bool StUsartSend(Usart* usart, uint8_t* data, size_t size)
+bool StUsartSend(Usart* usart, const uint8_t* data, size_t size)
 {
     StPrivUsart* dev = (StPrivUsart*)usart->priv;
     for (size_t i = 0; i < size; ++i)

@@ -8,7 +8,7 @@ param (
 if ( $c )
 {
     echo "Performing clean build..."
-    rm -R -Force build/
+    rm -R -Force build/$t
 }
 
 $mode="Debug"
@@ -19,6 +19,6 @@ if ( $r )
 }
 
 cmake --preset=$t -DTARGET_APP="$a" -DCMAKE_BUILD_TYPE="$mode"
-pushd build/
+pushd build/$t
 cmake --build .
 popd

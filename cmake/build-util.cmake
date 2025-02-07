@@ -5,7 +5,7 @@ function(add_executable_for DEVICE EXECUTABLE LINKER_SCRIPT)
         message("Target: ${DEVICE}")
         add_executable(${EXECUTABLE} ${ARGN})
 
-        if ("${DEVICE}" MATCHES "(STM32)")
+        if ("${TARGET_DEVICE}" MATCHES "(STM32)")
             message("Selecting linker opts for ARM MCU")
             target_link_options(${EXECUTABLE} PRIVATE
                 -T${LINKER_SCRIPT}
@@ -71,7 +71,6 @@ function(target_preprocess_for DEVICE EXECUTABLE SRC_FILE OUT_FILE)
         add_custom_command(TARGET ${EXECUTABLE}
             PRE_BUILD
             COMMAND arm-none-eabi-gcc -E -P -x c ${SRC_FILE} -o ${OUT_FILE} ${ARGN}
-            DEPENDS ${SRC_FILE}
         )
     endif()
 endfunction()
@@ -90,22 +89,23 @@ endfunction()
 function(add_tests LINK_LIB)
     if ("${TARGET_DEVICE}" MATCHES "NATIVE")
 
+        include(CTest)
         include(GoogleTest)
 
         foreach(SRC_NAME ${ARGN})
 
             add_executable(${SRC_NAME}
-            ${SRC_NAME}.cc
-        )
+                ${SRC_NAME}.cc
+            )
 
-        target_link_libraries(${SRC_NAME}
-            GTest::gtest_main
-            ${LINK_LIB}
-        )
+            target_link_libraries(${SRC_NAME}
+                GTest::gtest_main
+                ${LINK_LIB}
+            )
 
-        gtest_discover_tests(${SRC_NAME})
+            gtest_discover_tests(${SRC_NAME})
+            add_test(NAME ${SRC_NAME} COMMAND ${SRC_NAME})
 
         endforeach()
-
     endif()
 endfunction()
