@@ -41,8 +41,8 @@ jobs:
     
     - name: Install GNU Arm Embedded Toolchain
       uses: ryanwinter/arm-none-eabi-gcc@master
-        with:
-          release: '10.3-2021.10'
+      with:
+        release: '10.3-2021.10'
 
     - name: Configure CMake for F7
       run: |
