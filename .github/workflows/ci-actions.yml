@@ -49,21 +49,21 @@ jobs:
         cmake --preset=stm32f746 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
     - name: Build for F7
-      run: cd build/ && cmake --build .
+      run: cd build/stm32f746 && cmake --build .
     
     - name: Configure CMake for H5
       run: |
-        rm -rf build/ && cmake --preset=stm32h503 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+        cmake --preset=stm32h503 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
     - name: Build for H5
-      run: cd build/ && cmake --build .
+      run: cd build/stm32h503 && cmake --build .
     
     - name: Configure CMake for L4
       run: |
-        rm -rf build/ && cmake --preset=stm32l476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+        cmake --preset=stm32l476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
     - name: Build for L4
-      run: cd build/ && cmake --build .
+      run: cd build/stm32l476 && cmake --build .
     
   unit_test:
     name: Run Native Unit Tests

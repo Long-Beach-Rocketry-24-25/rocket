@@ -8,12 +8,12 @@
     "configurePresets": [
         {
             "name": "build",
-            "binaryDir": "${sourceDir}/build",
             "generator": "Ninja"
         },
         {
             "name": "native",
             "inherits": "build",
+            "binaryDir": "${sourceDir}/build/native",
             "cacheVariables": {
                 "TARGET_DEVICE": "NATIVE"
             }
@@ -21,6 +21,7 @@
         {
             "name": "arm32",
             "inherits": "build",
+            "binaryDir": "${sourceDir}/build/arm32",
             "toolchainFile": "cmake/arm-linux-gnueabihf.cmake",
             "cacheVariables": {
                 "TARGET_DEVICE": "ARM_LINUX"
@@ -29,6 +30,7 @@
         {
             "name": "aarch64",
             "inherits": "build",
+            "binaryDir": "${sourceDir}/build/aarch64",
             "toolchainFile": "cmake/aarch64-none-linux-gnu.cmake",
             "cacheVariables": {
                 "TARGET_DEVICE": "ARM_LINUX"
@@ -46,6 +48,7 @@
         {
             "name": "stm32f746",
             "inherits": "stm32f7",
+            "binaryDir": "${sourceDir}/build/stm32f746",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746ZGTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f7xx/f746/startup_stm32f746zgtx.s",
@@ -66,6 +69,7 @@
         {
             "name": "stm32l452",
             "inherits": "stm32l4",
+            "binaryDir": "${sourceDir}/build/stm32l452",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l452/STM32L452RCTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l452/startup_stm32l452rctx.s",
@@ -76,6 +80,7 @@
         {
             "name": "stm32l476",
             "inherits": "stm32l4",
+            "binaryDir": "${sourceDir}/build/stm32l476",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/l4xx/l476/STM32L476RGTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/l4xx/l476/startup_stm32l476rgtx.s",
@@ -95,6 +100,7 @@
         {
             "name": "stm32h503",
             "inherits": "stm32h5",
+            "binaryDir": "${sourceDir}/build/stm32h503",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h503/STM32H503xx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h503/startup_stm32h503xx.s",
@@ -105,6 +111,7 @@
         {
             "name": "stm32h563",
             "inherits": "stm32h5",
+            "binaryDir": "${sourceDir}/build/stm32h563",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/h5xx/h563/STM32H563xx_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/h5xx/h563/startup_stm32h563xx.s",
