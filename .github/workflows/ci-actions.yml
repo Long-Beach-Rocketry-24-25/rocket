@@ -47,4 +47,4 @@ jobs:
       run: cd build/ && cmake --build .
 
     - name: Run GTest unit tests
-      run: ctest
+      run: cd build/ && ctest
