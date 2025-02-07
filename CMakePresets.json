@@ -47,7 +47,7 @@
             "name": "stm32f746",
             "inherits": "stm32f7",
             "cacheVariables": {
-                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746zgtx_FLASH.ld",
+                "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f7xx/f746/STM32F746ZGTX_FLASH.ld",
                 "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f7xx/f746/startup_stm32f746zgtx.s",
                 "TARGET_DEVICE": "STM32F746",
                 "MCU_NAME": "STM32F746xx"
