@@ -35,7 +35,7 @@ jobs:
       with:
         cmake-version: '3.27'
     
-      - name: Pull git submodules
+    - name: Pull git submodules
       run: |
         git submodule update --init --recursive
 
