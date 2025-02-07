@@ -64,8 +64,3 @@ TEST_F(RetryTimerTest, TimeoutTest)
     test_expire(&timer);
     test_pass(&timer);
 }
-
-TEST_F(RetryTimerTest, Fail)
-{
-    EXPECT_TRUE(false);
-}
