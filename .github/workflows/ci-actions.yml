@@ -87,7 +87,7 @@ jobs:
         cmake --preset=native -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
 
     - name: Build GTest unit tests
-      run: cd build/ && cmake --build .
+      run: cd build/native && cmake --build .
 
     - name: Run GTest unit tests
-      run: cd build/ && ctest
+      run: cd build/native && ctest
