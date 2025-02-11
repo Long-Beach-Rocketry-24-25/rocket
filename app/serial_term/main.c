@@ -31,18 +31,28 @@ void* send(void* args)
         char msg[RECV_BUF_SIZE];
         scanf("%s", &msg);
         size_t size = 0;
-        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1))
-            ;
-        msg[size] = '\n';
+        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1));
+        msg[size - 1] = '\n';
         pthread_mutex_lock(&lock);
-        usart.send(&usart, msg, size + 1);
+        usart.send(&usart, msg, size);
         pthread_mutex_unlock(&lock);
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    bool success = Arm32UsartInit(&usart, &arm32_usart, "/dev/serial0");
+    bool success = false;
+    if (argv[1] != NULL)
+    {
+        printf("Using port: %s\n", argv[1]);
+        success = Arm32UsartInit(&usart, &arm32_usart, argv[1]);
+    }
+    else
+    {
+        printf("Using port: /dev/serial0\n");
+        success = Arm32UsartInit(&usart, &arm32_usart, "/dev/serial0");
+    }
+
     success = success && (pthread_mutex_init(&lock, NULL) == 0);
 
     if (success)
@@ -57,6 +67,6 @@ int main()
     }
     else
     {
-        printf("Failed to open port!");
+        printf("Failed to open port!\n");
     }
 }
