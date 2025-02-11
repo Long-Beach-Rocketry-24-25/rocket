@@ -62,12 +62,12 @@
         },
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32h503/app/cli_app/cli_app",
-            "name": "DEBUG CLI H563",
+            "executable": "${workspaceRoot}/build/stm32h503/app/subscale/subscale",
+            "name": "DEBUG CLI H503",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
-            "device": "STM32H563",
+            "device": "STM32H503",
             // "svdFile": "${workspaceRoot}/mcu_support/h5xx/h563/STM32H563.svd",
             "searchDir": [
                 "${workspaceRoot}/mcu_support/stm32"
@@ -82,7 +82,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file build/stm32h503/app/cli_app/cli_app",
+                "add-symbol-file build/stm32h503/app/subscale/subscale",
                 "load",
                 "enable breakpoint",
                 "monitor reset"
