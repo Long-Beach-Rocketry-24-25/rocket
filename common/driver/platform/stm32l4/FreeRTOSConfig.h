@@ -132,8 +132,7 @@ header file. */
     if ((x) == 0)                 \
     {                             \
         taskDISABLE_INTERRUPTS(); \
-        for (;;)                  \
-            ;                     \
+        for (;;);                 \
     }
 /* USER CODE END 1 */
 

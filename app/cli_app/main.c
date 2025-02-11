@@ -26,8 +26,7 @@ int main(void)
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
 
-    while (1)
-        ;
+    while (1);
 
     return 0;
 }

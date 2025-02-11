@@ -19,8 +19,7 @@ static void wait_busy(W25q* flash)
 {
     // Wait busy bit in status register 1, 0x5
     flash->bus->cs.select(&flash->bus->cs);
-    while (mask_status(flash, 0x5, 1))
-        ;
+    while (mask_status(flash, 0x5, 1));
     flash->bus->cs.deselect(&flash->bus->cs);
 }
 

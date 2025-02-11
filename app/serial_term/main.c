@@ -31,8 +31,7 @@ void* send(void* args)
         char msg[RECV_BUF_SIZE];
         scanf("%s", &msg);
         size_t size = 0;
-        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1))
-            ;
+        while (msg[size++] != '\0' && size < (RECV_BUF_SIZE - 1));
         msg[size - 1] = '\n';
         pthread_mutex_lock(&lock);
         usart.send(&usart, msg, size);
