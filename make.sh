@@ -45,10 +45,10 @@ fi
 
 if [ "$CLEAN" == 1 ]; then
     echo "Performing clean build..."
-    rm -rf build/
+    rm -rf build/$TARGET
 fi
 
 cmake --preset=$TARGET -DTARGET_APP=$APP -DCMAKE_BUILD_TYPE=$MODE
-pushd build/
+pushd build/$TARGET
 cmake --build .
 popd
