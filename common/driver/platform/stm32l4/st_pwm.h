@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "mcu_support\stm32\l4xx\stm32l4xx_hal_tim.h"
+#include "stm32l4xx.h"
 
 #include "gpio.h"
-#include "common\driver\bus\pwm.h"
+#include "pwm.h"
 #include "timeout.h"
 
 #include <stdint.h>
