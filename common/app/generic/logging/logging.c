@@ -13,33 +13,32 @@ void logger_init(Logger* log, LogBuilder* builder, LogSubscriber* subs,
 
 bool logger_update(Logger* log)
 {
-    switch (log->enabled)
+    if (log->enabled)
     {
-        case false:
-            if (log->cmd_enable)
-            {
-                log->enabled = true;
-                for (size_t i = 0; i < log->num_subs; ++i)
-                {
-                    log->subs[i].clear(&log->subs[i]);
-                }
-            }
-            break;
-        case true:
-            log->builder->build_new(log->builder);
-            const uint8_t* data = log->builder->get_ptr(log->builder);
-            size_t size = log->builder->get_size(log->builder);
-
+        if (log->cmd_enable)
+        {
+            log->enabled = true;
             for (size_t i = 0; i < log->num_subs; ++i)
             {
-                log->subs[i].write(&log->subs[i], data, size);
+                log->subs[i].clear(&log->subs[i]);
             }
+        }
+    }
+    else
+    {
+        log->builder->build_new(log->builder);
+        const uint8_t* data = log->builder->get_ptr(log->builder);
+        size_t size = log->builder->get_size(log->builder);
 
-            if (!log->cmd_enable)
-            {
-                log->enabled = false;
-            }
-            break;
+        for (size_t i = 0; i < log->num_subs; ++i)
+        {
+            log->subs[i].write(&log->subs[i], data, size);
+        }
+
+        if (!log->cmd_enable)
+        {
+            log->enabled = false;
+        }
     }
 
     return true;
