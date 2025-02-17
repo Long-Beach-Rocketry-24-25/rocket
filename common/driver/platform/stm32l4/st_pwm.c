@@ -1,31 +1,86 @@
 
 #include "st_pwm.h"
+#include "stm32l476xx.h"
 
 
-bool Pwm_enable(Pwm *pwm, bool enable) {
-    StPrivPwm * dev = (StPrivPwm *) pwm->priv;
+void StPwmInit(Pwm *pwm, StPrivPwm* st_pwm, size_t base_address, size_t mc_clock){
+    st_pwm->instance = (TIM_TypeDef*)base_address;
 
-    if (dev->instance->CR1 & (TIM_CR1_CEN)){
-        return false;
+    pwm->priv = (void*)st_pwm;
+    st_pwm->clock = mc_clock;
+    pwm->enable = StPwmEnable;
+}
+
+
+bool StPwmEnable(Pwm *pwm, bool enable) {
+    StPrivPwm *dev = (StPrivPwm *)pwm->priv;
+    
+    
+    if (enable == true){
+
+        dev->instance->CCMR1 &= ~TIM_CCMR1_CC1S;
+        dev->instance->CCMR1 |= TIM_CCMR1_OC1M_2;
+        dev->instance->CCMR1 |= TIM_CCMR1_OC1M_1;
+        dev->instance->CCER &= ~TIM_CCER_CC1P;
+        dev->instance->CCER |= TIM_CCER_CC1E;
+        
+        dev->instance->CCMR1 |= TIM_CCMR1_OC1PE;
+        dev->instance->CR1 |= TIM_CR1_ARPE;
+        dev->instance->CR1 &= ~TIM_CR1_CMS_Msk;
+        dev->instance->CR1 &= ~TIM_CR1_DIR_Msk;
+        dev->instance->CR1 &= ~TIM_CR1_CKD_Msk;
+        dev->instance->EGR |= TIM_EGR_UG;
+
+        dev->instance->CR1 |= TIM_CR1_CEN;
+
+        if (dev->instance->CR1 & TIM_CR1_CEN){
+            return true;
+        }
+        else{
+            return false;
+        }
+               
+        
+            
+    }
+    else{               
+        dev->instance->CCMR1 &= 0x0;
+        dev->instance->CCER &= 0x0;                            
+        dev->instance->CR1 &= 0x0;                                        
+        dev->instance->EGR &= 0x0;
+
+        if (dev->instance->CR1 & ~(TIM_CR1_CEN))
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+            
+            
     }
 
-    dev->instance->CR1 |= enable;
-
-    return true;
 }
 
-void Pwm_set_frequency(Pwm *pwm, size_t freq) {
-    StPrivPwm * dev = (StPrivPwm *) = pwm->priv;
+void StPwmSetFreq(Pwm *pwm, size_t hz) {
+    StPrivPwm * dev = (StPrivPwm *)pwm->priv;
 
-    dev->instance->ARR = 10000 - 1; 
+    dev->period = 1000/hz;
+    size_t DesiredPSC = ((dev->clock)/65535)/hz;
 
-    int frq = 84000000/10000                //mc clock divided by ARR
-    int div  = frq/freq;                    //dividing by freq we want
-    dev->instance->PSC = (frq/div) - 1;     //setting PSC to freq desired
+    dev->instance->PSC = DesiredPSC - 1;    
+    dev->instance->ARR = 65535 - 1;
+         
+
+      
 }
 
-void Pwm_set_duty(Pwm *pwm, size_t duty) {
-    StPrivPwm *dev = (StPrivPwm *) = pwm->priv;
+void StPwmDuty(Pwm *pwm, size_t duty) {
+    StPrivPwm *dev = (StPrivPwm *)pwm->priv;
+
+    size_t duty = (duty/100)*(dev->instance->ARR);
+
 
     dev->instance->CCR1 = duty;
+
 }
