@@ -2,13 +2,21 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define TJ_SEND_BUF_SIZE 256U
+
 typedef struct Send_protocol Send_protocol;
 
 struct Send_protocol
 {
-    bool (*write_command)(uint8_t target, uint8_t data_len, char * data);
+    uint8_t size;
+    bool (*format)(Send_protocol* self, uint8_t target, uint8_t data_len, const char * data);
+    bool (*parse)();
+    char message[TJ_SEND_BUF_SIZE];
+    //char last_msg[TJ_SEND_BUF_SIZE];
+
+
 };
 
-
-void send_protocol_init(Send_protocol* sender, bool (*write_func)(uint8_t target, uint8_t data_len, char * data));
-
+bool format(Send_protocol* self, uint8_t target, uint8_t data_len, const char * data);
+void send_protocol_init(Send_protocol* sender, bool (*format)(Send_protocol* self, uint8_t target, uint8_t data_len, const char * data));
+//bool formated_return(uint8_t target, uint8_t data_len, char * data);
