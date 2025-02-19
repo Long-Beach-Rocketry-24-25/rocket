@@ -18,29 +18,29 @@ typedef struct Pwm Pwm;
 struct Pwm
 {
 /**
- * @brief enables the timers and their registers to setup PWM
+ * @brief Enables the timers and their registers to setup PWM.
  * 
- * @param pwm a pointer to the peripheral instance.
- * @param enable true to enable the PWM peripheral, false to disable.
+ * @param pwm A pointer to the peripheral instance.
+ * @param enable True to enable the PWM peripheral, false to disable.
  * 
- * @return true on success, false otherwise.
+ * @return True on success, false otherwise.
  */
     bool (*enable) (Pwm *pwm, bool enable);
 
 /**
- * @brief sets the desired pwm frequency to operate at
+ * @brief Sets the desired pwm frequency to operate at.
  * 
- * @param pwm a pointer to the peripheral instance.
- * @param hz desired frequency in Hz set by user
+ * @param pwm A pointer to the peripheral instance.
+ * @param hz Desired frequency in Hz set by user.
  * 
  */
     void (*setFreq) (Pwm *pwm, size_t hz);
 
 /**
- * @brief sets the desired duty cycle for pwm device
+ * @brief Sets the desired duty cycle for pwm device.
  * 
- * @param pwm a pointer to the peripheral instance.
- * @param duty desired duty cycle given as a percentage of the period.
+ * @param pwm A pointer to the peripheral instance.
+ * @param duty Desired duty cycle given as a percentage of the period.
  * 
  */
     void (*setDuty) (Pwm *pwm, size_t duty); 

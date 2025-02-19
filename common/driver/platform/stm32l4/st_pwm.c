@@ -33,12 +33,7 @@ bool StPwmEnable(Pwm *pwm, bool enable) {
 
         dev->instance->CR1 |= TIM_CR1_CEN;
 
-        if (dev->instance->CR1 & TIM_CR1_CEN){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return (dev->instance->CR1 & TIM_CR1_CEN);
                
         
             
@@ -49,13 +44,8 @@ bool StPwmEnable(Pwm *pwm, bool enable) {
         dev->instance->CR1 &= 0x0;                                        
         dev->instance->EGR &= 0x0;
 
-        if (dev->instance->CR1 & ~(TIM_CR1_CEN))
-        {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return (!(dev->instance->CR1 & TIM_CR1_CEN));
+
             
             
     }
@@ -78,9 +68,9 @@ void StPwmSetFreq(Pwm *pwm, size_t hz) {
 void StPwmDuty(Pwm *pwm, size_t duty) {
     StPrivPwm *dev = (StPrivPwm *)pwm->priv;
 
-    size_t duty = (duty/100)*(dev->instance->ARR);
+    size_t Duty = (duty/100)*(dev->instance->ARR);
 
 
-    dev->instance->CCR1 = duty;
+    dev->instance->CCR1 = Duty;
 
 }
