@@ -2,26 +2,27 @@
 
 #include "pwm_app_bsp.h"
 
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
+static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {ALT_FUNC, 0, 0, 0, 0x1}};
 
-//adding paramters for user to manipulate
-void BSP_Init(Pwm* pwm_timer, Gpio* led_gpio, size_t base_address, size_t mc_clock, bool enable, size_t hz, size_t duty){
+static StPrivPwm st_pwm;
+static size_t base_address = TIM2_BASE;
+static size_t mc_clock = 84000000;
 
-    HAL_InitTick(0);
-    SystemClock_Config();
+
+void BSP_Init(Pwm* pwm_timer, Gpio* led_gpio){
+
+    //HAL_InitTick(0);
+    //SystemClock_Config();
 
     // LED GPIO
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
 
     StGpioInit(led_gpio, &led_stgpio);
     StGpioConfig(led_gpio);
 
 
-    StPwmInit(pwm_timer, pwm_timer, base_address, mc_clock);
+    StPwmInit(pwm_timer, &st_pwm, base_address, mc_clock);
 
-    StPwmEnable(pwm_timer, enable);
 
-    StPwmSetFreq(pwm_timer, hz);
-
-    StPwmDuty(pwm_timer, duty);
 }

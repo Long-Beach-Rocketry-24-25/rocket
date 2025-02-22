@@ -9,6 +9,10 @@ void StPwmInit(Pwm *pwm, StPrivPwm* st_pwm, size_t base_address, size_t mc_clock
     pwm->priv = (void*)st_pwm;
     st_pwm->clock = mc_clock;
     pwm->enable = StPwmEnable;
+    
+    StPwmSetFreq(pwm, 50);
+    StPwmDuty(pwm, 50);         //setting duty cycle to 50%
+    StPwmEnable(pwm, true);
 }
 
 
