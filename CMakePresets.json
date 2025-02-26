@@ -52,7 +52,7 @@
             "binaryDir": "${sourceDir}/build/stm32f401",
             "cacheVariables": {
                 "LINKER_SCRIPT": "${sourceDir}/mcu_support/stm32/f4xx/f401/STM32F401RETX_FLASH.ld",
-                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f4xx/HAL/F401/startup_stm32f401retx.s",
+                "STARTUP_FILE": "${sourceDir}/mcu_support/stm32/f4xx/f401/startup_stm32f401retx.s",
                 "TARGET_DEVICE": "STM32F401",
                 "MCU_NAME": "STM32F401xE"
             }
