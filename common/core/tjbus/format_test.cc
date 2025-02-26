@@ -2,8 +2,10 @@
 #include <cstdio>
 extern "C"
 {
+#include <string.h>
 #include "uart_custom_bus.h"
 }
+#define ADDRESS 69
 #define EXPECT_ARR_EQ(arr1, arr2, size)   \
     do                                    \
     {                                     \
@@ -13,19 +15,75 @@ extern "C"
         }                                 \
     } while (0)
 
-class FormatTest : public testing::Test
+class FormatTests : public testing::Test
 {
 public:
     Bus bus;
 };
 
-TEST_F(FormatTest, format_test)
+class ReadCharTests : public testing::Test
+{
+public:
+    Bus bus;
+};
+
+TEST_F(FormatTests, format_test)
 {
     const char data[10] = "f";
-    send_protocol_init(&bus);
+    send_protocol_init(&bus, ADDRESS);
+    uint64_t sum = 0;
     bus.format(&bus, 50, 1, data);
     EXPECT_ARR_EQ(bus.send_buffer, "!2f", 3);
-    printf("%d", bus.send_buffer[4]);
-    EXPECT_EQ(bus.send_buffer[4], (char)185);
+
+    EXPECT_EQ(bus.send_buffer[3], char(185));
     // need to calculate again without end byte
+}
+
+TEST_F(ReadCharTests, idle_to_error_test)
+{
+    const char data[10] = "-";
+    send_protocol_init(&bus, ADDRESS);
+    bus.read_byte(&bus, data[0]);
+    EXPECT_EQ(bus.state, ERROR);
+}
+TEST_F(ReadCharTests, idle_to_ack_test)
+{
+    const char data[10] = "+";
+    send_protocol_init(&bus, ADDRESS);
+    bus.read_byte(&bus, data[0]);
+    EXPECT_EQ(bus.state, ACKNOWLEDGED);
+}
+TEST_F(ReadCharTests, idle_to_wrong_address_test)
+{
+    const char data[] = "!F";
+    send_protocol_init(&bus, ADDRESS);
+    bus.read_byte(&bus, data[0]);
+    EXPECT_EQ(bus.state, READ_ADDRESS);
+    bus.read_byte(&bus, data[1]);
+    EXPECT_EQ(bus.state, IDLE);
+}
+TEST_F(ReadCharTests, idle_to_success)
+{
+    const char data[] = {'!', 'E', 2, 'P', 'f', 30};
+    //printf("%d", bus.receive_buffer[5]);
+    send_protocol_init(&bus, ADDRESS);
+    for (int i = 0; i < sizeof(data); i++)
+    {
+        bus.read_byte(&bus, data[i]);
+    }
+    //printf("BUF: %x", bus.receive_buffer[5]);
+    EXPECT_EQ(bus.state, FINISHED);
+    //char data_in[] = {'P', 'f'};
+    EXPECT_ARR_EQ(bus.receive_buffer, data, 6);
+}
+TEST_F(ReadCharTests, idle_wrong_checksum)
+{
+    const char data[] = {'!', 'E', 2, 'P', 'f', 32};
+    send_protocol_init(&bus, ADDRESS);
+    for (int i = 0; i < sizeof(data); i++)
+    {
+        bus.read_byte(&bus, data[i]);
+    }
+
+    EXPECT_EQ(bus.state, ERROR);
 }

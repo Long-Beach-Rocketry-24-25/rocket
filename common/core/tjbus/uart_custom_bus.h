@@ -4,9 +4,8 @@
 
 #include "custom_bus.h"
 
-
 typedef struct UartBus UartBus;
 
-struct UartBus{
-
+struct UartBus
+{
 };

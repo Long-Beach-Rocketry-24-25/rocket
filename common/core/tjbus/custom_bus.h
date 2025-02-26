@@ -9,6 +9,8 @@ typedef enum
 {
     IDLE,
     ERROR,
+    ACKNOWLEDGED,
+    READ_ADDRESS,
     READ_LEN,
     READ_DATA,
     VALIDATE,
@@ -31,7 +33,8 @@ struct Bus
     BusState state;
     uint32_t sum;
     uint8_t receive_index;
-    bool acknowledged;
+    uint8_t address;
+    //bool acknowledged;
     char send_buffer[TJ_SEND_BUF_SIZE];  // remove later
     char receive_buffer[TJ_SEND_BUF_SIZE];
     bool (*format)(Bus* self, uint8_t target, uint8_t data_len,
@@ -47,6 +50,6 @@ bool reset_receive(Bus* self);
 bool get_package_size(void);
 bool get_msg(void);
 
-void send_protocol_init(Bus* sender);
+void send_protocol_init(Bus* sender, uint8_t address);
 
 //bool formated_return(uint8_t target, uint8_t data_len, char * data);
