@@ -11,23 +11,26 @@ void send_protocol_init(Bus* sender, uint8_t address)
     //sender->acknowledged = true;
 }
 
-bool format(Bus* self, uint8_t target, uint8_t data_len, const char* data)
+bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data)
 {
     //char output[data_len + 4]; // start + data + check sum + end;
+    uint8_t index = 0;
     char* output = self->send_buffer;
     uint32_t sum = 0;
-    output[0] = START_TRANSMISSION;  // start byte
+    output[index++] = START_TRANSMISSION;  // start byte
     sum += START_TRANSMISSION;
-    output[1] = target;
+    output[index++] = target;
     sum += target;
+    output[index++] = data_len;
+    sum += data_len;
     for (uint8_t i = 0; i < data_len; i++)
     {
-        output[i + 2] = data[i];
+        output[index++] = data[i];
         sum += data[i];
     }
     //output[data_len + 2] = END_TRANSMISSON;  //end byte
     //sum += END_TRANSMISSON;
-    output[data_len + 2] = sum % 256;  //checksum
+    output[index++] = sum % 256;  //checksum
     return true;
 }
 

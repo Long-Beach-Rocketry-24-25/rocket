@@ -29,13 +29,14 @@ public:
 
 TEST_F(FormatTests, format_test)
 {
-    const char data[10] = "f";
+    const uint8_t data[10] = "f";
+    const uint8_t expected_buf[] = {'!', '2', 1, 'f'};
     send_protocol_init(&bus, ADDRESS);
     uint64_t sum = 0;
     bus.format(&bus, 50, 1, data);
-    EXPECT_ARR_EQ(bus.send_buffer, "!2f", 3);
+    EXPECT_ARR_EQ(bus.send_buffer, expected_buf, 3);
 
-    EXPECT_EQ(bus.send_buffer[3], char(185));
+    EXPECT_EQ(bus.send_buffer[4], char(186));
     // need to calculate again without end byte
 }
 
