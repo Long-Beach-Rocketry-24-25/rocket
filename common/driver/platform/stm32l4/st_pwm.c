@@ -13,9 +13,9 @@ void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
     pwm->setDuty = StPwmDuty;
     pwm->setFreq = StPwmSetFreq;
 
+    StPwmEnable(pwm, false);
     StPwmSetFreq(pwm, 1000);
     StPwmDuty(pwm, 50);  //setting duty cycle to 50%
-    StPwmEnable(pwm, true);
 }
 
 bool StPwmEnable(Pwm* pwm, bool enable)
@@ -64,11 +64,11 @@ void StPwmSetFreq(Pwm* pwm, size_t hz)
     dev->instance->ARR = 65535 - 1;
 }
 
-void StPwmDuty(Pwm* pwm, size_t duty)
+void StPwmDuty(Pwm* pwm, double duty)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
-    size_t Duty = (duty / 100) * (dev->instance->ARR);
+    double Duty = (size_t)((duty / 100) * (dev->instance->ARR));
 
     dev->instance->CCR1 = Duty;
 }

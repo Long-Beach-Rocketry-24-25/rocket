@@ -42,7 +42,7 @@ struct Pwm
       * @param duty Desired duty cycle given as a percentage of the period.
       * 
       */
-    void (*setDuty)(Pwm* pwm, size_t duty);
+    void (*setDuty)(Pwm* pwm, double duty);
 
     /**
       * @brief A private context parameter for concrete implementations to use.

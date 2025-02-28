@@ -41,6 +41,7 @@ void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
   * @param pwm A pointer to the peripheral instance.
   * @param enable True to enable the PWM peripheral, false to disable.
   * 
+  * @return True on success, false otherwise. 
   */
 bool StPwmEnable(Pwm* pwm, bool enable);
 
@@ -60,4 +61,4 @@ void StPwmSetFreq(Pwm* pwm, size_t hz);
   * @param duty Desired duty cycle given as a percentage of the period (1000ms / Freq in Hz). 
   * 
   */
-void StPwmDuty(Pwm* pwm, size_t duty);
+void StPwmDuty(Pwm* pwm, double duty);

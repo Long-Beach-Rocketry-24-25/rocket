@@ -15,13 +15,11 @@ Gpio led_gpio;
 
 void pwm_test(void)
 {
+    static size_t x = 0;
 
-    size_t x = 0;
-    while (x < 100)
-    {
-        pwm.setDuty(&pwm, x);
-        x++;
-    }
+    pwm.setDuty(&pwm, x);
+
+    x = (x < 100) ? x + 1 : 0;
 }
 
 int main(void)
@@ -29,10 +27,12 @@ int main(void)
 
     BSP_Init(&pwm, &led_gpio);
 
+    StPwmEnable(&pwm, true);
+
+    create_main_loop(pwm_test, 10);
+
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
-
-    create_main_loop(pwm_test, 1000);
 
     return 0;
 }
