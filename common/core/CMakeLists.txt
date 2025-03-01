@@ -9,6 +9,7 @@ target_link_libraries(core INTERFACE
     periph
     string
     timeout
+    tjbus
 )
 
 target_link_libraries(core INTERFACE driver)
@@ -20,3 +21,4 @@ add_subdirectory(mission)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)
+add_subdirectory(tjbus)
