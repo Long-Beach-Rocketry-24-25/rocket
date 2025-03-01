@@ -31,12 +31,13 @@ TEST_F(FormatTests, format_test)
 {
     const uint8_t data[10] = "f";
     const uint8_t expected_buf[] = {'!', '2', 1, 'f'};
+    uint8_t formatted[256] = {0};
     send_protocol_init(&bus, ADDRESS);
     uint64_t sum = 0;
-    bus.format(&bus, 50, 1, data);
-    EXPECT_ARR_EQ(bus.send_buffer, expected_buf, 3);
+    bus.format(&bus, formatted, sizeof(formatted), 50, data, 1);
+    EXPECT_ARR_EQ(formatted, expected_buf, 3);
 
-    EXPECT_EQ(bus.send_buffer[4], char(186));
+    EXPECT_EQ(formatted[4], uint8_t(186));
 }
 
 TEST_F(ReadCharTests, idle_to_error_test)

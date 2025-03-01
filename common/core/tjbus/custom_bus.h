@@ -36,13 +36,14 @@ struct Bus
     //bool acknowledged;
     char send_buffer[TJ_SEND_BUF_SIZE];  // remove later
     char receive_buffer[TJ_SEND_BUF_SIZE];
-    bool (*format)(Bus* self, uint8_t target, uint8_t data_len,
-                   const uint8_t* data);
+    bool (*format)(Bus* self, uint8_t* buffer, uint16_t buffer_size,
+                   uint8_t target, const uint8_t* data, uint8_t data_size);
     bool (*read_byte)(Bus* self, uint8_t data);
     bool (*get_package_size)(void);
 };
 
-bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data);
+bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
+            const uint8_t* data, uint8_t data_size);
 bool read_byte(Bus* self, uint8_t data);
 bool reset_receive(Bus* self);
 bool get_package_size(void);

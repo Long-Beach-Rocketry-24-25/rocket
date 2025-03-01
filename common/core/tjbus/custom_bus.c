@@ -11,18 +11,24 @@ void send_protocol_init(Bus* sender, uint8_t address)
     //sender->acknowledged = true;
 }
 
-bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data)
+bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
+            const uint8_t* data, uint8_t data_size)
 {
     uint8_t index = 0;
-    char* output = self->send_buffer;
     uint32_t sum = 0;
+    uint8_t* output = buffer;
+    memset(output, 0, buffer_size);
+    if (data_size + 4 > buffer_size)
+    {
+        return false;
+    }
     output[index++] = START_TRANSMISSION;  // start byte
     sum += START_TRANSMISSION;
     output[index++] = target;
     sum += target;
-    output[index++] = data_len;
-    sum += data_len;
-    for (uint8_t i = 0; i < data_len; i++)
+    output[index++] = data_size;
+    sum += data_size;
+    for (uint8_t i = 0; i < data_size; i++)
     {
         output[index++] = data[i];
         sum += data[i];
