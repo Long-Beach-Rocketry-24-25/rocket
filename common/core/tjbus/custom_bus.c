@@ -13,7 +13,6 @@ void send_protocol_init(Bus* sender, uint8_t address)
 
 bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data)
 {
-    //char output[data_len + 4]; // start + data + check sum + end;
     uint8_t index = 0;
     char* output = self->send_buffer;
     uint32_t sum = 0;
@@ -28,8 +27,6 @@ bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data)
         output[index++] = data[i];
         sum += data[i];
     }
-    //output[data_len + 2] = END_TRANSMISSON;  //end byte
-    //sum += END_TRANSMISSON;
     output[index++] = sum % 256;  //checksum
     return true;
 }

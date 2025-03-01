@@ -26,7 +26,6 @@ typedef enum
 } ControlFlags;
 
 typedef struct Bus Bus;
-//need a nack ack timeout and start command
 struct Bus
 {
     uint8_t package_size;
@@ -41,7 +40,6 @@ struct Bus
                    const uint8_t* data);
     bool (*read_byte)(Bus* self, uint8_t data);
     bool (*get_package_size)(void);
-    //bool (*get_msg)(void);
 };
 
 bool format(Bus* self, uint8_t target, uint8_t data_len, const uint8_t* data);
@@ -51,5 +49,3 @@ bool get_package_size(void);
 bool get_msg(void);
 
 void send_protocol_init(Bus* sender, uint8_t address);
-
-//bool formated_return(uint8_t target, uint8_t data_len, char * data);
