@@ -13,7 +13,7 @@
 #include "ring_buffer.h"
 #include "usart.h"
 
-#include "cli_registry.h"
+#include "cli.h"
 
 #define CLI_VER "usart-cli-v0.1"
 #define PASSWORD "LBR"
