@@ -4,7 +4,7 @@
     "configurations": [
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32f746/app/subscale/subscale",
+            "executable": "${workspaceRoot}/build/stm32f746/app/usart_hw_test/usart_hw_test",
             "name": "DEBUG CLI F7",
             "request": "launch",
             "type": "cortex-debug",
@@ -24,7 +24,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file /build/stm32f746/app/subscale/subscale",
+                "add-symbol-file /build/stm32f746/app/usart_hw_test/usart_hw_test",
                 "load",
                 "enable breakpoint",
                 "monitor reset"
@@ -33,7 +33,7 @@
         },
         {
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceRoot}/build/stm32l476/app/cli_app/cli_app",
+            "executable": "${workspaceRoot}/build/stm32l476/app/usart_hw_test/usart_hw_test",
             "name": "DEBUG CLI L4",
             "request": "launch",
             "type": "cortex-debug",
@@ -53,7 +53,7 @@
                 "${workspaceRoot}",
             ],
             "preRestartCommands": [
-                "add-symbol-file build/stm32l476/app/cli_app/cli_app",
+                "add-symbol-file build/stm32l476/app/usart_hw_test/usart_hw_test",
                 "load",
                 "enable breakpoint",
                 "monitor reset"
