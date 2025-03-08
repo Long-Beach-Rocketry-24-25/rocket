@@ -3,6 +3,7 @@ add_library(core INTERFACE)
 
 target_link_libraries(core INTERFACE
     cli
+    comms
     container
     math
     mission
@@ -14,6 +15,7 @@ target_link_libraries(core INTERFACE
 target_link_libraries(core INTERFACE driver)
 
 add_subdirectory(cli)
+add_subdirectory(comms)
 add_subdirectory(container)
 add_subdirectory(math)
 add_subdirectory(mission)
