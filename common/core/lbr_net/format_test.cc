@@ -37,15 +37,13 @@ public:
  */
 TEST_F(FormatTests, format_test)
 {
-    const uint8_t expected_checksum =
-        (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
+    const uint8_t data[10] = "f"; /*data buffer we want to send*/
+    const uint8_t expected_checksum = (START_TRANSMISSION + ADDRESS + 1 + 'f') %
+                                      256; /*expected checksum result*/
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
                                     expected_checksum};
-    const uint8_t data[10] = "f";
-    uint8_t formatted[256] = {0};
-
+    uint8_t formatted[256] = {0}; /*output buffer*/
     send_protocol_init(&bus, ADDRESS);
-    uint64_t sum = 0;
     bus.format(&bus, formatted, sizeof(formatted), ADDRESS, data, 1);
     EXPECT_ARR_EQ(formatted, expected_buf, 4);
 }
@@ -78,7 +76,7 @@ TEST_F(ReadCharTests, idle_to_ack_test)
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
-    const uint8_t data[] = {START_TRANSMISSION, 'F'};
+    const uint8_t data[] = {START_TRANSMISSION, ADDRESS};
     send_protocol_init(&bus, ADDRESS);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
@@ -86,6 +84,7 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
     EXPECT_EQ(bus.state, IDLE);
 }
 
+//stop here for pr to do
 TEST_F(ReadCharTests, idle_to_success)
 {
     const char data[] = {'!', 'E', 2, 'P', 'f', 30};
