@@ -5,6 +5,11 @@ extern "C"
 #include <string.h>
 #include "uart_custom_bus.h"
 }
+
+/**
+  * @brief tests for lbr network
+  */
+
 #define ADDRESS 69
 #define EXPECT_ARR_EQ(arr1, arr2, size)   \
     do                                    \
@@ -29,12 +34,18 @@ public:
 
 TEST_F(FormatTests, format_test)
 {
+    /**
+  * @brief test to make sure that the format is giving the expected output
+  * @param format_test test object
+  */
+    // data buffer that we want to send with the char f
     const uint8_t data[10] = "f";
-    const uint8_t expected_buf[] = {'!', '2', 1, 'f'};
+    // expected format excluding the checksum.
+    const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f'};
     uint8_t formatted[256] = {0};
     send_protocol_init(&bus, ADDRESS);
     uint64_t sum = 0;
-    bus.format(&bus, formatted, sizeof(formatted), 50, data, 1);
+    bus.format(&bus, formatted, sizeof(formatted), ADDRESS, data, 1);
     EXPECT_ARR_EQ(formatted, expected_buf, 3);
 
     EXPECT_EQ(formatted[4], uint8_t(186));

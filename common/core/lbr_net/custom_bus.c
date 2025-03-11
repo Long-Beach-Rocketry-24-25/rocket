@@ -8,7 +8,6 @@ void send_protocol_init(Bus* sender, uint8_t address)
     sender->read_byte = read_byte;
     sender->receive_index = 0;
     sender->package_size = TJ_SEND_BUF_SIZE;
-    //sender->acknowledged = true;
 }
 
 bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
@@ -18,7 +17,7 @@ bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
     uint32_t sum = 0;
     uint8_t* output = buffer;
     memset(output, 0, buffer_size);
-    if (data_size + 4 > buffer_size)
+    if (data_size + PACKET_HEADER_SIZE > buffer_size)
     {
         return false;
     }
@@ -33,7 +32,7 @@ bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
         output[index++] = data[i];
         sum += data[i];
     }
-    output[index++] = sum % 256;  //checksum
+    output[index++] = sum % CHECKSUM_BITS;
     return true;
 }
 
