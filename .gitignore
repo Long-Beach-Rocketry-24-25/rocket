@@ -5,4 +5,4 @@ CMakeCache.txt
 **/CMakeFiles
 *.cortex-debug*
 *settings.json
-.vscode
+*launch.json

@@ -21,11 +21,16 @@ static StGpioParams cli_uart_io2 = {{0},
 static StGpioParams comm_uart_io1 = {{0},
                                      GPIOC_BASE,
                                      10,
-                                     {ALT_FUNC, 0, 0, 0, 0x8}};  // USART3 AF 7
+                                     {ALT_FUNC, 0, 0, 0, 0x7}};  // USART3 AF 7
 static StGpioParams comm_uart_io2 = {{0},
                                      GPIOC_BASE,
                                      11,
-                                     {ALT_FUNC, 0, 0, 0, 0x8}};  // USART3 AF 7
+                                     {ALT_FUNC, 0, 0, 0, 0x7}};  // USART3 AF 7
+
+static RingBuffer rb1;
+static RingBuffer rb2;
+static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
+static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
 
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
@@ -42,7 +47,7 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     frt_timer_init(&time, &frt, 100);
 
     // Cli USART2
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
 
     StGpioInit(&st_cli_usart.rx, &cli_uart_io1);
     StGpioInit(&st_cli_usart.tx, &cli_uart_io2);
@@ -71,7 +76,10 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     StUsartInit(comm_usart, &st_comm_usart, USART3_BASE, &time);
     StUsartConfig(comm_usart, SystemCoreClock, 115200);
 
-    UartPipeInit(cli_usart, comm_usart);
+    ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
+    ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
+
+    UartPipeInit(cli_usart, comm_usart, &rb1, &rb2, '\n');
 }
 
 void USART2_IRQHandler(void)
