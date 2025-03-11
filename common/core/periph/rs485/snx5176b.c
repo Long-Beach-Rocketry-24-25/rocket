@@ -8,9 +8,8 @@ void Snx5176bInit(Usart* rs485, Snx5176b* chip)
     rs485->recv = Snx5176bRecv;
 }
 
-void Snx5176bConfig(Usart* rs485)
+void Snx5176bConfig(Snx5176b* dev)
 {
-    Snx5176b* dev = (Snx5176b*)rs485->priv;
     dev->txe.config(&dev->txe);
     dev->rxe.config(&dev->rxe);
     Snx5176bTxSetEn(dev, false);
