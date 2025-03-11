@@ -8,6 +8,8 @@ target_link_libraries(core INTERFACE
     gnc
     lbr_net
     math
+    memory
+    mission
     periph
     string
     timeout
@@ -22,6 +24,11 @@ add_subdirectory(container)
 add_subdirectory(gnc)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
+<<<<<<< HEAD
+=======
+add_subdirectory(memory)
+add_subdirectory(mission)
+>>>>>>> 6268c78 (experiment w factory funcs)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)
