@@ -39,40 +39,53 @@ TEST_F(FormatTests, format_test)
 {
     const uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
+    const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
+                                    expected_checksum};
     const uint8_t data[10] = "f";
-    const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f'};
     uint8_t formatted[256] = {0};
+
     send_protocol_init(&bus, ADDRESS);
     uint64_t sum = 0;
     bus.format(&bus, formatted, sizeof(formatted), ADDRESS, data, 1);
-    EXPECT_ARR_EQ(formatted, expected_buf, 3);
-
-    EXPECT_EQ(formatted[4], uint8_t(expected_checksum));
+    EXPECT_ARR_EQ(formatted, expected_buf, 4);
 }
 
+/**
+ * @brief test to make sure NACK changes state to ERROR
+ * @param format_test test object
+ */
 TEST_F(ReadCharTests, idle_to_error_test)
 {
-    const char data[10] = "-";
     send_protocol_init(&bus, ADDRESS);
-    bus.read_byte(&bus, data[0]);
+    bus.read_byte(&bus, NACK);
     EXPECT_EQ(bus.state, ERROR);
 }
+
+/**
+ * @brief test to make sure ACK changes state to ACK
+ * @param format_test test object
+ */
 TEST_F(ReadCharTests, idle_to_ack_test)
 {
-    const char data[10] = "+";
     send_protocol_init(&bus, ADDRESS);
-    bus.read_byte(&bus, data[0]);
+    bus.read_byte(&bus, ACK);
     EXPECT_EQ(bus.state, ACKNOWLEDGED);
 }
+
+/**
+ * @brief test to make sure wrong address goes back to idle
+ * @param format_test test object
+ */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
-    const char data[] = "!F";
+    const uint8_t data[] = {START_TRANSMISSION, 'F'};
     send_protocol_init(&bus, ADDRESS);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
     bus.read_byte(&bus, data[1]);
     EXPECT_EQ(bus.state, IDLE);
 }
+
 TEST_F(ReadCharTests, idle_to_success)
 {
     const char data[] = {'!', 'E', 2, 'P', 'f', 30};
@@ -95,3 +108,6 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
 
     EXPECT_EQ(bus.state, ERROR);
 }
+
+//need tests for flush
+//need test for get package size

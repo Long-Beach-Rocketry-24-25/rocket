@@ -6,8 +6,10 @@ void send_protocol_init(Bus* sender, uint8_t address)
     sender->state = IDLE;
     sender->format = format;
     sender->read_byte = read_byte;
+    sender->get_package_size = get_package_size;
+    sender->receive_flush = receive_flush;
     sender->receive_index = 0;
-    sender->package_size = TJ_SEND_BUF_SIZE;
+    sender->package_size = 0;
 }
 
 bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
@@ -21,7 +23,7 @@ bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
     {
         return false;
     }
-    output[index++] = START_TRANSMISSION;  // start byte
+    output[index++] = START_TRANSMISSION;
     sum += START_TRANSMISSION;
     output[index++] = target;
     sum += target;
@@ -50,7 +52,8 @@ bool read_byte(Bus* self, uint8_t data)
                 else if (data == START_TRANSMISSION)
                 {
                     self->state = READ_ADDRESS;
-                    memset(self->receive_buffer, 0, TJ_SEND_BUF_SIZE);
+                    memset(self->receive_buffer, 0,
+                           sizeof(self->receive_buffer));
                     self->sum = 0;
                     self->receive_index = 0;
                     self->package_size = 0;
@@ -119,4 +122,18 @@ bool read_byte(Bus* self, uint8_t data)
         }
     }
     return true;
+}
+
+bool receive_flush(Bus* self, uint8_t* buffer)
+{
+    for (int i = 0; i > self->package_size; i++)
+    {
+        buffer[i] = self->receive_buffer[i + 2];
+    }
+    return true;
+}
+
+uint8_t get_package_size(Bus* self)
+{
+    return self->package_size;
 }
