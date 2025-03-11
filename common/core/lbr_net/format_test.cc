@@ -31,16 +31,15 @@ class ReadCharTests : public testing::Test
 public:
     Bus bus;
 };
-
+/**
+ * @brief test to make sure that the format is giving the expected output
+ * @param format_test test object
+ */
 TEST_F(FormatTests, format_test)
 {
-    /**
-  * @brief test to make sure that the format is giving the expected output
-  * @param format_test test object
-  */
-    // data buffer that we want to send with the char f
+    const uint8_t expected_checksum =
+        (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
     const uint8_t data[10] = "f";
-    // expected format excluding the checksum.
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f'};
     uint8_t formatted[256] = {0};
     send_protocol_init(&bus, ADDRESS);
@@ -48,7 +47,7 @@ TEST_F(FormatTests, format_test)
     bus.format(&bus, formatted, sizeof(formatted), ADDRESS, data, 1);
     EXPECT_ARR_EQ(formatted, expected_buf, 3);
 
-    EXPECT_EQ(formatted[4], uint8_t(186));
+    EXPECT_EQ(formatted[4], uint8_t(expected_checksum));
 }
 
 TEST_F(ReadCharTests, idle_to_error_test)

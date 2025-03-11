@@ -52,6 +52,7 @@ struct Bus
                    uint8_t target, const uint8_t* data, uint8_t data_size);
     bool (*read_byte)(Bus* self, uint8_t data);
     bool (*get_package_size)(void);
+    bool (*receive_flush)(Bus* self);
 };
 
 /**
@@ -75,7 +76,7 @@ bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
  */
 bool read_byte(Bus* self, uint8_t data);
 
-bool reset_receive(Bus* self);
+bool receive_flush(Bus* self);  // TODO
 bool get_package_size(void);
 
 void send_protocol_init(Bus* sender, uint8_t address);
