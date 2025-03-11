@@ -59,7 +59,7 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     NVIC_EnableIRQ(USART3_IRQn);
 
     StUsartInit(cli_usart, &st_cli_usart, USART3_BASE, &time);
-    StUsartConfig(cli_usart, SystemCoreClock, 9600);
+    StUsartConfig(cli_usart, SystemCoreClock, 115200);
 
     // Comm UART4
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
@@ -74,7 +74,7 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     NVIC_EnableIRQ(UART4_IRQn);
 
     StUsartInit(comm_usart, &st_comm_usart, UART4_BASE, &time);
-    StUsartConfig(comm_usart, SystemCoreClock, 9600);
+    StUsartConfig(comm_usart, SystemCoreClock, 115200);
 
     ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
     ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);

@@ -20,6 +20,8 @@ void UartPipeInit(Usart* usart1, Usart* usart2, RingBuffer* buf1,
 void UartPipeFlush(Usart* u, RingBuffer* rb)
 {
     uint8_t data = 0;
+
+    // Flush all data up to a detected end character.
     while (data != end)
     {
         if (ring_buffer_pop(rb, &data))
@@ -33,28 +35,26 @@ void UartPipeFlush(Usart* u, RingBuffer* rb)
     }
 }
 
-void UartPipeCallback1(void)
+static inline void callback(Usart* first, Usart* second, RingBuffer* buf)
 {
     uint8_t data = 0;
-    if (u1->recv(u1, &data, 1))
+    if (first->recv(first, &data, 1))
     {
-        ring_buffer_insert(rb1, data);
+        // Buffer data and flush if needed.
+        ring_buffer_insert(buf, data);
         if (data == end)
         {
-            UartPipeFlush(u2, rb1);
+            UartPipeFlush(second, buf);
         }
     }
 }
 
+void UartPipeCallback1(void)
+{
+    callback(u1, u2, rb1);
+}
+
 void UartPipeCallback2(void)
 {
-    uint8_t data = 0;
-    if (u2->recv(u2, &data, 1))
-    {
-        ring_buffer_insert(rb2, data);
-        if (data == end)
-        {
-            UartPipeFlush(u1, rb2);
-        }
-    }
+    callback(u2, u1, rb2);
 }

@@ -11,6 +11,8 @@
 #include "stm32l4xx_hal.h"
 #include "uart_pipe.h"
 
+#define UART_PIPE_BUF_SIZE 256
+
 extern TIM_HandleTypeDef htim1;
 
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio);
