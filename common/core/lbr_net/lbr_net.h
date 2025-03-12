@@ -1,6 +1,13 @@
+
+/**
+ * This software is a generic bus designed to serialize data over UART for board to board communication.  
+ * 
+ * Author: TJ Malaska
+ */
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #define MAX_RECEIVE_BUF_SIZE 255U
@@ -9,10 +16,11 @@
 #define START_BYTE_SIZE 1
 #define ADDRESS_SIZE 1
 #define DATA_LEN_SIZE 1
-/*The amount of bytes of the extra packing information*/
+/* The amount of bytes of the extra packing information. */
 #define PACKET_HEADER_SIZE \
     (CHECKSUM_SIZE + START_BYTE_SIZE + ADDRESS_SIZE + DATA_LEN_SIZE)
 
+/* The different states can be in. */
 typedef enum
 {
     IDLE,
@@ -25,6 +33,7 @@ typedef enum
     FINISHED
 } BusState;
 
+/* Control flags for protocol*/
 typedef enum
 {
     START_TRANSMISSION = '!',
@@ -51,9 +60,9 @@ struct Bus
     char receive_buffer[MAX_RECEIVE_BUF_SIZE];
     bool (*pack)(Bus* self, uint8_t* buffer, uint16_t buffer_size,
                  uint8_t target, const uint8_t* data, uint8_t data_size);
-    bool (*read_byte)(Bus* self, uint8_t data);
+    void (*read_byte)(Bus* self, uint8_t data);
     uint8_t (*get_package_size)(Bus* self);
-    bool (*receive_flush)(Bus* self, uint8_t* buffer);
+    void (*receive_flush)(Bus* self, uint8_t* buffer);
 };
 
 /**
@@ -65,7 +74,7 @@ struct Bus
  * @param target The address of what we want to use in the message.
  * @param data A pointer to the data buffer.
  * @param data_size The size of the data buffer.
- * 
+ * @return True if success and false if the data is longer then the buffer size.
  */
 bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
           const uint8_t* data, uint8_t data_size);
@@ -75,18 +84,19 @@ bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
  * @param self A pointer to the bus struct. 
  * @param data The byte that is going to be read.
  */
-bool read_byte(Bus* self, uint8_t data);
+void read_byte(Bus* self, uint8_t data);
 
 /**
  * @brief Clears and sends data from receive buffer to another buffer.
  * @param self A pointer to the bus struct.
  * @param buffer A pointer to the destination buffer.
  */
-bool receive_flush(Bus* self, uint8_t* buffer);
+void receive_flush(Bus* self, uint8_t* buffer);
 
 /**
  * @brief Return the package size.
  * @param self A pointer to the bus struct.
+ * @return Package size.
  */
 uint8_t get_package_size(Bus* self);
 

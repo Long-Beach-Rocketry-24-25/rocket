@@ -38,7 +38,7 @@ bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
     return true;
 }
 
-bool read_byte(Bus* self, uint8_t data)
+void read_byte(Bus* self, uint8_t data)
 {
 
     {
@@ -121,16 +121,24 @@ bool read_byte(Bus* self, uint8_t data)
                 break;
         }
     }
-    return true;
+    return;
 }
 
-bool receive_flush(Bus* self, uint8_t* buffer)
+void receive_flush(Bus* self, uint8_t* buffer)
 {
-    for (int i = 0; i > self->package_size; i++)
+    printf("%p %u", buffer, self->package_size);
+    for (uint8_t i = 0; i < self->package_size; i++)
     {
-        buffer[i] = self->receive_buffer[i + 2];
+        buffer[i] = self->receive_buffer[i + 3];
+        printf("%u|%u ", buffer[i], self->receive_buffer[i + 2]);
+        // printf("%u|%u somthing /n", self->receive_buffer[i + 2], buffer[i]);
     }
-    return true;
+    printf("\n"), self->receive_index = 0;
+    self->package_size = 0;
+    memset(self->receive_buffer, 0, sizeof(self->receive_buffer));
+    self->sum = 0;
+    self->state = IDLE;
+    return;
 }
 
 uint8_t get_package_size(Bus* self)
