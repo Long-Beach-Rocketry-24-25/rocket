@@ -12,7 +12,6 @@
 
 Pwm pwm;
 Gpio led_gpio;
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {ALT_FUNC, 0, 0, 0, 0x1}};
 
 void pwm_test(void)
 {
@@ -26,7 +25,7 @@ void pwm_test(void)
 int main(void)
 {
 
-    BSP_Init(&pwm, &led_gpio, &led_stgpio);
+    BSP_Init(&pwm, &led_gpio);
 
     StPwmEnable(&pwm, true);
 
