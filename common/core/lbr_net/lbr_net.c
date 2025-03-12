@@ -4,7 +4,7 @@ void send_protocol_init(Bus* sender, uint8_t address)
 {
     sender->address = address;
     sender->state = IDLE;
-    sender->format = format;
+    sender->pack = pack;
     sender->read_byte = read_byte;
     sender->get_package_size = get_package_size;
     sender->receive_flush = receive_flush;
@@ -12,8 +12,8 @@ void send_protocol_init(Bus* sender, uint8_t address)
     sender->package_size = 0;
 }
 
-bool format(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
-            const uint8_t* data, uint8_t data_size)
+bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
+          const uint8_t* data, uint8_t data_size)
 {
     uint8_t index = 0;
     uint32_t sum = 0;
@@ -67,7 +67,7 @@ bool read_byte(Bus* self, uint8_t data)
                     self->state = ACKNOWLEDGED;
                 }
                 break;
-            case READ_ADDRESS:  // if address matches then continue if not go back to idle
+            case READ_ADDRESS:
                 if (data == self->address)
                 {
                     self->receive_buffer[self->receive_index] = data;

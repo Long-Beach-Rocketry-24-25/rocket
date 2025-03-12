@@ -7,7 +7,7 @@ extern "C"
 }
 
 /**
-  * @brief tests for lbr network
+  * @brief Tests for lbr network.
   */
 
 #define ADDRESS 69
@@ -32,25 +32,23 @@ public:
     Bus bus;
 };
 /**
- * @brief test to make sure that the format is giving the expected output
- * @param format_test test object
+ * @brief Test to make sure that the format is giving the expected output.
  */
-TEST_F(FormatTests, format_test)
+TEST_F(FormatTests, pack_test)
 {
-    const uint8_t data[10] = "f"; /*data buffer we want to send*/
-    const uint8_t expected_checksum = (START_TRANSMISSION + ADDRESS + 1 + 'f') %
-                                      256; /*expected checksum result*/
+    const uint8_t data[10] = "f";
+    const uint8_t expected_checksum =
+        (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
                                     expected_checksum};
-    uint8_t formatted[256] = {0}; /*output buffer*/
+    uint8_t packed[256] = {0};
     send_protocol_init(&bus, ADDRESS);
-    bus.format(&bus, formatted, sizeof(formatted), ADDRESS, data, 1);
-    EXPECT_ARR_EQ(formatted, expected_buf, 4);
+    bus.pack(&bus, packed, sizeof(packed), ADDRESS, data, 1);
+    EXPECT_ARR_EQ(packed, expected_buf, 4);
 }
 
 /**
- * @brief test to make sure NACK changes state to ERROR
- * @param format_test test object
+ * @brief Test to make sure NACK changes state to ERROR.
  */
 TEST_F(ReadCharTests, idle_to_error_test)
 {
@@ -60,8 +58,7 @@ TEST_F(ReadCharTests, idle_to_error_test)
 }
 
 /**
- * @brief test to make sure ACK changes state to ACK
- * @param format_test test object
+ * @brief Test to make sure ACK changes state to ACK.
  */
 TEST_F(ReadCharTests, idle_to_ack_test)
 {
@@ -71,8 +68,7 @@ TEST_F(ReadCharTests, idle_to_ack_test)
 }
 
 /**
- * @brief test to make sure wrong address goes back to idle
- * @param format_test test object
+ * @brief Test to make sure wrong address goes back to idle.
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
