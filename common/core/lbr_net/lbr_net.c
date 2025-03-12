@@ -1,4 +1,4 @@
-#include "custom_bus.h"
+#include "lbr_net.h"
 
 void send_protocol_init(Bus* sender, uint8_t address)
 {

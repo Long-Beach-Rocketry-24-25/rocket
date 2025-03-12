@@ -1,5 +1,5 @@
 add_library(lbr_net STATIC
-    custom_bus.c
+    lbr_net.c
 )
 
 target_include_directories(lbr_net PUBLIC .)
