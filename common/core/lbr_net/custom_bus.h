@@ -94,6 +94,8 @@ uint8_t get_package_size(Bus* self);
  * @param self A pointer to the bus struct.
  * @param address the address we want to assign to the struct
  * 
- * 
+ * sets receive and package size to 0.
+ * sets state to IDLE
+ * initializes all functions
  */
 void send_protocol_init(Bus* sender, uint8_t address);

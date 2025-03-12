@@ -76,7 +76,8 @@ TEST_F(ReadCharTests, idle_to_ack_test)
  */
 TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
-    const uint8_t data[] = {START_TRANSMISSION, ADDRESS};
+
+    const uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
     send_protocol_init(&bus, ADDRESS);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
@@ -84,7 +85,7 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
     EXPECT_EQ(bus.state, IDLE);
 }
 
-//stop here for pr to do
+//stop here for pr
 TEST_F(ReadCharTests, idle_to_success)
 {
     const char data[] = {'!', 'E', 2, 'P', 'f', 30};
