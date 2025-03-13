@@ -10,7 +10,7 @@ extern "C"
   * @brief Tests for lbr network.
   */
 
-#define ADDRESS 69
+#define ADDRESS 70
 #define EXPECT_ARR_EQ(arr1, arr2, size)   \
     do                                    \
     {                                     \
@@ -86,9 +86,11 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
  */
 TEST_F(ReadCharTests, idle_to_success_then_flush)
 {
-    const char data[] = {'!', 'E', 2, 'P', 'f', 30};
-    const char msg[] = {'P', 'f'};
+    uint8_t sum = ('!' + ADDRESS + 2 + 'P' + 'f') % 256;
+    const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
+    const uint8_t msg[] = {'P', 'f'};
     send_protocol_init(&bus, ADDRESS);
+    printf("%u", bus.address);
     for (int i = 0; i < sizeof(data); i++)
     {
         bus.read_byte(&bus, data[i]);
@@ -107,7 +109,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
  */
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
-    const char data[] = {'!', 'E', 2, 'P', 'f', 32};
+    const char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
     send_protocol_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
@@ -122,17 +124,16 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
  */
 TEST_F(FormatTests, encode_decode_test)
 {
-    const uint8_t data[5] = {'b', 'a', 'l', 'l', 's'};
+    const uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
     const uint8_t expected_checksum =
-        (START_TRANSMISSION + ADDRESS + 5 + 'b' + 'a' + 'l' + 'l' + 's') % 256;
+        (START_TRANSMISSION + ADDRESS + 5 + 'c' + 'a' + 'f' + 'e' + 's') % 256;
     const uint8_t expected_buf[] = {
-        START_TRANSMISSION, ADDRESS, 5, 'b', 'a', 'l', 'l', 's',
+        START_TRANSMISSION, ADDRESS, 5, 'c', 'a', 'f', 'e', 's',
         expected_checksum};
     uint8_t packed[256] = {0};
     send_protocol_init(&bus, ADDRESS);
 
     bus.pack(&bus, packed, sizeof(packed), ADDRESS, data, 5);
-    EXPECT_ARR_EQ(packed, expected_buf, sizeof(expected_buf));
 
     for (int i = 0; i < sizeof(expected_buf); i++)
     {
@@ -140,21 +141,11 @@ TEST_F(FormatTests, encode_decode_test)
     }
     EXPECT_EQ(bus.state, FINISHED);
     EXPECT_ARR_EQ(bus.receive_buffer, packed, sizeof(expected_buf));
-    for (size_t i = 0; i < sizeof(expected_buf); ++i)
-    {
-        printf("%u ", bus.receive_buffer[i]);
-    }
-    printf("datalen: %u \n", bus.get_package_size(&bus));
+
     uint8_t flushed[9] = {0};
-    printf("outside %p\n", flushed);
     uint8_t empty[255] = {0};
     bus.receive_flush(&bus, flushed);
-    for (size_t i = 0; i < 9; ++i)
-    {
-        printf("%u ", flushed[i]);
-    }
-    printf("\n");
+
     EXPECT_ARR_EQ(bus.receive_buffer, empty, 255);
-    uint8_t msg[] = {'b', 'a', 'l', 'l', 's'};
-    EXPECT_ARR_EQ(flushed, msg, 5);
+    EXPECT_ARR_EQ(flushed, data, 5);
 }

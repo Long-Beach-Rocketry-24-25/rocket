@@ -126,14 +126,10 @@ void read_byte(Bus* self, uint8_t data)
 
 void receive_flush(Bus* self, uint8_t* buffer)
 {
-    printf("%p %u", buffer, self->package_size);
     for (uint8_t i = 0; i < self->package_size; i++)
     {
         buffer[i] = self->receive_buffer[i + 3];
-        printf("%u|%u ", buffer[i], self->receive_buffer[i + 2]);
-        // printf("%u|%u somthing /n", self->receive_buffer[i + 2], buffer[i]);
     }
-    printf("\n"), self->receive_index = 0;
     self->package_size = 0;
     memset(self->receive_buffer, 0, sizeof(self->receive_buffer));
     self->sum = 0;
