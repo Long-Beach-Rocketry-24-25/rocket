@@ -6,6 +6,8 @@
 static StPrivUsart st_cli_usart;
 static StPrivUsart st_comm_usart;
 static StGpioParams led_stgpio = {{0}, GPIOB_BASE, 0, {1, 0, 0, 0, 0}};
+static StGpioParams txe_gpio = {{0}, GPIOC_BASE, 12, {1, 0, 0, 0, 0}};
+static StGpioParams rxe_gpio = {{0}, GPIOD_BASE, 2, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;
@@ -34,8 +36,12 @@ static RingBuffer rb2;
 static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
 static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
 
+Snx5176b rs485;
+
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
+
+    __disable_irq();
 
     // LED GPIO
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
@@ -73,13 +79,24 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     NVIC_SetPriority(UART4_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(UART4_IRQn);
 
-    StUsartInit(comm_usart, &st_comm_usart, UART4_BASE, &time);
-    StUsartConfig(comm_usart, SystemCoreClock, 115200);
+    StUsartInit(&rs485.usart, &st_comm_usart, UART4_BASE, &time);
+    StUsartConfig(&rs485.usart, SystemCoreClock, 115200);
 
     ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
     ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
 
+    StGpioInit(&rs485.txe, &txe_gpio);
+    StGpioConfig(&rs485.txe);
+
+    StGpioInit(&rs485.rxe, &rxe_gpio);
+    StGpioConfig(&rs485.rxe);
+
+    Snx5176bInit(comm_usart, &rs485);
+    Snx5176bConfig(&rs485);
+
     UartPipeInit(cli_usart, comm_usart, &rb1, &rb2, '\n');
+
+    __enable_irq();
 }
 
 void USART3_IRQHandler(void)
