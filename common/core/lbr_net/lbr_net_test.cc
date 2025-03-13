@@ -90,7 +90,6 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
     const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
     const uint8_t msg[] = {'P', 'f'};
     send_protocol_init(&bus, ADDRESS);
-    printf("%u", bus.address);
     for (int i = 0; i < sizeof(data); i++)
     {
         bus.read_byte(&bus, data[i]);
@@ -115,7 +114,6 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
     {
         bus.read_byte(&bus, data[i]);
     }
-
     EXPECT_EQ(bus.state, ERROR);
 }
 
