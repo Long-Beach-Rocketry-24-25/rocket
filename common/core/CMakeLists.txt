@@ -5,6 +5,7 @@ target_link_libraries(core INTERFACE
     cli
     container
     math
+    memory
     mission
     periph
     string
@@ -16,6 +17,7 @@ target_link_libraries(core INTERFACE driver)
 add_subdirectory(cli)
 add_subdirectory(container)
 add_subdirectory(math)
+add_subdirectory(memory)
 add_subdirectory(mission)
 add_subdirectory(periph)
 add_subdirectory(string)
