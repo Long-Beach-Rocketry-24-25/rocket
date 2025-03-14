@@ -1,23 +1,31 @@
 
 #include "st_usart_fctry.h"
 
-bool MakeStUsart(Usart* usart, Mem* mem, uint32_t base_addr,
-                 uint32_t sys_core_clk, uint32_t baudrate, Timeout* timer,
-                 StGpioParams io1, StGpioParams io2)
+bool GiveStUsart(Usart* usart, Mem* mem, Timeout* timer,
+                 const uint32_t base_addr, const uint32_t sys_core_clk,
+                 const uint32_t baudrate, const StGpioParams io1,
+                 const StGpioParams io2)
 {
     StPrivUsart* st = ALLOC(mem, StPrivUsart);
     EXIT_IF(st == NULL, false);
 
     st->instance = (USART_TypeDef*)base_addr;
     st->timer = timer;
-    EXIT_IF(!MakeStGpio(&st->rx, mem, io1), false);
-    EXIT_IF(!MakeStGpio(&st->tx, mem, io2), false);
+    EXIT_IF(MakeStGpio(mem, io1) == NULL, false);
+    EXIT_IF(MakeStGpio(mem, io2) == NULL, false);
 
-    usart->priv = (void*)st;
-    usart->send = StUsartSend;
-    usart->recv = StUsartRecv;
-
+    StUsartInit(usart, st, base_addr, timer);
     StUsartConfig(usart, sys_core_clk, baudrate);
 
     return true;
+}
+
+Usart* MakeStUsart(Mem* mem, Timeout* timer, const uint32_t base_addr,
+                   const uint32_t sys_core_clk, uint32_t baudrate,
+                   const StGpioParams io1, const StGpioParams io2)
+{
+    Usart* u = ALLOC(mem, Usart);
+    EXIT_IF(u == NULL, NULL);
+    GiveStUsart(u, mem, timer, base_addr, sys_core_clk, baudrate, io1, io2);
+    return u;
 }

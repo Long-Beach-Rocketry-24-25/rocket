@@ -17,7 +17,7 @@ bool BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
     EXIT_IF_FAIL(
-        MakeStGpio(led_gpio, &memory,
+        GiveStGpio(led_gpio, &memory,
                    (StGpioParams){{0}, GPIOB_BASE, 0, {1, 0, 0, 0, 0}}));
 
     // USART3
@@ -29,8 +29,8 @@ bool BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
     NVIC_EnableIRQ(USART3_IRQn);
 
     // PD8/9 AF 7
-    EXIT_IF_FAIL(MakeStUsart(
-        usart, &memory, USART3_BASE, SystemCoreClock, 115200, time,
+    EXIT_IF_FAIL(GiveStUsart(
+        usart, &memory, time, USART3_BASE, SystemCoreClock, 115200,
         (StGpioParams){{0}, GPIOD_BASE, 8, {ALT_FUNC, 0, 0, 0, 0x7}},
         (StGpioParams){{0}, GPIOD_BASE, 9, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
@@ -40,7 +40,7 @@ bool BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
 
     // PB8/9 AF 4
     const StGpioSettings i2c_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
-    EXIT_IF_FAIL(MakeStI2c(temp_i2c, &memory, I2C1_BASE, 0x20B, time,
+    EXIT_IF_FAIL(GiveStI2c(temp_i2c, &memory, time, I2C1_BASE, 0x20B,
                            (StGpioParams){{0}, GPIOB_BASE, 8, i2c_conf},
                            (StGpioParams){{0}, GPIOB_BASE, 9, i2c_conf}));
 

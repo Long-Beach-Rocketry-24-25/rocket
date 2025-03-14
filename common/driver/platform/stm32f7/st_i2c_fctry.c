@@ -1,8 +1,9 @@
 
 #include "st_i2c_fctry.h"
 
-bool MakeStI2c(I2c* i2c, Mem* mem, uint32_t base_addr, uint32_t timingr,
-               Timeout* timer, StGpioParams io1, StGpioParams io2)
+bool GiveStI2c(I2c* i2c, Mem* mem, Timeout* timer, const uint32_t base_addr,
+               const uint32_t timingr, const StGpioParams io1,
+               const StGpioParams io2)
 {
 
     StPrivI2c* st = ALLOC(mem, StPrivI2c);
@@ -10,15 +11,21 @@ bool MakeStI2c(I2c* i2c, Mem* mem, uint32_t base_addr, uint32_t timingr,
 
     st->instance = (I2C_TypeDef*)base_addr;
     st->timer = timer;
-    EXIT_IF(!MakeStGpio(&st->scl, mem, io1), false);
-    EXIT_IF(!MakeStGpio(&st->sda, mem, io2), false);
+    EXIT_IF(MakeStGpio(mem, io1) == NULL, false);
+    EXIT_IF(MakeStGpio(mem, io2) == NULL, false);
 
-    i2c->priv = (void*)st;
-    i2c->write = StI2cWrite;
-    i2c->read = StI2cRead;
-    i2c->set_target = StI2cSetTarget;
-
+    StI2cInit(i2c, st, base_addr, timer);
     StI2cConfig(i2c, timingr);
 
     return true;
+}
+
+I2c* MakeStI2c(Mem* mem, Timeout* timer, const uint32_t base_addr,
+               const uint32_t timingr, const StGpioParams io1,
+               const StGpioParams io2)
+{
+    I2c* i2c = ALLOC(mem, I2c);
+    EXIT_IF(i2c == NULL, NULL);
+    GiveStI2c(i2c, mem, timer, base_addr, timingr, io1, io2);
+    return i2c;
 }
