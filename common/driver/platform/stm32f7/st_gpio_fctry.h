@@ -5,4 +5,6 @@
 #include "exit.h"
 #include "st_gpio.h"
 
-bool MakeStGpio(Gpio* gpio, Mem* mem, StGpioParams params);
+bool GiveStGpio(Gpio* gpio, Mem* mem, StGpioParams params);
+
+Gpio* MakeStGpio(Mem* mem, StGpioParams params);
