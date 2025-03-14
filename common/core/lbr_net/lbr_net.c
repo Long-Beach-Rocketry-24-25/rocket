@@ -1,6 +1,6 @@
 #include "lbr_net.h"
 
-void send_protocol_init(Bus* sender, uint8_t address)
+void lbr_net_node_init(Bus* sender, uint8_t address)
 {
     sender->address = address;
     sender->state = IDLE;
