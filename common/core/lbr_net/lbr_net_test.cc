@@ -1,7 +1,6 @@
 /**
   * @brief Tests for lbr network.
 */
-
 #include <gtest/gtest.h>
 #include <cstdio>
 extern "C"
@@ -31,6 +30,7 @@ class ReadCharTests : public testing::Test
 public:
     Bus bus;
 };
+
 /**
  * @brief Test to make sure that the format is giving the expected output.
  */

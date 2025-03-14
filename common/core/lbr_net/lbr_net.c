@@ -1,6 +1,6 @@
 #include "lbr_net.h"
 
-void lbr_net_node_init(Bus* sender, uint8_t address)
+void send_protocol_init(Bus* sender, uint8_t address)
 {
     sender->address = address;
     sender->state = IDLE;
@@ -40,7 +40,6 @@ bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
 
 void read_byte(Bus* self, uint8_t data)
 {
-
     {
         switch (self->state)
         {
