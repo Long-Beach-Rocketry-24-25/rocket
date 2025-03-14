@@ -5,6 +5,7 @@
 #pragma once
 
 #include "freertos_timer.h"
+#include "snx5176b.h"
 #include "st_gpio.h"
 #include "st_i2c.h"
 #include "st_usart.h"

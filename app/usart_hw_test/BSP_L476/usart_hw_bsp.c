@@ -1,9 +1,12 @@
 
 #include "usart_hw_bsp.h"
+#include "stm32l476xx.h"
 
 static StPrivUsart st_cli_usart;
 static StPrivUsart st_comm_usart;
 static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}};
+static StGpioParams txe_gpio = {{0}, GPIOC_BASE, 12, {1, 0, 0, 0, 0}};
+static StGpioParams rxe_gpio = {{0}, GPIOD_BASE, 2, {1, 0, 0, 0, 0}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;
@@ -31,6 +34,8 @@ static RingBuffer rb1;
 static RingBuffer rb2;
 static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
 static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
+
+Snx5176b rs485;
 
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
@@ -63,6 +68,7 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 
     // Comm USART3
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;
 
     StGpioInit(&st_comm_usart.rx, &comm_uart_io1);
     StGpioInit(&st_comm_usart.tx, &comm_uart_io2);
@@ -78,6 +84,15 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 
     ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
     ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
+
+    StGpioInit(&rs485.txe, &txe_gpio);
+    StGpioConfig(&rs485.txe);
+
+    StGpioInit(&rs485.rxe, &rxe_gpio);
+    StGpioConfig(&rs485.rxe);
+
+    Snx5176bInit(comm_usart, &rs485);
+    Snx5176bConfig(&rs485);
 
     UartPipeInit(cli_usart, comm_usart, &rb1, &rb2, '\n');
 }
