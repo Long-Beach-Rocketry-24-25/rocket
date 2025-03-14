@@ -1,7 +1,9 @@
 
 /**
- * This software is a generic bus designed to serialize data over UART for board to board communication.  
- * 
+ * This software is a generic bus designed to serialize data over UART for board to board communication.
+ * Allows for one byte addressing and checksum error checking.
+ * Format for the packets one byte each:
+ *      acknowledge, address, datalength, data(as long as the package size), checksum   
  * Author: TJ Malaska
  */
 #pragma once
@@ -20,7 +22,7 @@
 #define PACKET_HEADER_SIZE \
     (CHECKSUM_SIZE + START_BYTE_SIZE + ADDRESS_SIZE + DATA_LEN_SIZE)
 
-/* The different states can be in. */
+/* Possible states. */
 typedef enum
 {
     IDLE,
@@ -33,7 +35,9 @@ typedef enum
     FINISHED
 } BusState;
 
-/* Control flags for protocol*/
+/* 
+Control flags for protocol.
+*/
 typedef enum
 {
     START_TRANSMISSION = '!',
@@ -62,7 +66,7 @@ struct Bus
                  uint8_t target, const uint8_t* data, uint8_t data_size);
     void (*read_byte)(Bus* self, uint8_t data);
     uint8_t (*get_package_size)(Bus* self);
-    void (*receive_flush)(Bus* self, uint8_t* buffer);
+    void (*flush_data)(Bus* self, uint8_t* buffer);
 };
 
 /**
@@ -91,7 +95,7 @@ void read_byte(Bus* self, uint8_t data);
  * @param self A pointer to the bus struct.
  * @param buffer A pointer to the destination buffer.
  */
-void receive_flush(Bus* self, uint8_t* buffer);
+void flush_data(Bus* self, uint8_t* buffer);
 
 /**
  * @brief Return the package size.
@@ -109,4 +113,4 @@ uint8_t get_package_size(Bus* self);
  * Sets state to IDLE.
  * Initializes all functions
  */
-void send_protocol_init(Bus* sender, uint8_t address);
+void lbr_net_node_init(Bus* sender, uint8_t address);

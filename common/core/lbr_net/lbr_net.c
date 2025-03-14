@@ -1,13 +1,13 @@
 #include "lbr_net.h"
 
-void send_protocol_init(Bus* sender, uint8_t address)
+void lbr_net_node_init(Bus* sender, uint8_t address)
 {
     sender->address = address;
     sender->state = IDLE;
     sender->pack = pack;
     sender->read_byte = read_byte;
     sender->get_package_size = get_package_size;
-    sender->receive_flush = receive_flush;
+    sender->flush_data = flush_data;
     sender->receive_index = 0;
     sender->package_size = 0;
 }
@@ -124,7 +124,7 @@ void read_byte(Bus* self, uint8_t data)
     return;
 }
 
-void receive_flush(Bus* self, uint8_t* buffer)
+void flush_data(Bus* self, uint8_t* buffer)
 {
     for (uint8_t i = 0; i < self->package_size; i++)
     {

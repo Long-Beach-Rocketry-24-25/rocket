@@ -1,3 +1,7 @@
+/**
+  * @brief Tests for lbr network.
+*/
+
 #include <gtest/gtest.h>
 #include <cstdio>
 extern "C"
@@ -5,10 +9,6 @@ extern "C"
 #include <string.h>
 #include "lbr_net.h"
 }
-
-/**
-  * @brief Tests for lbr network.
-  */
 
 #define ADDRESS 70
 #define EXPECT_ARR_EQ(arr1, arr2, size)   \
@@ -42,7 +42,7 @@ TEST_F(FormatTests, pack_test)
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
                                     expected_checksum};
     uint8_t packed[256] = {0};
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     bus.pack(&bus, packed, sizeof(packed), ADDRESS, data, 1);
     EXPECT_ARR_EQ(packed, expected_buf, 4);
 }
@@ -52,7 +52,7 @@ TEST_F(FormatTests, pack_test)
  */
 TEST_F(ReadCharTests, idle_to_error_test)
 {
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     bus.read_byte(&bus, NACK);
     EXPECT_EQ(bus.state, ERROR);
 }
@@ -62,7 +62,7 @@ TEST_F(ReadCharTests, idle_to_error_test)
  */
 TEST_F(ReadCharTests, idle_to_ack_test)
 {
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     bus.read_byte(&bus, ACK);
     EXPECT_EQ(bus.state, ACKNOWLEDGED);
 }
@@ -74,7 +74,7 @@ TEST_F(ReadCharTests, idle_to_wrong_address_test)
 {
 
     const uint8_t data[] = {START_TRANSMISSION, ADDRESS + 1}; /*wrong address*/
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     bus.read_byte(&bus, data[0]);
     EXPECT_EQ(bus.state, READ_ADDRESS);
     bus.read_byte(&bus, data[1]);
@@ -89,7 +89,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
     uint8_t sum = ('!' + ADDRESS + 2 + 'P' + 'f') % 256;
     const uint8_t data[] = {'!', ADDRESS, 2, 'P', 'f', sum};
     const uint8_t msg[] = {'P', 'f'};
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
         bus.read_byte(&bus, data[i]);
@@ -98,7 +98,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
     EXPECT_ARR_EQ(bus.receive_buffer, data, 6);
     uint8_t flushed[6] = {0};
     uint8_t empty[255] = {0};
-    bus.receive_flush(&bus, flushed);
+    bus.flush_data(&bus, flushed);
     EXPECT_ARR_EQ(flushed, msg, bus.package_size);
     EXPECT_ARR_EQ(bus.receive_buffer, empty, 255);
 }
@@ -109,7 +109,7 @@ TEST_F(ReadCharTests, idle_to_success_then_flush)
 TEST_F(ReadCharTests, idle_wrong_checksum)
 {
     const char data[] = {'!', ADDRESS, 2, 'P', 'f', 32};
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
     for (int i = 0; i < sizeof(data); i++)
     {
         bus.read_byte(&bus, data[i]);
@@ -129,7 +129,7 @@ TEST_F(FormatTests, encode_decode_test)
         START_TRANSMISSION, ADDRESS, 5, 'c', 'a', 'f', 'e', 's',
         expected_checksum};
     uint8_t packed[256] = {0};
-    send_protocol_init(&bus, ADDRESS);
+    lbr_net_node_init(&bus, ADDRESS);
 
     bus.pack(&bus, packed, sizeof(packed), ADDRESS, data, 5);
 
@@ -142,7 +142,7 @@ TEST_F(FormatTests, encode_decode_test)
 
     uint8_t flushed[9] = {0};
     uint8_t empty[255] = {0};
-    bus.receive_flush(&bus, flushed);
+    bus.flush_data(&bus, flushed);
 
     EXPECT_ARR_EQ(bus.receive_buffer, empty, 255);
     EXPECT_ARR_EQ(flushed, data, 5);
