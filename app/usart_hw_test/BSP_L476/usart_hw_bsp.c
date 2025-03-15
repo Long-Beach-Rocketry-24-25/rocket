@@ -79,8 +79,8 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
-    StUsartInit(comm_usart, &st_comm_usart, USART3_BASE, &time);
-    StUsartConfig(comm_usart, SystemCoreClock, 115200);
+    StUsartInit(&rs485.usart, &st_comm_usart, USART3_BASE, &time);
+    StUsartConfig(&rs485.usart, SystemCoreClock, 115200);
 
     ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
     ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
