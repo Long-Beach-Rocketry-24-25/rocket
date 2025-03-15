@@ -37,6 +37,8 @@ static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
 static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
 
 Snx5176b rs485;
+Usart* u3;
+Usart* u4;
 
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
@@ -94,17 +96,18 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     Snx5176bInit(comm_usart, &rs485);
     Snx5176bConfig(&rs485);
 
-    UartPipeInit(cli_usart, comm_usart, &rb1, &rb2, '\n');
+    u3 = cli_usart;
+    u4 = comm_usart;
 
     __enable_irq();
 }
 
 void USART3_IRQHandler(void)
 {
-    UartPipeCallback1();
+    UartPipeCallback(u3, u4, &rb1, UART_END_CHAR);
 }
 
 void UART4_IRQHandler(void)
 {
-    UartPipeCallback2();
+    UartPipeCallback(u4, u3, &rb2, UART_END_CHAR);
 }

@@ -3,6 +3,11 @@
  * input/output of another, as well as the other way around.
  * Assumes the UART is implemented using interrupts, and
  * provides two callbacks accordingly.
+ * 
+ * This is a fairly simple, non-robust implementation considering
+ * the use of interrupts. There will be some data loss if bytes are
+ * received while buffers are being flushed. This is fine for most
+ * basic purposes, which is what this is written for.
  */
 
 #pragma once
@@ -11,38 +16,21 @@
 #include "usart.h"
 
 /**
- * Initializes the UART pipe.
- * 
- * This is a fairly simple, non-robust implementation considering
- * the use of interrupts. There will be some data loss if bytes are
- * received while buffers are being flushed. This is fine for most
- * basic purposes, which is what this is written for.
- * 
- * @param usart1 the first UART.
- * @param usart2 the second UART.
- * @param buf1 ring buffer for storing data received by first UART.
- * @param buf2 ring buffer for storing data received by second UART.
- * @param end_char the character to flush ring buffers on.
- */
-void UartPipeInit(Usart* usart1, Usart* usart2, RingBuffer* buf1,
-                  RingBuffer* buf2, uint8_t end_char);
-
-/**
  * Flushes the given buffer with the given UART.
  * 
  * @param u the UART to flush through.
  * @param rb the ring buffer to flush.
+ * @param end the end character to flush up to.
  */
-void UartPipeFlush(Usart* u, RingBuffer* rb);
+void UartPipeFlush(Usart* u, RingBuffer* rb, uint8_t end);
 
 /**
- * Callback for the first UART provided during initialization.
- * Needs to be placed in the IRQ Handler corresponding to that UART.
+ * Interrupt callback for piping first UART to second UART.
+ * 
+ * @param first the UART to receive data from.
+ * @param second the UART to flush through.
+ * @param rb the ring buffer to flush.
+ * @param end the character to flush ring buffers on.
  */
-void UartPipeCallback1(void);
-
-/**
- * Callback for the second UART provided during initialization.
- * Needs to be placed in the IRQ Handler corresponding to that UART.
- */
-void UartPipeCallback2(void);
+void UartPipeCallback(Usart* first, Usart* second, RingBuffer* buf,
+                      uint8_t end);

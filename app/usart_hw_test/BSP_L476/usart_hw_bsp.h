@@ -13,6 +13,7 @@
 #include "uart_pipe.h"
 
 #define UART_PIPE_BUF_SIZE 256
+#define UART_END_CHAR '\n'
 
 extern TIM_HandleTypeDef htim1;
 

@@ -13,6 +13,7 @@
 #include "uart_pipe.h"
 
 #define UART_PIPE_BUF_SIZE 256
+#define UART_END_CHAR '\n'
 
 void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio);
 
