@@ -46,6 +46,13 @@ jobs:
       with:
         release: '10.3-2021.10'
 
+    - name: Configure CMake for F401
+      run: |
+        cmake --preset=stm32f401 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+    - name: Build for F401
+      run: cd build/stm32f401 && cmake --build .
+
     - name: Configure CMake for F746
       run: |
         cmake --preset=stm32f746 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"

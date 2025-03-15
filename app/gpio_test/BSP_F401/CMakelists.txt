@@ -1,0 +1,14 @@
+add_library(gpio_test_bsp STATIC
+    gpio_test_bsp.c
+)
+
+target_include_directories(gpio_test_bsp PUBLIC .)
+target_link_libraries(gpio_test_bsp
+    PUBLIC
+        app
+        core
+        driver
+        st_f4_support
+    INTERFACE
+        freertos_kernel
+)
