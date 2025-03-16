@@ -5,7 +5,6 @@ target_link_libraries(core INTERFACE
     cli
     comms
     container
-    lbr_net
     math
     mission
     periph
@@ -19,7 +18,7 @@ target_link_libraries(core INTERFACE driver)
 add_subdirectory(cli)
 add_subdirectory(comms)
 add_subdirectory(container)
-add_subdirectory(lbr_net)
+add_subdirectory(comms)
 add_subdirectory(math)
 add_subdirectory(mission)
 add_subdirectory(periph)
