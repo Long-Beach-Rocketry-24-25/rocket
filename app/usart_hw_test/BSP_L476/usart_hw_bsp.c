@@ -81,17 +81,17 @@ void BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
     NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART3_IRQn);
 
-    StUsartInit(&rs485.usart, &st_comm_usart, USART3_BASE, &time);
-    StUsartConfig(&rs485.usart, SystemCoreClock, 921600);
+    StUsartInit(rs485.usart, &st_comm_usart, USART3_BASE, &time);
+    StUsartConfig(rs485.usart, SystemCoreClock, 921600);
 
     ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
     ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
 
-    StGpioInit(&rs485.txe, &txe_gpio);
-    StGpioConfig(&rs485.txe);
+    StGpioInit(rs485.txe, &txe_gpio);
+    StGpioConfig(rs485.txe);
 
-    StGpioInit(&rs485.rxe, &rxe_gpio);
-    StGpioConfig(&rs485.rxe);
+    StGpioInit(rs485.rxe, &rxe_gpio);
+    StGpioConfig(rs485.rxe);
 
     Snx5176bInit(comm_usart, &rs485);
     Snx5176bConfig(&rs485);
