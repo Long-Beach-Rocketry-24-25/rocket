@@ -136,7 +136,7 @@ static void cli_process_task(void* params)
     }
 }
 
-void usart_rx_callback()
+void cli_usart_rx_callback()
 {
     uint8_t data = 0;
     if (usart.recv(&usart, &data, 1))

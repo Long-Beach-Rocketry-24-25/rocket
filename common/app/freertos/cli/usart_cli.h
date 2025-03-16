@@ -24,7 +24,7 @@
  * Usart RX Ready callback, to be called in 
  * USARTx_IRQHandler().
  */
-void usart_rx_callback();
+void cli_usart_rx_callback();
 
 /**
  * Creates a FreeRTOS CLI processing task using a given USART/core
