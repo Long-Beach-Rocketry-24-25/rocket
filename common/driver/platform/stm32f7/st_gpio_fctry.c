@@ -18,7 +18,7 @@ Gpio* MakeStGpio(Mem* mem, StGpioParams params)
 {
     Gpio* gpio = ALLOC(mem, Gpio);
     EXIT_IF(gpio == NULL, false);
-    GiveStGpio(gpio, mem, params);
+    EXIT_IF(!GiveStGpio(gpio, mem, params), NULL);
 
     return gpio;
 }

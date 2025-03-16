@@ -6,6 +6,7 @@ bool GiveStUsart(Usart* usart, Mem* mem, Timeout* timer,
                  const uint32_t baudrate, const StGpioParams io1,
                  const StGpioParams io2)
 {
+    EXIT_IF((timer == NULL), false);
     StPrivUsart* st = ALLOC(mem, StPrivUsart);
     EXIT_IF(st == NULL, false);
 
@@ -21,11 +22,13 @@ bool GiveStUsart(Usart* usart, Mem* mem, Timeout* timer,
 }
 
 Usart* MakeStUsart(Mem* mem, Timeout* timer, const uint32_t base_addr,
-                   const uint32_t sys_core_clk, uint32_t baudrate,
+                   const uint32_t sys_core_clk, const uint32_t baudrate,
                    const StGpioParams io1, const StGpioParams io2)
 {
     Usart* u = ALLOC(mem, Usart);
     EXIT_IF(u == NULL, NULL);
-    GiveStUsart(u, mem, timer, base_addr, sys_core_clk, baudrate, io1, io2);
+    EXIT_IF(!GiveStUsart(u, mem, timer, base_addr, sys_core_clk, baudrate, io1,
+                         io2),
+            NULL);
     return u;
 }
