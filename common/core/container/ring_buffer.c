@@ -4,7 +4,7 @@ RingBuffer* make_ring_buffer(Mem* mem, size_t size)
 {
     RingBuffer* rb = ALLOC(mem, RingBuffer);
     EXIT_IF(rb == NULL, NULL);
-    uint8_t* buf = (uint8_t*)mem->alloc(size);
+    uint8_t* buf = ALLOC_N(mem, uint8_t, size);
     EXIT_IF(buf == NULL, NULL);
     ring_buffer_init(rb, buf, size);
     return rb;
