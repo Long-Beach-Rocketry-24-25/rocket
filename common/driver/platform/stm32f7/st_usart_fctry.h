@@ -12,5 +12,5 @@ bool GiveStUsart(Usart* usart, Mem* mem, Timeout* timer,
                  const StGpioParams io2);
 
 Usart* MakeStUsart(Mem* mem, Timeout* timer, const uint32_t base_addr,
-                   const uint32_t sys_core_clk, uint32_t baudrate,
+                   const uint32_t sys_core_clk, const uint32_t baudrate,
                    const StGpioParams io1, const StGpioParams io2);

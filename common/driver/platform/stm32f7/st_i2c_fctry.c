@@ -5,7 +5,7 @@ bool GiveStI2c(I2c* i2c, Mem* mem, Timeout* timer, const uint32_t base_addr,
                const uint32_t timingr, const StGpioParams io1,
                const StGpioParams io2)
 {
-
+    EXIT_IF((timer == NULL), false);
     StPrivI2c* st = ALLOC(mem, StPrivI2c);
     EXIT_IF(st == NULL, false);
 
@@ -26,6 +26,6 @@ I2c* MakeStI2c(Mem* mem, Timeout* timer, const uint32_t base_addr,
 {
     I2c* i2c = ALLOC(mem, I2c);
     EXIT_IF(i2c == NULL, NULL);
-    GiveStI2c(i2c, mem, timer, base_addr, timingr, io1, io2);
+    EXIT_IF(!GiveStI2c(i2c, mem, timer, base_addr, timingr, io1, io2), NULL);
     return i2c;
 }

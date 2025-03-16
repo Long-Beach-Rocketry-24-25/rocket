@@ -6,6 +6,7 @@ add_library(hal STATIC
     st_i2c.c
     st_pwm.c
     st_spi.c
+    st_spi_fctry.c
     st_usart.c
     st_usart_fctry.c
 )

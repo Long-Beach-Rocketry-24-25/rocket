@@ -9,7 +9,7 @@
 #include "gpio_cs.h"
 #include "st_gpio_fctry.h"
 #include "st_i2c_fctry.h"
-#include "st_spi.h"
+#include "st_spi_fctry.h"
 #include "st_usart_fctry.h"
 #include "stalloc.h"
 #include "stm32f7xx_hal.h"
