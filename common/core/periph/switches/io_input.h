@@ -26,4 +26,4 @@ struct IoInput
     // return true if io is 1 or or false if 0
     bool (*get_state)(IoInput *in);
     void *priv;
-};
+}

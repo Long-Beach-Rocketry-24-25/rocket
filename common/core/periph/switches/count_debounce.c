@@ -5,16 +5,18 @@
 //initialization
 void CountDebounce_Init(CountDebounce* db, IoInput* input, uint8_t threshold)
 {
-    db->input = input;
     db->state = DEBOUNCE_OFF; // its gonna start at released
     db->counter = 0;
     db->threshold = threshold;
+
+    input->get_state = CountDebounce_GetStateFromIoInput;
+    input->priv = (void*) db;
 }
 
 // updating the logic lowk gonna call this a lot IMPORTANT
-void CountDebounce_Update(CountDebounce* db)
+void CountDebounce_Update(CountDebounce* db, IoInput* input)
 {
-    bool raw_state = db->input->get_state(db->input); // reads the input here
+    bool raw_state = input->get_state(input); // reads the input here
 
     // if the "raw" state is different from stable its gonna count
     if ((raw_state && db->state == DEBOUNCE_OFF) || 
@@ -35,7 +37,15 @@ void CountDebounce_Update(CountDebounce* db)
     }
 }
 
-//stable state
+//this does not update debounce logic
+//returns only stable state
+//have to call CountDebounce_Update() regularly to stay current
+bool CountDebounce_GetStateFromIoInput(IoInput* input)
+{
+    CountDebounce* db = (CountDebounce*) input->priv;
+    return db->state == DEBOUNCE_ON;
+}
+
 DebounceState CountDebounce_GetState(CountDebounce* db)
 {
     return db->state;

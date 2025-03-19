@@ -13,14 +13,16 @@ typedef enum {
     DEBOUNCE_ON = 1       // button when pressed
 } DebounceState;
 
+
 typedef struct {
-    IoInput* input;     //this will be the input source so GPIO
-    DebounceState state;   //current state 
-    uint8_t counter;      //count for opposite readings 
+    DebounceState state;   //stable state 
+    uint8_t counter;      //count opposite readings 
     //if n opposite values in a row - > change the state
     //else stay in current state and reset counter
-    uint8_t threshold;   //threshold b4 we switch states
+    uint8_t threshold;   //switch states
 } CountDebounce;
+
+
 
 //initiate debounce 
 //db is pointer to debouncer
@@ -28,7 +30,7 @@ typedef struct {
 void CountDebounce_Init(CountDebounce* db, IoInput* input, uint8_t threshold);
 
 //to update 
-void CountDebounce_Update(CountDebounce* db);
+void CountDebounce_Update(CountDebounce* db, IoInput* input);
 
 //on or off? hmmm this will tell us
 DebounceState CountDebounce_GetState(CountDebounce* db);
@@ -38,3 +40,6 @@ bool CountDebounce_IsPressed(CountDebounce* db);
 
 //true when released
 bool CountDebounce_IsReleased(CountDebounce* db);
+
+//state function  to use when inside an io input
+bool CountDebounce_GetStateFromIoInput(IoInput* input);
