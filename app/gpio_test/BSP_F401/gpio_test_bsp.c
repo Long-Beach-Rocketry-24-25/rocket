@@ -1,13 +1,19 @@
 #include "gpio_test_bsp.h"
-#include "core_cm4.h" // SysTick
 #include <stdint.h>
+#include "core_cm4.h"  // SysTick
 
 // ===== LED and Button GPIO Definitions =====
 
-//NEED TO ENABLE GPIO 
+//NEED TO ENABLE GPIO
 
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}}; //NEEDS ENABLE
-static StGpioParams button_stgpio = {{0}, GPIOA_BASE, 0, {GPIN, 0, 0, 0, 0}}; //NEEDS ENABLE
+static StGpioParams led_stgpio = {{0},
+                                  GPIOA_BASE,
+                                  5,
+                                  {GPOUT, 0, 0, 0, 0}};  //NEEDS ENABLE
+static StGpioParams button_stgpio = {{0},
+                                     GPIOA_BASE,
+                                     0,
+                                     {GPIN, 0, 0, 0, 0}};  //NEEDS ENABLE
 
 static Gpio led_gpio;
 static DebounceButton_t button;
@@ -26,7 +32,8 @@ static uint32_t get_time_ms(void)
 }
 
 // ===== Debounce API =====
-void Debounce_Init(DebounceButton_t* btn, StGpioParams* gpio_params, uint32_t debounce_time_ms)
+void Debounce_Init(DebounceButton_t* btn, StGpioParams* gpio_params,
+                   uint32_t debounce_time_ms)
 {
     StGpioInit(&btn->gpio, gpio_params);
     StGpioConfig(&btn->gpio);
@@ -41,15 +48,20 @@ void Debounce_Update(DebounceButton_t* btn, uint32_t now_ms)
 {
     uint8_t raw = StGpioRead(&btn->gpio);
 
-    if (raw != btn->raw_state) {
+    if (raw != btn->raw_state)
+    {
         btn->last_change_ms = now_ms;
         btn->raw_state = raw;
     }
 
-    if ((now_ms - btn->last_change_ms) >= btn->debounce_time_ms) {
-        if (raw && btn->state == BUTTON_RELEASED) {
+    if ((now_ms - btn->last_change_ms) >= btn->debounce_time_ms)
+    {
+        if (raw && btn->state == BUTTON_RELEASED)
+        {
             btn->state = BUTTON_PRESSED;
-        } else if (!raw && btn->state == BUTTON_PRESSED) {
+        }
+        else if (!raw && btn->state == BUTTON_PRESSED)
+        {
             btn->state = BUTTON_RELEASED;
         }
     }
@@ -70,36 +82,38 @@ DebounceState Debounce_GetState(DebounceButton_t* btn)
     return btn->state;
 }
 
-// System Clock Stub 
+// System Clock Stub
 void SystemInit(void)
 {
 }
 
-//  Main Function 
+//  Main Function
 int main(void)
 {
     // Enable GPIOA clock
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; //NEEDS ENABLE
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;  //NEEDS ENABLE
 
     // Init LED and Button GPIOs
     StGpioInit(&led_gpio, &led_stgpio);
     StGpioConfig(&led_gpio);
 
-    Debounce_Init(&button, &button_stgpio, 50); // 50ms debounce
+    Debounce_Init(&button, &button_stgpio, 50);  // 50ms debounce
 
     // Configure SysTick for 1ms ticks
-    SysTick_Config(SystemCoreClock / 1000); //NEEDS ENABLE
+    SysTick_Config(SystemCoreClock / 1000);  //NEEDS ENABLE
 
     while (1)
     {
         Debounce_Update(&button, get_time_ms());
 
-        if (Debounce_IsPressed(&button)) {
-            StGpioWrite(&led_gpio, 1); // LED ON
+        if (Debounce_IsPressed(&button))
+        {
+            StGpioWrite(&led_gpio, 1);  // LED ON
         }
 
-        if (Debounce_IsReleased(&button)) {
-            StGpioWrite(&led_gpio, 0); // LED OFF
+        if (Debounce_IsReleased(&button))
+        {
+            StGpioWrite(&led_gpio, 0);  // LED OFF
         }
     }
 }
