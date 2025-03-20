@@ -1,5 +1,5 @@
 add_subdirectory(cli_app)
-add_subdirectory(gpio_test)
+#add_subdirectory(gpio_test)
 add_subdirectory(logging)
 add_subdirectory(pwm_app)
 add_subdirectory(serial_term)

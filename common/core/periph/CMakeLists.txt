@@ -1,6 +1,6 @@
 
 add_library(periph STATIC
-    count_debounce.c
+    switches/count_debounce.c
     ads111x/ads111x.c
     bmp390/bmp390.c
     bno055/bno055.c
