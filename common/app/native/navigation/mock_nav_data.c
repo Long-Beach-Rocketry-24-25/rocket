@@ -49,13 +49,16 @@ bool MockNavDataUpdate(NavData* data)
                     sscanf(value, "%f", &data->accel.z);
                     break;
                 case 4:
-                    sscanf(value, "%hd", &data->euler.x);
+                    sscanf(value, "%f", &data->quat.w);
                     break;
                 case 5:
-                    sscanf(value, "%hd", &data->euler.y);
+                    sscanf(value, "%f", &data->quat.x);
                     break;
                 case 6:
-                    sscanf(value, "%hd", &data->euler.z);
+                    sscanf(value, "%f", &data->quat.y);
+                    break;
+                case 7:
+                    sscanf(value, "%f", &data->quat.z);
                     break;
                 default:
                     return false;

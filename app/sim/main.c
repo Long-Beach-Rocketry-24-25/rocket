@@ -1,7 +1,7 @@
 
 #include <math.h>
-#include "kalman.h"
 #include "matrix.h"
+#include "simple_kalman.h"
 
 int main(int argc, char* argv[])
 {
@@ -32,14 +32,14 @@ int main(int argc, char* argv[])
     MATRIX(x, 2, 1, {0}, {0});
     MATRIX(P, 2, 2, {0, 0}, {0, 0});
 
-    Kalman k = {&x, &P, {&A, &H, &Q, &R}};
+    SimpleKalman k = {&x, &P, {&A, &H, &Q, &R}};
 
     for (size_t i = 0; i < 100; ++i)
     {
         double v = 1.0 / t;
-        predict(&k);
+        SimpleKalmanPredict(&k);
         MATRIX(z, 2, 1, {i}, {v});
-        estimate(&k, &z);
+        SimpleKalmanEstimate(&k, &z);
         printf("%zu %f\n%s", i, v, matrix_to_string(k.x));
     }
 

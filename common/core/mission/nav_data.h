@@ -21,10 +21,10 @@ typedef struct
 
 typedef struct
 {
-    double w;
-    double x;
-    double y;
-    double z;
+    float w;
+    float x;
+    float y;
+    float z;
 } QuaternionVec;
 
 typedef struct NavData NavData;
@@ -33,7 +33,7 @@ struct NavData
 {
     float pressure;
     ThreeAxisVec accel;
-    EulerVec euler;
+    QuaternionVec quat;
     float temperature;
     size_t tick;
     bool (*update)(NavData* data);
