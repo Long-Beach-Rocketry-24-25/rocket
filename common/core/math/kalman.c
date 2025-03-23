@@ -1,38 +1,17 @@
 
 #include "kalman.h"
 
-typedef struct Kalman Kalman;
-
-typedef struct
+bool predict(Kalman* k)
 {
-    Matrix* A;
-    Matrix* H;
-    Matrix* Q;
-    Matrix* R;
-    Matrix* (*transition)(Kalman* k, Matrix* u, Matrix* xp);
-    void* priv;
-} StateTransition;
-
-struct Kalman
-{
-    Matrix* x;
-    Matrix* P;
-    StateTransition t_model;
-};
-
-// Matrix* AltitudeKalmanTransition(Kalman* k)
-// {
-//     k->t_model.transition(k);
-// }
-
-bool predict(Kalman* k, Matrix* u)
-{
-    VAR_MATRIX(xp, k->x->rows, k->x->cols);
-    k->t_model.transition(k, u, &xp);
-    if (matrix_copy(&xp, k->x) == NULL)
     {
-        return false;
+        VAR_MATRIX(xp, k->x->rows, k->x->cols);
+        matrix_multiply(k->t_model.A, k->x, &xp);
+        if (matrix_copy(matrix_multiply(k->t_model.A, k->x, &xp), k->x) == NULL)
+        {
+            return false;
+        }
     }
+    // printf("xp:\n%s", matrix_to_string(k->x));
 
     // Calculate P prediction, Pk- = A * Pk-1 * AT + Q
     VAR_MATRIX(A_P, k->P->rows, k->P->cols);
@@ -83,7 +62,7 @@ bool estimate(Kalman* k, Matrix* z)
 
     // Compute estimate
     {
-        VAR_MATRIX(H_x, k->t_model.H->rows, k->x->rows);
+        VAR_MATRIX(H_x, k->t_model.H->rows, k->x->cols);
         VAR_MATRIX(correc, gain.rows, H_x.cols);
         matrix_subtract(z, matrix_multiply(k->t_model.H, k->x, &H_x), &H_x);
         matrix_multiply(&gain, &H_x, &correc);
