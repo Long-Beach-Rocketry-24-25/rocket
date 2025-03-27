@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "math_util.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>

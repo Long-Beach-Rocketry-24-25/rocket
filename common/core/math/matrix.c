@@ -177,7 +177,6 @@ bool matrix_compare(Matrix* A, Matrix* B)
 
     if (A->rows != B->rows || A->cols != B->cols)
     {
-        printf("size fail\n");
         return false;
     }
 
@@ -185,10 +184,8 @@ bool matrix_compare(Matrix* A, Matrix* B)
     {
         for (size_t j = 0; j < A->cols; ++j)
         {
-            if (MAT_GET(A, i, j) != MAT_GET(B, i, j))
+            if (FLOAT_CMP_TN(MAT_GET(A, i, j), MAT_GET(B, i, j)))
             {
-                printf("fail at %zu %zu (%d != %d)\n", i, j, MAT_GET(A, i, j),
-                       MAT_GET(B, i, j));
                 return false;
             }
         }
