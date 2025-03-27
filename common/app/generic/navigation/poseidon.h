@@ -6,6 +6,8 @@
 #include "simple_kalman.h"
 // todo: implement quat -> rot mat
 // todo: implement quat + accel 3ax -> vertical accel
+// todo: error propagation? nav data doesn't report errors rn :(
+// todo: tare function?
 
 typedef struct
 {
@@ -14,3 +16,5 @@ typedef struct
 
 bool PoseidonNavigatorInit(Navigator* nav, Poseidon* poseidon,
                            NavData* nav_data);
+// Reconfig
+// Update

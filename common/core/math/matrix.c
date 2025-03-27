@@ -168,6 +168,35 @@ Matrix* matrix_inverse(Matrix* A, Matrix* I)
     return I;
 }
 
+bool matrix_compare(Matrix* A, Matrix* B)
+{
+    if (A == NULL || B == NULL)
+    {
+        return NULL;
+    }
+
+    if (A->rows != B->rows || A->cols != B->cols)
+    {
+        printf("size fail\n");
+        return false;
+    }
+
+    for (size_t i = 0; i < A->rows; ++i)
+    {
+        for (size_t j = 0; j < A->cols; ++j)
+        {
+            if (MAT_GET(A, i, j) != MAT_GET(B, i, j))
+            {
+                printf("fail at %zu %zu (%d != %d)\n", i, j, MAT_GET(A, i, j),
+                       MAT_GET(B, i, j));
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 char* matrix_to_string(Matrix* mat)
 {
     static char str[MAX_STR_LENGTH];

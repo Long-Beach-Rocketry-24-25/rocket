@@ -40,4 +40,5 @@ Matrix* matrix_transpose(Matrix* A, Matrix* AT);
 Matrix* matrix_add(Matrix* A, Matrix* B, Matrix* C);
 Matrix* matrix_subtract(Matrix* A, Matrix* B, Matrix* C);
 Matrix* matrix_inverse(Matrix* A, Matrix* I);
+bool matrix_compare(Matrix* A, Matrix* B);
 char* matrix_to_string(Matrix* mat);
