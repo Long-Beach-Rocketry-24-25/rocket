@@ -3,11 +3,12 @@
 
 typedef struct Navigator Navigator;
 
-typedef struct
+struct Navigator
 {
     double (*altitude)(Navigator* nav);
     double (*velocity)(Navigator* nav);
-    bool (*reconfig)(Navigator* nav);
+    const QuaternionVec* (*orientation)(Navigator* nav);
+    bool (*restart)(Navigator* nav);
     bool (*update)(Navigator* nav);
     void* priv;
-} Navigator;
+};

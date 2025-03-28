@@ -1,7 +1,13 @@
 
 #include <math.h>
+#include "acceleration.h"
 #include "matrix.h"
+#include "mock_nav_data.h"
+#include "nav_data.h"
 #include "simple_kalman.h"
+
+NavData nav;
+MockNavData mock_nav;
 
 int main(int argc, char* argv[])
 {
@@ -20,27 +26,38 @@ int main(int argc, char* argv[])
     // printf("T:\n%s", matrix_to_string(matrix_transpose(&mat, &res)));
     // printf("I:\n%s", matrix_to_string(matrix_inverse(&test, &res)));
 
-    double sd_p = 3;
-    double sd_a = 3;
-    double t = 0.1;
-    MATRIX(A, 2, 2, {1, t}, {0, 1});
-    MATRIX(H, 2, 2, {1, 0}, {0, 0});
-    // BMP390: +- .5 hPA, BNO055:
-    MATRIX(Q, 2, 2, {pow(t, 4) / 4 * sd_a, pow(t, 3) / 2 * sd_a},
-           {pow(t, 3) / 2 * sd_a, pow(t, 2) * sd_a});
-    MATRIX(R, 2, 2, {sd_p, 0}, {0, sd_a});
-    MATRIX(x, 2, 1, {0}, {0});
-    MATRIX(P, 2, 2, {0, 0}, {0, 0});
+    // double sd_p = 3;
+    // double sd_a = 3;
+    // double t = 0.1;
+    // MATRIX(A, 2, 2, {1, t}, {0, 1});
+    // MATRIX(H, 2, 2, {1, 0}, {0, 0});
+    // // BMP390: +- .5 hPA, BNO055:
+    // MATRIX(Q, 2, 2, {pow(t, 4) / 4 * sd_a, pow(t, 3) / 2 * sd_a},
+    //        {pow(t, 3) / 2 * sd_a, pow(t, 2) * sd_a});
+    // MATRIX(R, 2, 2, {sd_p, 0}, {0, sd_a});
+    // MATRIX(x, 2, 1, {0}, {0});
+    // MATRIX(P, 2, 2, {0, 0}, {0, 0});
 
-    SimpleKalman k = {&x, &P, {&A, &H, &Q, &R}};
+    // SimpleKalman k = {&x, &P, {&A, &H, &Q, &R}};
 
-    for (size_t i = 0; i < 100; ++i)
+    // for (size_t i = 0; i < 100; ++i)
+    // {
+    //     double v = 1.0 / t;
+    //     SimpleKalmanPredict(&k);
+    //     MATRIX(z, 2, 1, {i}, {v});
+    //     SimpleKalmanEstimate(&k, &z);
+    //     printf("%zu %f\n%s", i, v, matrix_to_string(k.x));
+    // }
+
+    MockNavDataInit(&nav, &mock_nav, "./test_data.log");
+
+    for (size_t i = 0; i < 167; ++i)
     {
-        double v = 1.0 / t;
-        SimpleKalmanPredict(&k);
-        MATRIX(z, 2, 1, {i}, {v});
-        SimpleKalmanEstimate(&k, &z);
-        printf("%zu %f\n%s", i, v, matrix_to_string(k.x));
+        nav.update(&nav);
+        ThreeAxisVec res;
+        accel_rotate(&nav.accel, &nav.quat, &res);
+        printf("%f %f %f | %f %f %f\n", nav.accel.x, nav.accel.y, nav.accel.z,
+               res.x, res.y, res.z);
     }
 
     return 0;

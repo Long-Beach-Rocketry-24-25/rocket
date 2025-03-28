@@ -25,6 +25,10 @@ typedef struct
     double name##_buf[rows][cols] = {__VA_ARGS__}; \
     Matrix name = {(double*)name##_buf, rows, cols}
 
+#define MATRIX_T(type, name, rows, cols, ...)           \
+    type double name##_buf[rows][cols] = {__VA_ARGS__}; \
+    type Matrix name = {(double*)name##_buf, rows, cols}
+
 #define VAR_MATRIX(name, rows, cols) \
     double name##_buf[rows][cols];   \
     Matrix name = {(double*)name##_buf, rows, cols}

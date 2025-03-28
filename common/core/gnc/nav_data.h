@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "gnc_constants.h"
 #include "quaternion.h"
 
 #include <stdbool.h>

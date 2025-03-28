@@ -10,6 +10,8 @@ Matrix* matrix_copy(Matrix* src, Matrix* dest)
             MAT_GET(dest, i, j) = MAT_GET(src, i, j);
         }
     }
+
+    return dest;
 }
 
 Matrix* matrix_multiply(Matrix* A, Matrix* B, Matrix* C)
