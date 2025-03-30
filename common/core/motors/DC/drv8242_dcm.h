@@ -24,7 +24,8 @@ typedef struct
     DCMotor* instance;
     DCState state;
     uint16_t encoder_ticks;
-    QEnc encoder;
+    size_t angle;
+    bool cmd;
     Pwm* pwm;
     Gpio* nSleep_pin;
     Gpio* drvoff_pin;

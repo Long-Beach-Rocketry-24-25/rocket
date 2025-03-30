@@ -6,6 +6,7 @@ target_link_libraries(core INTERFACE
     container
     math
     mission
+    motors
     periph
     string
     timeout
@@ -17,6 +18,7 @@ add_subdirectory(cli)
 add_subdirectory(container)
 add_subdirectory(math)
 add_subdirectory(mission)
+add_subdirectory(motors)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)

@@ -14,6 +14,8 @@ void Drv8242Init(DCMotor* motor, DCPosControl* control, Gpio* nSleep_pin,
     control->ph_in2_pin = ph_in2_pin;
 
     control->state = OFF;
+    control->angle = 0;
+    control->cmd = false;
 
     control->pwm = pwm;
 
