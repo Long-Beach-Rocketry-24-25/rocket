@@ -20,7 +20,7 @@ ThreeAxisVec* accel_rotate(ThreeAxisVec* accel, QuaternionVec* orientation,
     return result;
 }
 
-double accel_to_velocity(double last_velocity, double accel, double time_s)
+double accel_to_velocity(double accel, double time_s)
 {
-    return last_velocity + (accel * time_s);
+    return accel * time_s;
 }
