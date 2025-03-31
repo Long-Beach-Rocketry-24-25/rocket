@@ -99,7 +99,7 @@ bool HeliosUpdate(Navigator* nav)
 
     static size_t state = 0;
 
-    if (state++ < 4)
+    if (state++ < 1)
     {
         return SimpleKalmanPredict(&p->kalman);
     }
@@ -112,8 +112,6 @@ bool HeliosUpdate(Navigator* nav)
         }
         p->data->update(p->data);
 
-        static double last_alt = 0;
-
         // Use starting pressure as sea level to measure relative altitude.
         double curr_altitude = altitude(p->data->pressure, p->base_pressure);
 
@@ -121,19 +119,28 @@ bool HeliosUpdate(Navigator* nav)
         ThreeAxisVec corrected_accel;
         accel_rotate(&p->data->accel, &p->data->quat, &corrected_accel);
         double curr_vert_accel = corrected_accel.z - EARTH_GRAVITY_M_S2;
+
+        printf("%f %f | ", curr_altitude, curr_vert_accel);
+
         static double last_vert_acc = 0;
-#define HEL_K_ALPHA 0.7
+        static double last_alt = 0;
+#define HEL_K_ALPHA 0.5
         curr_vert_accel =
             HEL_K_ALPHA * curr_vert_accel + ((1 - HEL_K_ALPHA) * last_vert_acc);
 
+        // #define HEL_ALT_ALPH 0.3
+        //         curr_altitude =
+        //             HEL_ALT_ALPH * curr_altitude + ((1 - HEL_ALT_ALPH) * last_alt);
+
         // Update Kalman filter.
-        MATRIX(z, 2, 1, {curr_altitude},
-               {(fabs(curr_vert_accel)) < 0.1 ? 0 : curr_vert_accel});
+        MATRIX(z, 2, 1, {curr_altitude}, {curr_vert_accel});
         bool s = SimpleKalmanEstimate(&p->kalman, &z);
-        printf("%f %f | ", z.data[0], z.data[1]);
+
         printf("%f %f %f %f\n", MAT_GET(p->kalman.x, 0, 0),
                MAT_GET(p->kalman.x, 1, 0), MAT_GET(p->kalman.x, 2, 0),
                MAT_GET(p->kalman.x, 3, 0));
+        last_vert_acc = curr_vert_accel;
+        last_alt = curr_altitude;
         return s;
     }
 
