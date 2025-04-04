@@ -22,40 +22,6 @@ bool HeliosNavigatorInit(Navigator* nav, Helios* helios, NavData* nav_data)
     return true;
 }
 
-// bool HeliosKalmanInit(Matrix* A, Matrix* H, double timestep)
-// {
-//     if (A == NULL || H == NULL)
-//     {
-//         return false;
-//     }
-
-//     MATRIX(A_dat, 4, 4, {1, timestep, timestep * timestep / 2, 0},
-//            {0, 1, timestep, 0}, {0, 0, 1, 0}, {0, 0, 0, 1});
-//     MATRIX(H_dat, 2, 4, {1, 0, 0, 0}, {0, 0, 1, 1});
-//     return matrix_copy(&A_dat, A) != NULL && matrix_copy(&H_dat, H) != NULL;
-// }
-
-bool HeliosConfig(Navigator* nav, Matrix* x, Matrix* P, Matrix* A, Matrix* H,
-                  Matrix* Q, Matrix* R)
-{
-    if (nav == NULL || x == NULL || P == NULL || A == NULL || H == NULL ||
-        Q == NULL || R == NULL)
-    {
-        return false;
-    }
-
-    Helios* p = (Helios*)nav->priv;
-
-    p->kalman.x = x;
-    p->kalman.P = P;
-    p->kalman.model.A = A;
-    p->kalman.model.H = H;
-    p->kalman.model.Q = Q;
-    p->kalman.model.R = R;
-
-    return true;
-}
-
 bool HeliosStart(Navigator* nav)
 {
     if (nav == NULL)
@@ -65,19 +31,16 @@ bool HeliosStart(Navigator* nav)
 
     Helios* p = (Helios*)nav->priv;
 
-    if (p->kalman.model.A == NULL || p->kalman.model.H == NULL ||
-        p->kalman.model.Q == NULL || p->kalman.model.R == NULL ||
-        p->kalman.x == NULL || p->kalman.P == NULL)
-    {
-        return false;
-    }
-
     if (!p->data->update(p->data))
     {
         return false;
     }
 
     p->base_pressure = p->data->pressure;
+    p->p = 0;
+    p->v = 0;
+    p->a = 0;
+    p->t = 0.2;
     p->started = true;
 
     return true;
@@ -97,52 +60,33 @@ bool HeliosUpdate(Navigator* nav)
         return false;
     }
 
-    static size_t state = 0;
-
-    if (state++ < 1)
+    if (!p->data->update(p->data))
     {
-        return SimpleKalmanPredict(&p->kalman);
+        return false;
     }
-    else
-    {
-        state = 0;
-        if (!SimpleKalmanPredict(&p->kalman))
-        {
-            return false;
-        }
-        p->data->update(p->data);
 
-        // Use starting pressure as sea level to measure relative altitude.
-        double curr_altitude = altitude(p->data->pressure, p->base_pressure);
+    static double last_p = 0;
 
-        // Calculate velocity from last velocity (Kalman x[1][0]), current vertical accel, and timestep (Kalman A[0][1]).
-        ThreeAxisVec corrected_accel;
-        accel_rotate(&p->data->accel, &p->data->quat, &corrected_accel);
-        double curr_vert_accel = corrected_accel.z - EARTH_GRAVITY_M_S2;
+    // Use starting pressure as sea level to measure relative altitude.
+    double meas_p = altitude(p->data->pressure, p->base_pressure);
 
-        printf("%f %f | ", curr_altitude, curr_vert_accel);
+    double f_p = last_p * 0.1 + (meas_p * 0.9);
 
-        static double last_vert_acc = 0;
-        static double last_alt = 0;
-#define HEL_K_ALPHA 0.5
-        curr_vert_accel =
-            HEL_K_ALPHA * curr_vert_accel + ((1 - HEL_K_ALPHA) * last_vert_acc);
+    ThreeAxisVec corrected_accel;
+    accel_rotate(&p->data->accel, &p->data->quat, &corrected_accel);
+    p->a = corrected_accel.z - EARTH_GRAVITY_M_S2;
+    p->a = (fabs(p->a) < 0.2) ? 0 : p->a;
+    p->v = (fabs(f_p - last_p) < .3) ? p->v * .6 : p->v;
+    // printf("%f %f\n\n", f_p, last_p);
 
-        // #define HEL_ALT_ALPH 0.3
-        //         curr_altitude =
-        //             HEL_ALT_ALPH * curr_altitude + ((1 - HEL_ALT_ALPH) * last_alt);
+    double a_v = (p->v + (p->t * p->a));
+    // double p_v = (meas_p - last_p) * p->t;
+    p->v = a_v;  // (0.9 * a_v) + (0.1 * p_v);
+    last_p = p->p;
 
-        // Update Kalman filter.
-        MATRIX(z, 2, 1, {curr_altitude}, {curr_vert_accel});
-        bool s = SimpleKalmanEstimate(&p->kalman, &z);
+    p->p = (0.5 * meas_p) + (0.5 * (p->p + (p->t * p->v)));
 
-        printf("%f %f %f %f\n", MAT_GET(p->kalman.x, 0, 0),
-               MAT_GET(p->kalman.x, 1, 0), MAT_GET(p->kalman.x, 2, 0),
-               MAT_GET(p->kalman.x, 3, 0));
-        last_vert_acc = curr_vert_accel;
-        last_alt = curr_altitude;
-        return s;
-    }
+    printf("%f %f %f | %f %f\n", meas_p, p->a, a_v, p->p, p->v);
 
     return true;
 }
@@ -150,13 +94,13 @@ bool HeliosUpdate(Navigator* nav)
 double HeliosAltitude(Navigator* nav)
 {
     Helios* p = (Helios*)nav->priv;
-    return MAT_GET(p->kalman.x, 0, 0);
+    return p->p;
 }
 
 double HeliosVelocity(Navigator* nav)
 {
     Helios* p = (Helios*)nav->priv;
-    return MAT_GET(p->kalman.x, 1, 0);
+    return p->v;
 }
 
 const QuaternionVec* HeliosOrientation(Navigator* nav)

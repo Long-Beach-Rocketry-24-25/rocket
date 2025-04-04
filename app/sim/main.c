@@ -57,32 +57,6 @@ int main(int argc, char* argv[])
     MockNavDataInit(&nav_data, &mock_nav, "./test_data.log");
     HeliosNavigatorInit(&nav, &helios, &nav_data);
 
-    double sd_p = 2;
-    double sd_v = 2;
-    double sd_a = 8;
-    double t = 0.2;
-
-    // Vehicle should be stationary on initialization, hence P, V, A are 0
-    MATRIX(x, 3, 1, {0}, {0}, {0});
-    MATRIX(P, 3, 3, {1}, {0, 10}, {0, 0, 10});
-
-    MATRIX(A, 3, 3, {1, t, t * t / 2}, {0, 1, t}, {0, 0, 1});
-    MATRIX(H, 2, 3, {1, 0, 0}, {0, 0, 1});
-
-    // White noise * acceleration noise propagation
-    MATRIX(Q, 3, 3,
-           {pow(t, 4) / 4 * sd_a, pow(t, 3) / 2 * sd_a, pow(t, 2) / 2 * sd_a},
-           {pow(t, 3) / 2 * sd_a, pow(t, 2) * sd_a, t * sd_a},
-           {pow(t, 2) / 2 * sd_a, t * sd_a, sd_a});
-
-    // Approximating away all except largest component
-    // MATRIX(Q, 3, 3, {.1}, {0, 1}, {0, 0, pow(sd_a, 2)});
-
-    // SD of Baro and SD of Accelerometer, only 2 sensors and their errors are independent
-    MATRIX(R, 2, 2, {sd_p, 0}, {0, sd_a});
-
-    HeliosConfig(&nav, &x, &P, &A, &H, &Q, &R);
-
     if (!nav.start(&nav))
     {
         while (1);
@@ -90,11 +64,8 @@ int main(int argc, char* argv[])
 
     for (size_t i = 0; i < (340 - 1); ++i)
     {
-        for (size_t j = 0; j < 2; ++j)
-        {
-            bool success = nav.update(&nav);
-            // printf("%f %f\n", nav.altitude(&nav), nav.velocity(&nav));
-        }
+        bool success = nav.update(&nav);
+        // printf("%f %f\n", nav.altitude(&nav), nav.velocity(&nav));
     }
 
     // ---------------------------------

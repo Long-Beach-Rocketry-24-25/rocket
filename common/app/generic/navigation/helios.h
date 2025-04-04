@@ -12,15 +12,15 @@
 typedef struct
 {
     NavData* data;
-    SimpleKalman kalman;
+    double p;
+    double v;
+    double a;
+    double t;
     double base_pressure;
     bool started;
 } Helios;
 
 bool HeliosNavigatorInit(Navigator* nav, Helios* helios, NavData* nav_data);
-// bool HeliosKalmanInit(Matrix* A, Matrix* H, double timestep);
-bool HeliosConfig(Navigator* nav, Matrix* x, Matrix* P, Matrix* A, Matrix* H,
-                  Matrix* Q, Matrix* R);
 bool HeliosStart(Navigator* nav);
 bool HeliosUpdate(Navigator* nav);
 double HeliosAltitude(Navigator* nav);
