@@ -9,7 +9,7 @@ typedef struct QEnc QEnc;
 
 struct QEnc
 {
-    bool (*getTicks)(QEnc* qenc, size_t angle, size_t tick_size);
+    size_t (*getTicks)(QEnc* qenc);
 
     void* priv;
 };

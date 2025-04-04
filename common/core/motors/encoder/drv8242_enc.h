@@ -1,19 +1,37 @@
 #pragma once
 
+#include "dcm.h"
 #include "gpio.h"
 #include "pwm.h"
 #include "qenc.h"
 
+typedef enum
+{
+    idle = 0,
+    rotating,
+
+} QEncState;
+
 typedef struct
 {
-    QEnc* instance;
+    QEnc* encoder;
+    DCMotor* motor;
+    QEncState state;
     size_t ticks_needed;
-    size_t angle;
-    size_t tick_size;
+    size_t ppr;
+    size_t last_enc;
     uint16_t counter;
+    size_t diff;
     size_t ticks_per_angle;
-} DCEncParams;
+    size_t start_pos;
+    bool cmd;
+    bool dir;
 
-void QEnc_Init(QEnc* qenc, DCEncParams* params);
-bool get_ticks(QEnc* qenc, size_t angle, size_t tick_size, size_t ppr);
-bool set_ticks(QEnc* qenc);
+    bool (*command_rotate)(MotorRotoationCtrler* controller, double degrees);
+    bool (*update)(MotorRotoationCtrler* controller);
+} MotorRotoationCtrler;
+
+void QEnc_Init(QEnc* qenc, MotorRotoationCtrler* params);
+size_t get_ticks(QEnc* qenc);
+size_t increment(QEnc* qenc);
+size_t decrement(QEnc* qenc);
