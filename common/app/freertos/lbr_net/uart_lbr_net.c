@@ -25,7 +25,7 @@ void lbr_net_process_task()
     {
         if (xSemaphoreTake(task_semaphore, max_block_time) == pdTRUE)
         {
-        }
+                }
     }
 }
 
@@ -45,7 +45,7 @@ void usart_rx_callback()
             }
             else
             {
-                xSemaphoreGiveFromISR(task_semaphore)
+                xSemaphoreGiveFromISR(task_semaphore, &higher_prio_task_woken);
             }
         }
         portYIELD_FROM_ISR(higher_prio_task_woken);

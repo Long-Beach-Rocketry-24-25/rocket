@@ -8,6 +8,7 @@ target_link_libraries(core INTERFACE
     math
     mission
     periph
+    proto
     string
     timeout
 
@@ -21,6 +22,7 @@ add_subdirectory(container)
 add_subdirectory(math)
 add_subdirectory(mission)
 add_subdirectory(periph)
+add_subdirectory(proto)
 add_subdirectory(string)
 add_subdirectory(timeout)
 
