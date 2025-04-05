@@ -5,5 +5,8 @@
 	path = external/googletest
 	url = https://github.com/nfan17/googletest
 [submodule "nanopb"]
-	path = nanopb
+	path = external/nanopb
+	url = https://github.com/nanopb/nanopb
+[submodule "external/nanopb"]
+	path = external/nanopb
 	url = https://github.com/nanopb/nanopb
