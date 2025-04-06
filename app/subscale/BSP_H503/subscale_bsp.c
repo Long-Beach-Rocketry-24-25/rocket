@@ -21,9 +21,18 @@ static StGpioParams uart_io2 = {{0},
                                 7,
                                 {ALT_FUNC, 0, 0, 0, 0x7}};  // USART1 AF 7
 
-static StGpioParams spi_io1 = {{0}, GPIOC_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x5}};
-static StGpioParams spi_io2 = {{0}, GPIOC_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x4}};
-static StGpioParams spi_io3 = {{0}, GPIOC_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x4}};
+static StGpioParams spi_io1 = {{0},
+                               GPIOC_BASE,
+                               0,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x5}};
+static StGpioParams spi_io2 = {{0},
+                               GPIOC_BASE,
+                               2,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x4}};
+static StGpioParams spi_io3 = {{0},
+                               GPIOC_BASE,
+                               3,
+                               {ALT_FUNC, 0, VERY_HIGH, 0, 0x4}};
 
 const StGpioSettings i2c_io_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
 
