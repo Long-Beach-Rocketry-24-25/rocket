@@ -98,6 +98,11 @@ void USART1_IRQHandler(void)
     cli_usart_rx_callback();
 }
 
+void SystemReset(void)
+{
+    HAL_NVIC_SystemReset();
+}
+
 void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};

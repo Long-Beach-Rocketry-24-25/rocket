@@ -28,7 +28,8 @@ static void loop_func(void)
     led->toggle(led);
 }
 
-void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio)
+void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
+                       ResetFunc reset)
 {
     led = led_gpio;
     Command commands[4] = {{"Blink", blink, "Blinks LED."},
@@ -56,6 +57,7 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio)
     init_read_bno055(cli.comm, &bno);
     init_read_bmp390(cli.comm, &bmp);
     init_read_w25q_id(cli.comm, spi);
+    init_reset_cmd(&cli, reset);
 
     create_main_loop(loop_func, 20);
 }
