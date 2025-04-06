@@ -4,6 +4,7 @@
 #include "cmd_logger.h"
 #include "usart_cli.h"
 
+#include "bulk_logger.h"
 #include "logging.h"
 #include "main_loop.h"
 #include "nav_logbuilder.h"
