@@ -54,16 +54,18 @@ int main(int argc, char* argv[])
     //     printf("%zu %f\n%s", i, v, matrix_to_string(k.x));
     // }
 
-    MockNavDataInit(&nav_data, &mock_nav, "./test_data.log");
+    MockNavDataInit(&nav_data, &mock_nav, "./fast_data.log");
     HeliosNavigatorInit(&nav, &helios, &nav_data);
 
     if (!nav.start(&nav))
     {
+        printf("Error starting navigation algo!\n");
         while (1);
     }
 
-    for (size_t i = 0; i < (340 - 1); ++i)
+    for (size_t i = 0; i < (2889 - 1); ++i)
     {
+        printf("it %zu\n", i);
         bool success = nav.update(&nav);
         // printf("%f %f\n", nav.altitude(&nav), nav.velocity(&nav));
     }
