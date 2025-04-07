@@ -20,7 +20,7 @@ size_t get_ticks(QEnc* qenc)
     return params->counter;
 }
 
-size_t increment(QEnc* qenc)
+size_t increment(QEnc* qenc, size_t increment)
 {
     MotorRotoationCtrler* controller = (MotorRotoationCtrler*)(qenc->priv);
     if (fabs(controller->diff) > 65535)
@@ -30,11 +30,11 @@ size_t increment(QEnc* qenc)
     }
     else
     {
-        return ++controller->counter;
+        return controller->counter += increment;
     }
 }
 
-size_t decrement(QEnc* qenc)
+size_t decrement(QEnc* qenc, size_t decrement)
 {
     MotorRotoationCtrler* controller = (MotorRotoationCtrler*)(qenc->priv);
     if (fabs(controller->diff) > 65535)
@@ -44,13 +44,13 @@ size_t decrement(QEnc* qenc)
     }
     else
     {
-        return --controller->counter;
+        return controller->counter -= decrement;
     }
 }
 
 bool command_rotate(MotorRotoationCtrler* controller, double degrees)
 {
-    if (!controller->cmd)
+    if (!controller->cmd || degrees == 0)
     {
         return false;
     }
@@ -61,7 +61,7 @@ bool command_rotate(MotorRotoationCtrler* controller, double degrees)
         controller->dir = degrees > 0;
         controller->start_pos =
             controller->encoder->getTicks(controller->encoder);
-        controller->cmd = false;
+        controller->cmd = true;
         return true;
     }
 }
@@ -81,12 +81,15 @@ bool update(MotorRotoationCtrler* controller)
             }
             break;
         case rotating:
-            controller->diff = curr_enc - controller->last_enc;
-            if (fabs(controller->diff) < controller->ticks_per_angle)
+            if (controller->cmd)
             {
-                controller->motor->set_en(controller->motor, false);
-                controller->state = idle;
-                controller->cmd = true;
+                controller->diff += curr_enc - controller->last_enc;
+                if (fabs(controller->diff) < fabs(controller->ticks_needed))
+                {
+                    controller->motor->set_en(controller->motor, false);
+                    controller->state = idle;
+                    controller->cmd = false;
+                }
             }
             break;
     }
