@@ -11,9 +11,9 @@ if __name__ == "__main__":
         fname = sys.argv[1]
 
         with open(fname, "r") as r:
-            data = [x for x in r.readlines()]
+            data = [x.strip() for x in r.readlines()]
 
         for i in data:
-            eul = [int(x) for x in i.strip().split(",")[-3:]]
+            eul = [int(x) for x in i.split(",")[-3:]]
             rot = Rotation.from_euler('xyz', eul, degrees=True)
-            print(i[:-4]  + ','.join([str(round(x, 2)) for x in rot.as_quat()]))
+            print(','.join(i.split(",")[:-3] +[str(round(x, 2)) for x in rot.as_quat()]))
