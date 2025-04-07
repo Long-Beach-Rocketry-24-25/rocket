@@ -21,4 +21,4 @@ target_link_libraries_for(ARM32 ${EXECUTABLE}
         driver
 )
 
-configure_file(fast_data.log fast_data.log COPYONLY)
+configure_file(short_fast.log short_fast.log COPYONLY)

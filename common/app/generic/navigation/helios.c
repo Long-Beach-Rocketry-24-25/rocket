@@ -40,7 +40,7 @@ bool HeliosStart(Navigator* nav)
     p->p = 0;
     p->v = 0;
     p->a = 0;
-    p->t = 0.2;
+    p->t = 0.050;
     p->started = true;
 
     return true;
@@ -70,13 +70,13 @@ bool HeliosUpdate(Navigator* nav)
     // Use starting pressure as sea level to measure relative altitude.
     double meas_p = altitude(p->data->pressure, p->base_pressure);
 
-    double f_p = last_p * 0.1 + (meas_p * 0.9);
+    double f_p = last_p * 0.99 + (meas_p * 0.01);
 
     ThreeAxisVec corrected_accel;
     accel_rotate(&p->data->accel, &p->data->quat, &corrected_accel);
-    p->a = corrected_accel.z - EARTH_GRAVITY_M_S2;
-    p->a = (fabs(p->a) < 0.2) ? 0 : p->a;
-    p->v = (fabs(f_p - last_p) < .3) ? p->v * .6 : p->v;
+    p->a = corrected_accel.z - EARTH_GRAVITY_M_S2 + 1.1;
+    p->a = (fabs(p->a) < 0.45) ? 0 : p->a;
+    // p->v = (fabs(f_p - last_p) < 1) ? 0 : p->v;
     // printf("%f %f\n\n", f_p, last_p);
 
     double a_v = (p->v + (p->t * p->a));
