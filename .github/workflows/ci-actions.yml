@@ -36,7 +36,16 @@ jobs:
       uses: lukka/get-cmake@latest
       with:
         cmake-version: '3.27'
-    
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.13' 
+    - run: python my_script.py
+    - run: |  
+        pip install protobuf
+        
     - name: Pull git submodules
       run: |
         git submodule update --init --recursive
