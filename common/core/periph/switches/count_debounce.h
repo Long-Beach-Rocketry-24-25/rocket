@@ -2,6 +2,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "gpio.h"
 #include "io_input.h"
 
 //will define actual debouncing logic to use in c file
@@ -21,15 +22,18 @@ typedef struct
     //if n opposite values in a row - > change the state
     //else stay in current state and reset counter
     uint8_t threshold;  //switch states
+    Gpio* gpio;
+    //the gpio should end up here and now it will be updated in io_input.h
 } CountDebounce;
 
 //initiate debounce
 //db is pointer to debouncer
 // threshold is # of opposite reads before changing state
-void CountDebounce_Init(CountDebounce* db, IoInput* input, uint8_t threshold);
+void CountDebounce_Init(CountDebounce* db, IoInput* input, Gpio* gpio,
+                        uint8_t threshold);
 
 //to update
-void CountDebounce_Update(CountDebounce* db, IoInput* input);
+//void CountDebounce_Update(CountDebounce* db, IoInput* input);
 
 //on or off? hmmm this will tell us
 DebounceState CountDebounce_GetState(CountDebounce* db);

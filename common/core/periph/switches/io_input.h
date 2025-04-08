@@ -19,11 +19,15 @@
 //    void* priv;
 //};
 
+//abstraction layer
+// interface
+
 typedef struct IoInput IoInput;
 
 struct IoInput
 {
     // return true if io is 1 or or false if 0
     bool (*get_state)(IoInput* in);
+    //got rid of get_state_raw
     void* priv;
 };
