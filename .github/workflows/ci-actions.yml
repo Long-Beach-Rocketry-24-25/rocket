@@ -38,11 +38,11 @@ jobs:
         cmake-version: '3.27'
 
     - name: Set up Python
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+      uses: actions/checkout@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.13' 
-    - run: python my_script.py
+      run: python my_script.py
 
     - name: Pull git submodules
       run: |
@@ -96,11 +96,11 @@ jobs:
         cmake-version: '3.27'
 
     - name: Set up Python
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+      uses: actions/checkout@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.13' 
-    - run: python my_script.py 
+      run: python my_script.py 
 
     - name: Pull git submodules
       run: |
