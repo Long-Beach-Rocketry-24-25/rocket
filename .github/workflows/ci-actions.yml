@@ -38,16 +38,11 @@ jobs:
         cmake-version: '3.27'
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.13'
-
-    - name: Install Python dependencies
-      run: |
-        pip install protobuf
-
-    - name: Run Python script
-      run: python my_script.py
+        python-version: '3.13' 
+    - run: python my_script.py
 
     - name: Pull git submodules
       run: |
@@ -101,17 +96,12 @@ jobs:
         cmake-version: '3.27'
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.13'
+        python-version: '3.13' 
+    - run: python my_script.py 
 
-    - name: Install Python dependencies
-      run: |
-        pip install protobuf
-
-    - name: Run Python script
-      run: python my_script.py
-    
     - name: Pull git submodules
       run: |
         git submodule update --init --recursive
