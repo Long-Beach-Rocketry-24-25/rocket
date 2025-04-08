@@ -3,9 +3,15 @@
 static Bus bus;
 static Usart* comm;
 static SemaphoreHandle_t task_semaphore = NULL;
+static const pb_msgdesc_t* self_pb;  // idk if i need this
 
-bool send(uint8_t* buff, size_t size)
+bool send(uint8_t target_address, void* message, void* message_schema)
 {
+    uint8_t buffer[MAX_RECEIVE_BUF_SIZE - PACKET_HEADER_SIZE];
+    size_t message_length;
+    bool status;
+
+    /*
     if (size > MAX_RECEIVE_BUF_SIZE - CHECKSUM_SIZE - START_BYTE_SIZE)
     {
         return false;
@@ -15,6 +21,7 @@ bool send(uint8_t* buff, size_t size)
         comm->send(&comm, &buff, size);
     }
     return true;
+*/
 }
 
 void lbr_net_process_task()
@@ -25,7 +32,7 @@ void lbr_net_process_task()
     {
         if (xSemaphoreTake(task_semaphore, max_block_time) == pdTRUE)
         {
-                }
+        }
     }
 }
 

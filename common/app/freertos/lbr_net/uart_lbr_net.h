@@ -8,11 +8,13 @@ The main loop should just call funcitons based off of the strcut of states
 #include "lbr_net.h"
 #include "net_interface.h"
 
+#include <pb_decode.h>
+#include <pb_encode.h>
+
 #include "FreeRTOS.h"
+#include "retry_timer.h"
 #include "semphr.h"
 #include "task.h"
-
-#include "retry_timer.h"
 #include "usart.h"
 
 void usart_rx_callback();
