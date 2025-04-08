@@ -8,13 +8,12 @@ add_library(comms STATIC
 target_include_directories(comms 
     PUBLIC
     .
-    ${CMAKE_SOURCE_DIR}/external/nanopb
 )
 
 target_link_libraries(comms
     PUBLIC
     driver
-    protobuf-nanopb-static
+    protobuf-nanopb-static 
 )
 
 add_tests(comms

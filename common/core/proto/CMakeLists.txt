@@ -1,11 +1,7 @@
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/external/nanopb/extra)
+find_package(Nanopb REQUIRED)
 
-add_library(proto STATIC
-    example.pb.c
-)
+nanopb_generate_cpp(TARGET proto example.proto)
 
-target_include_directories(proto PUBLIC .)
 
-target_link_libraries(proto
-    PUBLIC
-    protobuf-nanopb-static
-)
+target_link_libraries(proto)
