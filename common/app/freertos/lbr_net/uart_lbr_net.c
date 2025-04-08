@@ -7,21 +7,22 @@ static const pb_msgdesc_t* self_pb;  // idk if i need this
 
 bool send(uint8_t target_address, void* message, void* message_schema)
 {
-    uint8_t buffer[MAX_RECEIVE_BUF_SIZE - PACKET_HEADER_SIZE];
-    size_t message_length;
+    uint8_t pb_buffer[MAX_RECEIVE_BUF_SIZE - PACKET_HEADER_SIZE];
+    size_t pb_length;
     bool status;
-
-    /*
-    if (size > MAX_RECEIVE_BUF_SIZE - CHECKSUM_SIZE - START_BYTE_SIZE)
+    pb_ostream_t stream = pb_ostream_from_buffer(pb_buffer, sizeof(pb_buffer));
+    status = pb_encode(&stream, message_schema, message);
+    pb_length = stream.bytes_written;
+    if (!status)
     {
         return false;
     }
-    for (int i = 0; i < size; i++)
-    {
-        comm->send(&comm, &buff, size);
-    }
+    uint8_t message_buffer[MAX_RECEIVE_BUF_SIZE];
+    bus.pack(&bus, message_buffer, MAX_RECEIVE_BUF_SIZE, target_address,
+             pb_buffer, pb_length);
+
+    comm->send(&comm, &message_buffer, pb_length + PACKET_HEADER_SIZE);
     return true;
-*/
 }
 
 void lbr_net_process_task()
