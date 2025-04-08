@@ -15,5 +15,6 @@ if __name__ == "__main__":
 
         for i in data:
             eul = [int(x) for x in i.split(",")[-3:]]
-            rot = Rotation.from_euler('xyz', eul, degrees=True)
-            print(','.join(i.split(",")[:-3] +[str(round(x, 2)) for x in rot.as_quat()]))
+            rot = Rotation.from_euler('xyz', eul, degrees=True).as_quat()
+            quat = list(rot[3:]) + list(rot[:3])
+            print(','.join(i.split(",")[:-3] +[str(round(x, 2)) for x in quat]))
