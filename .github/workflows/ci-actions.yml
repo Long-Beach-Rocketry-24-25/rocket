@@ -37,7 +37,6 @@ jobs:
       with:
         cmake-version: '3.27'
 
-    steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
@@ -45,7 +44,7 @@ jobs:
     - run: python my_script.py
     - run: |  
         pip install protobuf
-        
+
     - name: Pull git submodules
       run: |
         git submodule update --init --recursive
