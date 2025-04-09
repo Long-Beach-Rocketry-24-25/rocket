@@ -37,8 +37,10 @@ jobs:
       with:
         cmake-version: '3.27'
 
-    - name: Install protoc
-      run: sudo apt-get install -y protobuf-compiler
+    - name: Install Protobuf compiler and C++ library
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y protobuf-compiler libprotobuf-dev
 
     - name: Pull git submodules
       run: |
@@ -92,8 +94,10 @@ jobs:
         cmake-version: '3.27'
 
 
-    - name: Install protoc
-      run: sudo apt-get install -y protobuf-compiler
+    - name: Install Protobuf compiler and C++ library
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y protobuf-compiler libprotobuf-dev
 
     - name: Pull git submodules
       run: |
