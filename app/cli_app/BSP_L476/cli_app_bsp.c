@@ -67,7 +67,7 @@ void BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
 
 void USART2_IRQHandler(void)
 {
-    usart_rx_callback();
+    cli_usart_rx_callback();
 }
 
 void TIM1_UP_TIM16_IRQHandler(void)
