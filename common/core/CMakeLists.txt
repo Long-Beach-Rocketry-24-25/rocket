@@ -7,6 +7,7 @@ target_link_libraries(core INTERFACE
     container
     lbr_net
     math
+    memory
     mission
     periph
     string
@@ -21,6 +22,7 @@ add_subdirectory(comms)
 add_subdirectory(container)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
+add_subdirectory(memory)
 add_subdirectory(mission)
 add_subdirectory(periph)
 add_subdirectory(string)
