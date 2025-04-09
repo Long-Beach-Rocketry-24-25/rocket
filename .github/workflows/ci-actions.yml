@@ -37,13 +37,8 @@ jobs:
       with:
         cmake-version: '3.27'
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13' 
-
-    - name: Run Python script
-      run: pip install --upgrade protobuf grpcio-tools && protoc --version
+    - name: Install protoc
+      run: sudo apt-get install -y protobuf-compiler
 
     - name: Pull git submodules
       run: |
@@ -96,13 +91,9 @@ jobs:
       with:
         cmake-version: '3.27'
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13' 
 
-    - name: Run Python script
-      run: python -m pip install protobuf
+    - name: Install protoc
+      run: sudo apt-get install -y protobuf-compiler
 
     - name: Pull git submodules
       run: |
