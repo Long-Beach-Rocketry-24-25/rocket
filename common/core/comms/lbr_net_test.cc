@@ -5,7 +5,10 @@
 #include <cstdio>
 extern "C"
 {
+#include <pb_decode.h>
+#include <pb_encode.h>
 #include <string.h>
+#include "example.pb.h"
 #include "lbr_net.h"
 }
 
@@ -146,4 +149,33 @@ TEST_F(FormatTests, encode_decode_test)
 
     EXPECT_ARR_EQ(bus.receive_buffer, empty, 255);
     EXPECT_ARR_EQ(flushed, data, 5);
+}
+
+/**
+ * @brief Test nanopb.
+ */
+TEST_F(FormatTests, nanopb_test)
+{
+    uint8_t buffer[128];
+    size_t message_length;
+    bool status;
+    {
+        SimpleMessage message = SimpleMessage_init_zero;
+
+        pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+        message.lucky_number = 13;
+
+        status = pb_encode(&stream, SimpleMessage_fields, &message);
+        message_length = stream.bytes_written;
+    }
+    {
+        SimpleMessage message = SimpleMessage_init_zero;
+
+        pb_istream_t stream = pb_istream_from_buffer(buffer, message_length);
+
+        status = pb_decode(&stream, SimpleMessage_fields, &message);
+
+        EXPECT_EQ(13, (int)message.lucky_number);
+    }
 }

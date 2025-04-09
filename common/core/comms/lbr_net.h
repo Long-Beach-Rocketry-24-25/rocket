@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_RECEIVE_BUF_SIZE 255U
+#define MAX_RECEIVE_BUF_SIZE 256U
 #define CHECKSUM_SIZE 1
 #define CHECKSUM_BITS 256
 #define START_BYTE_SIZE 1
