@@ -6,7 +6,6 @@
 
 #include "matrix.h"
 
-<<<<<<< HEAD
 /**
  * A quaternion instance.
  */
@@ -53,17 +52,4 @@ QuaternionVec* quat_conjugate(QuaternionVec* quat, QuaternionVec* out);
  * @return True if the quaternions are equivalent within a float threshold,
  *         otherwise false.
  */
-=======
-typedef struct
-{
-    float w;
-    float x;
-    float y;
-    float z;
-} QuaternionVec;
-
-QuaternionVec* quat_multiply(QuaternionVec* q1, QuaternionVec* q2,
-                             QuaternionVec* out);
-QuaternionVec* quat_conjugate(QuaternionVec* quat, QuaternionVec* out);
->>>>>>> f1d7275 (math and gnc updates)
 bool quat_compare(QuaternionVec* q1, QuaternionVec* q2);
