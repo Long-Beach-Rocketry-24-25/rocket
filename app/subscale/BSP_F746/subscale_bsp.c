@@ -87,3 +87,8 @@ void USART3_IRQHandler(void)
 {
     cli_usart_rx_callback();
 }
+
+void SystemReset(void)
+{
+    NVIC_SystemReset();
+}
