@@ -29,8 +29,10 @@ bool BulkLoggerWrite(LogSubscriber* sub, const uint8_t* data, size_t size)
     BulkLogger* bulk_log = (BulkLogger*)sub->priv;
 
     bool success = false;
+    // Check if iterations remain to buffer.
     if (bulk_log->curr_iters < bulk_log->divisor)
     {
+        // Fail if out of backing memory.
         if (size > (bulk_log->buf_size - bulk_log->buf_idx))
         {
             return false;
@@ -42,6 +44,7 @@ bool BulkLoggerWrite(LogSubscriber* sub, const uint8_t* data, size_t size)
     }
     else
     {
+        // Write to internal log.
         success = bulk_log->internal->write(bulk_log->internal, bulk_log->buf,
                                             bulk_log->buf_idx);
         memset(bulk_log->buf, 0, bulk_log->buf_idx);
