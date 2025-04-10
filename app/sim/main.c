@@ -1,11 +1,4 @@
 
-<<<<<<< HEAD
-#include <stdio.h>
-
-int main(int argc, char* argv[])
-{
-    printf("Hello World!\n");
-=======
 #include <math.h>
 #include "acceleration.h"
 #include "helios.h"
@@ -52,6 +45,5 @@ int main(int argc, char* argv[])
                nav.velocity(&nav), nav.acceleration(&nav));
     }
 
->>>>>>> 651364b (Nf flight algo)
     return 0;
 }
