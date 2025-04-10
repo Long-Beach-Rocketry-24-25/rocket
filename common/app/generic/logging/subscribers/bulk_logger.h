@@ -1,6 +1,6 @@
 /**
- * Log subscriber to buffer log entries, and only save to
- * the internal log subscriber once every n entries.
+ * Log subscriber to buffer log entries in RAM, and only save
+ * to the internal log subscriber once every n entries.
  * Allows for better compacted data, and can be post processed
  * to expand back to the original dataset after retrieval.
  */
