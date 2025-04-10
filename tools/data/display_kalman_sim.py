@@ -6,9 +6,9 @@ import pandas as pd
 import sys
 
 if __name__ == "__main__":
-    
-    if len(sys.argv) < 2:
-        print("Please provide a file name in the first command line argument.")
+
+    if len(sys.argv) < 3:
+        print("Please provide a source then output file name in the first and second command line arguments.")
     else:
 
         fname = sys.argv[1]
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         pp = []
         pv = []
         pa = []
-        
+
         for i in data:
             f = [float(x) for x in i.split("|")[0].strip().split(" ")]
             mp.append(f[0])
@@ -44,4 +44,4 @@ if __name__ == "__main__":
         df = pd.DataFrame(d)
 
         fig = px.line(df, x='Time Idx', y=df.columns[1:])
-        fig.write_html("plot3.html")
+        fig.write_html(f"{sys.argv[2]}.html")
