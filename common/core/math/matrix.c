@@ -92,9 +92,10 @@ Matrix* matrix_subtract(Matrix* A, Matrix* B, Matrix* C)
     return C;
 }
 
-Matrix* matrix_inverse(Matrix* A, Matrix* I)
+Matrix* matrix_inverse(Matrix* A, Matrix* AInv)
 {
-    if (A == NULL || I == NULL || A->rows != I->rows || A->cols != I->cols)
+    if (A == NULL || AInv == NULL || A->rows != AInv->rows ||
+        A->cols != AInv->cols)
     {
         return NULL;
     }
@@ -168,11 +169,11 @@ Matrix* matrix_inverse(Matrix* A, Matrix* I)
     {
         for (j = n; j < n * 2; j++)
         {
-            I->data[c++] = MAT_GET(aug, i, j);
+            AInv->data[c++] = MAT_GET(aug, i, j);
         }
     }
 
-    return I;
+    return AInv;
 }
 
 bool matrix_compare(Matrix* A, Matrix* B)

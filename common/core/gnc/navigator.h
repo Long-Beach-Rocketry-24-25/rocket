@@ -10,51 +10,53 @@
 
 #pragma once
 
+#include "nav_data.h"
+
 /**
-  * A Navigator.
-  */
+ * A Navigator.
+ */
 typedef struct Navigator Navigator;
 struct Navigator
 {
     /**
-      * Gets the current estimated altitude.
-      * @return The altitude as a double.
-      */
+     * Gets the current estimated altitude.
+     * @return The altitude as a double.
+     */
     double (*altitude)(Navigator* nav);
 
     /**
-      * Gets the current estimated velocity.
-      * @return The velocity as a double.
-      */
+     * Gets the current estimated velocity.
+     * @return The velocity as a double.
+     */
     double (*velocity)(Navigator* nav);
 
     /**
-      * Gets the current estimated acceleration.
-      * @return The acceleration as a double.
-      */
+     * Gets the current estimated acceleration.
+     * @return The acceleration as a double.
+     */
     double (*acceleration)(Navigator* nav);
 
     /**
-      * Gets the current measured orientation as a quaternion.
-      * @return The quaternion as a QuaternionVec struct pointer.
-      */
+     * Gets the current measured orientation as a quaternion.
+     * @return The quaternion as a QuaternionVec struct pointer.
+     */
     const QuaternionVec* (*orientation)(Navigator* nav);
 
     /**
-      * Starts the navigation algorithm.
-      * @return True on success, false otherwise.
-      */
+     * Starts the navigation algorithm.
+     * @return True on success, false otherwise.
+     */
     bool (*start)(Navigator* nav);
 
     /**
-      * Updates the navigation algorithm, expected to be called
-      * every iteration/at the expected update rate.
-      * @return True on success, false otherwise.
-      */
+     * Updates the navigation algorithm, expected to be called
+     * every iteration/at the expected update rate.
+     * @return True on success, false otherwise.
+     */
     bool (*update)(Navigator* nav);
 
     /**
-      * Private context for use by concrete implementations.
-      */
+     * Private context for use by concrete implementations.
+     */
     void* priv;
 };
