@@ -8,7 +8,6 @@ target_link_libraries(core INTERFACE
     gnc
     lbr_net
     math
-    mission
     periph
     string
     timeout
@@ -23,7 +22,6 @@ add_subdirectory(container)
 add_subdirectory(gnc)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
-add_subdirectory(mission)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)

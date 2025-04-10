@@ -40,6 +40,7 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
 
     W25qInit(&flash, spi, 0xFFFFFF);
     Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
+    Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
     Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_PWR);
     Bmp390_Config(&bmp);
     Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
