@@ -5,6 +5,7 @@ target_link_libraries(core INTERFACE
     cli
     comms
     container
+    gnc
     lbr_net
     math
     mission
@@ -19,6 +20,7 @@ target_link_libraries(core INTERFACE driver)
 add_subdirectory(cli)
 add_subdirectory(comms)
 add_subdirectory(container)
+add_subdirectory(gnc)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
 add_subdirectory(mission)

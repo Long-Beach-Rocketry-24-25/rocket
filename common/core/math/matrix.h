@@ -1,91 +1,49 @@
 /**
- * 
- * 
+ * Matrix math library.
  */
 
 #pragma once
 
+#include "math_util.h"
+
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define MAX_STR_LENGTH 500
 
-void matrix_multiply(double* A, double* B, double* C, int m, int n, int p)
+typedef struct
 {
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < p; j++)
-        {
-            C[i * p + j] = 0;
-            for (int k = 0; k < n; k++)
-            {
-                C[i * p + j] += A[i * n + k] * B[k * p + j];
-            }
-        }
-    }
-}
+    double* data;
+    const size_t rows;
+    const size_t cols;
+} Matrix;
 
-void matrix_transpose(double* A, double* AT, int m, int n)
-{
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            AT[j * m + i] = A[i * n + j];
-        }
-    }
-}
+#define MATRIX(name, rows, cols, ...)              \
+    double name##_buf[rows][cols] = {__VA_ARGS__}; \
+    Matrix name = {(double*)name##_buf, rows, cols}
 
-void matrix_add(double* A, double* B, double* C, int m, int n)
-{
-    for (int i = 0; i < m * n; i++)
-    {
-        C[i] = A[i] + B[i];
-    }
-}
+#define MATRIX_T(type, name, rows, cols, ...)           \
+    type double name##_buf[rows][cols] = {__VA_ARGS__}; \
+    type Matrix name = {(double*)name##_buf, rows, cols}
 
-void matrix_subtract(double* A, double* B, double* C, int m, int n)
-{
-    for (int i = 0; i < m * n; i++)
-    {
-        C[i] = A[i] - B[i];
-    }
-}
+#define VAR_MATRIX(name, rows, cols) \
+    double name##_buf[rows][cols];   \
+    Matrix name = {(double*)name##_buf, rows, cols}
 
-char* matrix_to_string(double* matrix, int rows, int cols)
-{
+#define MAT_GET(mat, row, col) (mat)->data[((row) * (mat)->cols) + (col)]
 
-    static char str[MAX_STR_LENGTH];
-    char temp[50];
-    int pos = 0;
+Matrix* matrix_copy(Matrix* src, Matrix* dest);
 
-    str[0] = '\0';  // Initialize the string
+#define MAT_AUGMENT(mat, name)                      \
+    VAR_MATRIX(name, (mat)->rows, (mat)->cols * 2); \
+    matrix_copy(mat, &name)
 
-    for (int i = 0; i < rows; i++)
-    {
-        strcat(str, "[ ");
-        pos += 2;
-
-        for (int j = 0; j < cols; j++)
-        {
-            snprintf(temp, sizeof(temp), "%.4f ", matrix[i * cols + j]);
-
-            // Check if adding this number would exceed the buffer
-            if (pos + strlen(temp) >=
-                MAX_STR_LENGTH - 3)  // -3 for "]\n" and null terminator
-            {
-                strcat(str, "...]");
-                return str;
-            }
-
-            strcat(str, temp);
-            pos += strlen(temp);
-        }
-
-        strcat(str, "]\n");
-        pos += 2;
-    }
-
-    return str;
-}
+Matrix* matrix_multiply(Matrix* A, Matrix* B, Matrix* C);
+Matrix* matrix_transpose(Matrix* A, Matrix* AT);
+Matrix* matrix_add(Matrix* A, Matrix* B, Matrix* C);
+Matrix* matrix_subtract(Matrix* A, Matrix* B, Matrix* C);
+Matrix* matrix_inverse(Matrix* A, Matrix* I);
+bool matrix_compare(Matrix* A, Matrix* B);
+char* matrix_to_string(Matrix* mat);
