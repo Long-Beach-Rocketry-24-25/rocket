@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 #include "qenc.h"
-#include "st_gpio.h"
+#include "gpio.h"
 #include "st_pwm.h"
 #include "timeout.h"
 

@@ -2,8 +2,8 @@
 #pragma once
 
 #include "drv8242_dcm.h"
-#include "st_gpio.h"
-#include "st_pwm.h"
+#include "gpio.h"
+#include "pwm.h"
 #include "stm32l476xx.h"
 
 typedef struct DCM_Control DCM_Control;

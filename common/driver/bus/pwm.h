@@ -7,7 +7,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "stm32l4xx.h"
 
 /**
   * @brief structure that contains the functions needed to intialize and setup specific timers usint PWM drivers.
