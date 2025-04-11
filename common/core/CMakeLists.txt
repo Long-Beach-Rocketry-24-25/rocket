@@ -5,13 +5,12 @@ target_link_libraries(core INTERFACE
     cli
     comms
     container
-    math
-    mission
+    gnc
+    error
+    memory
     periph
-    proto
     string
     timeout
-
 )
 
 target_link_libraries(core INTERFACE driver)
@@ -19,10 +18,12 @@ target_link_libraries(core INTERFACE driver)
 add_subdirectory(cli)
 add_subdirectory(comms)
 add_subdirectory(container)
+add_subdirectory(gnc)
+add_subdirectory(error)
+add_subdirectory(comms)
 add_subdirectory(math)
-add_subdirectory(mission)
+add_subdirectory(memory)
 add_subdirectory(periph)
-add_subdirectory(proto)
 add_subdirectory(string)
 add_subdirectory(timeout)
 
