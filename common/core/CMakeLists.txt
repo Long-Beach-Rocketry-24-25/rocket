@@ -9,6 +9,7 @@ target_link_libraries(core INTERFACE
     lbr_net
     math
     mission
+    motors
     periph
     string
     timeout
@@ -24,6 +25,7 @@ add_subdirectory(gnc)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
 add_subdirectory(mission)
+add_subdirectory(motors)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)
