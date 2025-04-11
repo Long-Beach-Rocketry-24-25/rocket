@@ -8,6 +8,7 @@ target_link_libraries(core INTERFACE
     gnc
     error
     memory
+    math
     periph
     string
     timeout
