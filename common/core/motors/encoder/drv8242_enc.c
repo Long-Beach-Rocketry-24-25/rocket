@@ -99,4 +99,5 @@ bool update(MotorRotoationCtrler* controller)
             break;
     }
     controller->last_enc = curr_enc;
+    return false;
 }

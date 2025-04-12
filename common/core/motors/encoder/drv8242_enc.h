@@ -1,7 +1,6 @@
 #pragma once
 
 #include "dcm.h"
-#include "gpio.h"
 #include "pwm.h"
 #include "qenc.h"
 
