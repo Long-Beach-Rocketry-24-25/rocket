@@ -4,7 +4,6 @@
 #include "drv8242_dcm.h"
 #include "gpio.h"
 #include "pwm.h"
-#include "stm32l476xx.h"
 
 typedef struct DCM_Control DCM_Control;
 
