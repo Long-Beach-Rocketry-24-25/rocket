@@ -11,6 +11,7 @@ target_link_libraries(core INTERFACE
     periph
     string
     timeout
+    motors
 
 )
 
@@ -25,4 +26,5 @@ add_subdirectory(math)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)
+add_subdirectory(motors)
 

@@ -1,12 +1,9 @@
-
-
 #include "pwm_app_bsp.h"
-
-static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {ALT_FUNC, 0, 0, 0, 0x1}};
 
 static StPrivPwm st_pwm;
 static size_t base_address = TIM2_BASE;
 static size_t mc_clock = 84000000;
+static StGpioParams led_stgpio = {{0}, GPIOA_BASE, 5, {ALT_FUNC, 0, 0, 0, 0x1}};
 
 void BSP_Init(Pwm* pwm_timer, Gpio* led_gpio)
 {
