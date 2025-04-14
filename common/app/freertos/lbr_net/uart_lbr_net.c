@@ -20,7 +20,6 @@ bool send(uint8_t target_address, void* message, void* message_schema)
     uint8_t message_buffer[MAX_RECEIVE_BUF_SIZE];
     bus.pack(&bus, message_buffer, MAX_RECEIVE_BUF_SIZE, target_address,
              pb_buffer, pb_length);
-
     comm->send(&comm, &message_buffer, pb_length + PACKET_HEADER_SIZE);
     return true;
 }
