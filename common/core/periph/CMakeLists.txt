@@ -1,6 +1,5 @@
 
 add_library(periph STATIC
-    switches/count_debounce.c
     ads111x/ads111x.c
     bmp390/bmp390.c
     bno055/bno055.c
@@ -12,7 +11,6 @@ add_library(periph STATIC
 )
 
 target_include_directories(periph PUBLIC
-    switches
     ads111x
     bmp390
     bno055

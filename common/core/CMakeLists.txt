@@ -10,6 +10,7 @@ target_link_libraries(core INTERFACE
     mission
     periph
     string
+    switches
     timeout
 
 )
@@ -24,5 +25,6 @@ add_subdirectory(math)
 add_subdirectory(mission)
 add_subdirectory(periph)
 add_subdirectory(string)
+add_subdirectory(switches)
 add_subdirectory(timeout)
 
