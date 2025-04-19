@@ -1,10 +1,10 @@
 /**
- * @brief STM32L4 implementation of PWM interface.
+ * @brief STM32F7 implementation of PWM interface.
  */
 
 #pragma once
 
-#include "stm32l4xx.h"
+#include "stm32f7xx.h"
 
 #include "pwm.h"
 
@@ -15,8 +15,8 @@
 typedef struct
 {
     TIM_TypeDef* instance;
-    size_t period;
-    size_t clock;
+    size_t pclk_freq;
+    size_t timer_size;
 } StPrivPwm;
 
 /**
@@ -25,11 +25,12 @@ typedef struct
   * @param pwm A pointer to the peripheral instance.
   * @param st_pwm A pointer to a private data variable giving access to other private members.
   * @param base_address The base address of the PWM peripheral.
-  * @param mc_clock This represents the Micro-controller's native PWM clock frequency.
+  * @param pclk_freq Frequency in Hz of the PCLK driving the timer.
+  * @param timer_size Max size of the timer counter, for example 65535 for a 16-bit.
   * 
   */
 void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
-               size_t mc_clock);
+               size_t pclk_freq, size_t timer_size);
 
 /**
   * @brief Initializes settings for a PWM object.

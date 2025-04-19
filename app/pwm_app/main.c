@@ -17,7 +17,7 @@ void pwm_test(void)
 {
     static size_t x = 0;
 
-    pwm.setDuty(&pwm, x);
+    pwm.set_duty(&pwm, x);
 
     x = (x < 100) ? x + 1 : 0;
 }
@@ -27,7 +27,7 @@ int main(void)
 
     BSP_Init(&pwm, &led_gpio);
 
-    StPwmEnable(&pwm, true);
+    pwm.enable(&pwm, true);
 
     create_main_loop(pwm_test, 10);
 

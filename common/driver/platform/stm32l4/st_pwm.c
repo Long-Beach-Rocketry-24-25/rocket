@@ -1,6 +1,5 @@
 
 #include "st_pwm.h"
-#include "stm32l476xx.h"
 
 void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
                size_t mc_clock)
@@ -10,15 +9,15 @@ void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
     pwm->priv = (void*)st_pwm;
     st_pwm->clock = mc_clock;
     pwm->enable = StPwmEnable;
-    pwm->setDuty = StPwmDuty;
-    pwm->setFreq = StPwmSetFreq;
+    pwm->set_duty = StPwmDuty;
+    pwm->set_freq = StPwmSetFreq;
 
     StPwmEnable(pwm, false);
     StPwmSetFreq(pwm, 1000);
     StPwmDuty(pwm, 50);  //setting duty cycle to 50%
 }
 
-bool StPwmEnable(Pwm* pwm, bool enable)
+void StPwmEnable(Pwm* pwm, bool enable)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
@@ -57,8 +56,18 @@ void StPwmSetFreq(Pwm* pwm, size_t hz)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
-    dev->period = 1000 / hz;
-    size_t DesiredPSC = ((dev->clock) / 65535) / hz;
+    size_t DesiredPSC;
+
+    if (hz != 0)
+    {
+        dev->period = 1000 / hz;
+        DesiredPSC = ((dev->clock) / 65535) / hz;
+    }
+    else
+    {
+        dev->period = 0;
+        DesiredPSC = 0;
+    }
 
     dev->instance->PSC = DesiredPSC - 1;
     dev->instance->ARR = 65535 - 1;
