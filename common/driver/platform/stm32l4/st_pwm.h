@@ -35,11 +35,8 @@ void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
   * @brief Initializes settings for a PWM object.
   * 
   * @param pwm A pointer to the peripheral instance.
-  * @param enable True to enable the PWM peripheral, false to disable.
-  * 
-  * @return True on success, false otherwise. 
   */
-void StPwmEnable(Pwm* pwm, bool enable);
+void StPwmConfig(Pwm* pwm);
 
 /**
   * @brief Sets the desired pwm frequency to operate at.
@@ -48,7 +45,7 @@ void StPwmEnable(Pwm* pwm, bool enable);
   * @param hz Desired frequency in Hz set by user.
   * 
   */
-void StPwmSetFreq(Pwm* pwm, size_t hz);
+bool StPwmSetFreq(Pwm* pwm, size_t hz);
 
 /**
   * @brief Sets the desired duty cycle for pwm device.
@@ -57,4 +54,4 @@ void StPwmSetFreq(Pwm* pwm, size_t hz);
   * @param duty Desired duty cycle given as a percentage of the period (1000ms / Freq in Hz). 
   * 
   */
-void StPwmDuty(Pwm* pwm, double duty);
+bool StPwmDuty(Pwm* pwm, double duty);

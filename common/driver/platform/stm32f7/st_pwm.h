@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "stm32f7xx.h"
-
 #include "pwm.h"
+
+#include "stm32f7xx.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -36,14 +36,11 @@ bool StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address, size_t channel,
                size_t pclk_freq, size_t timer_size);
 
 /**
-  * @brief Initializes settings for a PWM object.
+  * @brief Initializes settings for a PWM instance.
   * 
   * @param pwm A pointer to the peripheral instance.
-  * @param enable True to enable the PWM peripheral, false to disable.
-  * 
-  * @return True on success, false otherwise. 
   */
-void StPwmEnable(Pwm* pwm, bool enable);
+void StPwmConfig(Pwm* pwm);
 
 /**
   * @brief Sets the desired pwm frequency to operate at.
@@ -51,8 +48,9 @@ void StPwmEnable(Pwm* pwm, bool enable);
   * @param pwm A pointer to the peripheral instance.
   * @param hz Desired frequency in Hz set by user.
   * 
+  * @return True on success, false otherwise.
   */
-void StPwmSetFreq(Pwm* pwm, size_t hz);
+bool StPwmSetFreq(Pwm* pwm, size_t hz);
 
 /**
   * @brief Sets the desired duty cycle for pwm device.
@@ -60,5 +58,6 @@ void StPwmSetFreq(Pwm* pwm, size_t hz);
   * @param pwm A pointer to the peripheral instance.
   * @param duty Desired duty cycle given as a percentage of the period (1000ms / Freq in Hz). 
   * 
+  * @return True on success, false otherwise.
   */
-void StPwmDuty(Pwm* pwm, double duty);
+bool StPwmDuty(Pwm* pwm, double duty);

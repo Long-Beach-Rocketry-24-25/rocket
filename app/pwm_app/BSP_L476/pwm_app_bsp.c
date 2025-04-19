@@ -19,4 +19,5 @@ void BSP_Init(Pwm* pwm_timer, Gpio* led_gpio)
     StGpioConfig(led_gpio);
 
     StPwmInit(pwm_timer, &st_pwm, base_address, mc_clock);
+    StPwmConfig(pwm_timer);
 }
