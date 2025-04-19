@@ -16,5 +16,5 @@ void BSP_Init(Pwm* pwm_timer, Gpio* led_gpio)
     StGpioInit(led_gpio, &led_stgpio);
     StGpioConfig(led_gpio);
 
-    StPwmInit(pwm_timer, &st_pwm, TIM3_BASE, 16000000, UINT16_MAX);
+    StPwmInit(pwm_timer, &st_pwm, TIM3_BASE, 3, 16000000, UINT16_MAX);
 }

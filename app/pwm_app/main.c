@@ -29,7 +29,7 @@ int main(void)
 
     pwm.enable(&pwm, true);
 
-    create_main_loop(pwm_test, 10);
+    create_main_loop(pwm_test, 100);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
