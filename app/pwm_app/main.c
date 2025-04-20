@@ -5,6 +5,7 @@
 
 #include "pwm_app_bsp.h"
 #include "pwm_ctl.h"
+#include "reset_cmd.h"
 
 #include "gpio.h"
 #include "pwm.h"
@@ -18,11 +19,10 @@ Gpio led_gpio;
 
 int main(void)
 {
-
     BSP_Init(&usart, &pwm, &led_gpio);
-
     create_cli_task(&cli, &usart, NULL, 0);
     init_pwm_ctl(&cli, &pwm);
+    init_reset_cmd(&cli, NVIC_SystemReset);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

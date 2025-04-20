@@ -1,5 +1,5 @@
 /**
- * @brief STM32F7 implementation of PWM interface.
+ * @brief STM32L4 implementation of PWM interface.
  */
 
 #pragma once
