@@ -1,59 +1,94 @@
 
 #include "st_pwm.h"
 
-void StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address,
-               size_t mc_clock)
+bool StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address, size_t channel,
+               size_t pclk_freq, size_t timer_size)
 {
     st_pwm->instance = (TIM_TypeDef*)base_address;
 
+    if (channel < 1 || channel > 4)
+    {
+        return false;
+    }
+
+    st_pwm->channel = channel;
+    st_pwm->pclk_freq = pclk_freq;
+    st_pwm->timer_size = timer_size;
+
     pwm->priv = (void*)st_pwm;
-    st_pwm->clock = mc_clock;
     pwm->set_duty = StPwmDuty;
     pwm->set_freq = StPwmSetFreq;
 
-    StPwmSetFreq(pwm, 1000);
-    StPwmDuty(pwm, 50);  //setting duty cycle to 50%
+    StPwmSetFreq(pwm, 0);
+    StPwmDuty(pwm, 0);
+
+    return true;
 }
 
 void StPwmConfig(Pwm* pwm)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
-    dev->instance->CCMR1 &= ~TIM_CCMR1_CC1S;
-    dev->instance->CCMR1 |= TIM_CCMR1_OC1M_2;
-    dev->instance->CCMR1 |= TIM_CCMR1_OC1M_1;
-    dev->instance->CCER &= ~TIM_CCER_CC1P;
-    dev->instance->CCER |= TIM_CCER_CC1E;
+    switch (dev->channel)
+    {
+        case 1:
+            dev->instance->CCMR1 |=
+                TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE;
+            dev->instance->CCER |= TIM_CCER_CC1E;
+            break;
+        case 2:
+            dev->instance->CCMR1 |=
+                TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE;
+            dev->instance->CCER |= TIM_CCER_CC2E;
+            break;
+        case 3:
+            dev->instance->CCMR2 |=
+                TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE;
+            dev->instance->CCER |= TIM_CCER_CC3E;
+            break;
+        case 4:
+            dev->instance->CCMR2 |=
+                TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE;
+            dev->instance->CCER |= TIM_CCER_CC4E;
+            break;
+        default:
+            break;
+    }
 
-    dev->instance->CCMR1 |= TIM_CCMR1_OC1PE;
-    dev->instance->CR1 |= TIM_CR1_ARPE;
-    dev->instance->CR1 &= ~TIM_CR1_CMS_Msk;
-    dev->instance->CR1 &= ~TIM_CR1_DIR_Msk;
-    dev->instance->CR1 &= ~TIM_CR1_CKD_Msk;
     dev->instance->EGR |= TIM_EGR_UG;
-
-    dev->instance->CR1 |= TIM_CR1_CEN;
+    dev->instance->CR1 &= 0;
+    dev->instance->CR1 |= TIM_CR1_ARPE | TIM_CR1_CEN;
 }
 
 bool StPwmSetFreq(Pwm* pwm, size_t hz)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
-    size_t DesiredPSC;
+    size_t target_psc = 0;
 
-    if (hz != 0)
+    if (hz > 0)
     {
-        dev->period = 1000 / hz;
-        DesiredPSC = ((dev->clock) / 65535) / hz;
+        while (target_psc < 1)
+        {
+            target_psc =
+                (size_t)(((double)dev->pclk_freq) / dev->timer_size) / hz;
+
+            // Frequency is too high.
+            if (dev->timer_size < 20)
+            {
+                return false;
+            }
+
+            dev->timer_size -= dev->timer_size / 20;
+        }
     }
     else
     {
-        dev->period = 0;
-        DesiredPSC = 0;
+        target_psc = 1;
     }
 
-    dev->instance->PSC = DesiredPSC - 1;
-    dev->instance->ARR = 65535 - 1;
+    dev->instance->PSC = target_psc - 1;
+    dev->instance->ARR = dev->timer_size - 1;
 
     return true;
 }
@@ -62,9 +97,30 @@ bool StPwmDuty(Pwm* pwm, double duty)
 {
     StPrivPwm* dev = (StPrivPwm*)pwm->priv;
 
-    double Duty = (size_t)((duty / 100) * (dev->instance->ARR));
+    if ((duty > 100) || (duty < 0))
+    {
+        return false;
+    }
 
-    dev->instance->CCR1 = Duty;
+    size_t cmp = (size_t)((duty / 100) * (dev->instance->ARR));
+
+    switch (dev->channel)
+    {
+        case 1:
+            dev->instance->CCR1 = cmp;
+            break;
+        case 2:
+            dev->instance->CCR2 = cmp;
+            break;
+        case 3:
+            dev->instance->CCR3 = cmp;
+            break;
+        case 4:
+            dev->instance->CCR4 = cmp;
+            break;
+        default:
+            break;
+    }
 
     return true;
 }
