@@ -17,7 +17,8 @@ typedef struct
     TIM_TypeDef* instance;
     size_t channel;
     size_t pclk_freq;
-    size_t timer_size;
+    size_t timer_max;
+    float curr_duty;
 } StPrivPwm;
 
 /**

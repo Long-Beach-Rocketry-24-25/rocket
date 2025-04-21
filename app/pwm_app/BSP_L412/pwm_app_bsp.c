@@ -4,7 +4,10 @@
 
 static StPrivPwm st_pwm;
 static StPrivUsart st_usart;
-static StGpioParams pwm_stgpio = {{0}, GPIOB_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x1}};
+// User LED Pin TIM2 CH2
+// static StGpioParams pwm_stgpio = {{0}, GPIOB_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x1}};
+// PA 0 TIM2 CH1
+static StGpioParams pwm_stgpio = {{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x1}};
 
 // Sequential use of these, so using one is fine. Not thread safe.
 static Timeout time;
@@ -22,14 +25,18 @@ static StGpioParams uart_io2 = {{0},
 void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 {
     // LED GPIO
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
 
     StGpioInit(led_gpio, &pwm_stgpio);
     StGpioConfig(led_gpio);
 
-    //TIM2 CH2
-    StPwmInit(pwm, &st_pwm, TIM2_BASE, 2, 16000000, UINT16_MAX);
+    /**
+     * TIM2 CH1 (PA0 AF1):
+     * With no additional clock config, APB1 clock should be same frequency
+     * as core clock.
+     */
+    StPwmInit(pwm, &st_pwm, TIM2_BASE, 1, SystemCoreClock, UINT16_MAX);
     StPwmConfig(pwm);
 
     // Single FreeRTOS timer
