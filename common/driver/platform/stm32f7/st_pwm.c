@@ -1,6 +1,9 @@
 
 #include "st_pwm.h"
 
+#define PWM_DUTY_PERCENT_ACCURACY(percent) (100 / (percent))
+#define DESIRED_PWM_PERCENT_ACCURACY (0.5f)
+
 bool StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address, size_t channel,
                size_t pclk_freq, size_t timer_size)
 {
@@ -13,7 +16,8 @@ bool StPwmInit(Pwm* pwm, StPrivPwm* st_pwm, size_t base_address, size_t channel,
 
     st_pwm->channel = channel;
     st_pwm->pclk_freq = pclk_freq;
-    st_pwm->timer_size = timer_size;
+    st_pwm->timer_max = timer_size;
+    st_pwm->curr_duty = 0;
 
     pwm->priv = (void*)st_pwm;
     pwm->set_duty = StPwmDuty;
@@ -68,27 +72,22 @@ bool StPwmSetFreq(Pwm* pwm, size_t hz)
 
     if (hz > 0)
     {
-        while (target_psc < 1)
+        if (((double)dev->pclk_freq <
+             (hz * PWM_DUTY_PERCENT_ACCURACY(DESIRED_PWM_PERCENT_ACCURACY))))
         {
-            target_psc =
-                (size_t)(((double)dev->pclk_freq) / dev->timer_size) / hz;
-
-            // Frequency is too high.
-            if (dev->timer_size < 20)
-            {
-                return false;
-            }
-
-            dev->timer_size -= dev->timer_size / 20;
+            return false;
         }
-    }
-    else
-    {
-        target_psc = 1;
+
+        target_psc =
+            dev->pclk_freq /
+            (hz * PWM_DUTY_PERCENT_ACCURACY(DESIRED_PWM_PERCENT_ACCURACY));
     }
 
-    dev->instance->PSC = target_psc - 1;
-    dev->instance->ARR = dev->timer_size - 1;
+    dev->instance->PSC = (target_psc > 0) ? target_psc - 1 : 0;
+    dev->instance->ARR =
+        (size_t)(PWM_DUTY_PERCENT_ACCURACY(DESIRED_PWM_PERCENT_ACCURACY) - 1);
+
+    StPwmDuty(pwm, dev->curr_duty);
 
     return true;
 }
@@ -101,6 +100,8 @@ bool StPwmDuty(Pwm* pwm, double duty)
     {
         return false;
     }
+
+    dev->curr_duty = duty;
 
     size_t cmp = (size_t)((duty / 100) * (dev->instance->ARR));
 

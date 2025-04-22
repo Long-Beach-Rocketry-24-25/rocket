@@ -72,9 +72,8 @@ bool StPwmSetFreq(Pwm* pwm, size_t hz)
 
     if (hz > 0)
     {
-        if (((double)dev->pclk_freq /
-             (hz * PWM_DUTY_PERCENT_ACCURACY(DESIRED_PWM_PERCENT_ACCURACY))) <
-            1)
+        if (((double)dev->pclk_freq <
+             (hz * PWM_DUTY_PERCENT_ACCURACY(DESIRED_PWM_PERCENT_ACCURACY))))
         {
             return false;
         }
