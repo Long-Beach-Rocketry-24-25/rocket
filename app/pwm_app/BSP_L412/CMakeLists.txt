@@ -1,5 +1,4 @@
 add_library(pwm_app_bsp STATIC
-    hal_timebase.c
     pwm_app_bsp.c
 )
 

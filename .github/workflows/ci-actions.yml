@@ -97,6 +97,13 @@ jobs:
       - name: Build for H503
         run: cd build/stm32h503 && cmake --build .
 
+      - name: Configure CMake for L412
+        run: |
+          cmake --preset=stm32l412 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
+
+      - name: Build for L412
+        run: cd build/stm32l412 && cmake --build .
+
       - name: Configure CMake for L476
         run: |
           cmake --preset=stm32l476 -DTARGET_APP="" -DCMAKE_BUILD_TYPE="Debug"
