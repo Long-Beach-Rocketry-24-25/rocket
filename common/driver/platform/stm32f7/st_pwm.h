@@ -12,12 +12,34 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/**
+ * @brief Private STM32L4 PWM implementation context.
+ */
 typedef struct
 {
+    /**
+	 * Timer instance.
+	 */
     TIM_TypeDef* instance;
+
+    /**
+	 * Timer channel number.
+	 */
     size_t channel;
+
+    /**
+	 * Frequency of peripheral clock driving the timer.
+	 */
     size_t pclk_freq;
+
+    /**
+	 * Max size of the timer.
+	 */
     size_t timer_max;
+
+    /**
+	 * Current configured duty cycle.
+	 */
     float curr_duty;
 } StPrivPwm;
 
