@@ -4,6 +4,7 @@ static Bus bus;
 static Usart* comm;
 static SemaphoreHandle_t task_semaphore = NULL;
 static const pb_msgdesc_t* self_pb;  // idk if i need this
+StaticSemaphore_t xSemaphoreBuffer;
 
 bool send(uint8_t target_address, void* message, void* message_schema)
 {
@@ -20,14 +21,14 @@ bool send(uint8_t target_address, void* message, void* message_schema)
     uint8_t message_buffer[MAX_RECEIVE_BUF_SIZE];
     bus.pack(&bus, message_buffer, MAX_RECEIVE_BUF_SIZE, target_address,
              pb_buffer, pb_length);
-    comm->send(&comm, &message_buffer, pb_length + PACKET_HEADER_SIZE);
+    comm->send(comm, message_buffer, pb_length + PACKET_HEADER_SIZE);
     return true;
 }
 
 void lbr_net_process_task()
 {
     const TickType_t max_block_time = pdMS_TO_TICKS(UINT32_MAX);
-    task_semaphore = xSemaphoreCreateBinary();
+    task_semaphore = xSemaphoreCreateBinaryStatic(&xSemaphoreBuffer);
     while (1)
     {
         if (xSemaphoreTake(task_semaphore, max_block_time) == pdTRUE)
@@ -42,9 +43,9 @@ void usart_rx_callback()
     if (comm->recv(comm, &data, 1))
     {
         BaseType_t higher_prio_task_woken = pdFALSE;
-        bus.read_byte(&bus, bus.receive_buffer);
-        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        if (bus.state = FINISHED)
+        bus.read_byte(&bus, data);
+        higher_prio_task_woken = pdFALSE;
+        if (bus.state == FINISHED)
         {
             if (task_semaphore == NULL)
             {
