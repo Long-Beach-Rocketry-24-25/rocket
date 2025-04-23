@@ -10,6 +10,7 @@ target_link_libraries(core INTERFACE
     lbr_net
     math
     memory
+    motors
     periph
     string
     timeout
@@ -25,6 +26,7 @@ add_subdirectory(error)
 add_subdirectory(lbr_net)
 add_subdirectory(math)
 add_subdirectory(memory)
+add_subdirectory(motors)
 add_subdirectory(periph)
 add_subdirectory(string)
 add_subdirectory(timeout)
