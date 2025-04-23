@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "cmd_message.h"
 
 /**
  * @brief the priv data for cmd_message for a pb. Has the struct. This struct will be inited in the app

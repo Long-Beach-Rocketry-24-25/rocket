@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_RECEIVE_BUF_SIZE 256U
+#define MAX_RECEIVE_BUF_SIZE 1028U
 #define CHECKSUM_SIZE 1
 #define CHECKSUM_BITS 256
 #define START_BYTE_SIZE 1
@@ -81,7 +81,7 @@ struct Bus
  * @return True if success and false if the data is longer then the buffer size.
  */
 bool pack(Bus* self, uint8_t* buffer, uint16_t buffer_size, uint8_t target,
-          const uint8_t* data, uint8_t data_size);
+          uint8_t* data, uint8_t data_size);
 
 /**
  * @brief Reads a byte stores in receive buffer and updates the bus state.

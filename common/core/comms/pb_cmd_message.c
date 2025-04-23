@@ -1,4 +1,3 @@
-#include "cmd_message.h"
 #include "pb_cmd.h"
 
 bool get_buf_pb(cmd_message* self, uint8_t* buffer, size_t size)
