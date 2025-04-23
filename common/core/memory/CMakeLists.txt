@@ -1,6 +1,6 @@
 add_library(memory STATIC
     dalloc.c
-    stalloc.c
+    prealloc.c
 )
 
 target_include_directories(memory PUBLIC .)

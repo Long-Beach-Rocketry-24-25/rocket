@@ -8,7 +8,7 @@ static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
 bool BSP_Init(Usart* usart, I2c* temp_i2c, Gpio* led_gpio)
 {
-    EXIT_IF_FAIL(InitStalloc(&memory, driver_mem, DRIVER_MEM_SIZE));
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
     // Single FRT timer.
     Timeout* time = make_frt_timer(&memory, 100);

@@ -6,10 +6,10 @@
 
 #include "exit.h"
 #include "freertos_timer.h"
+#include "prealloc.h"
 #include "snx5176b.h"
 #include "st_gpio_fctry.h"
 #include "st_usart_fctry.h"
-#include "stalloc.h"
 #include "stm32f746xx.h"
 #include "stm32f7xx_hal.h"
 #include "uart_pipe.h"

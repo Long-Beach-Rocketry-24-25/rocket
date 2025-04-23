@@ -7,11 +7,11 @@
 #include "exit.h"
 #include "freertos_timer.h"
 #include "gpio_cs.h"
+#include "prealloc.h"
 #include "st_gpio_fctry.h"
 #include "st_i2c_fctry.h"
 #include "st_spi_fctry.h"
 #include "st_usart_fctry.h"
-#include "stalloc.h"
 #include "stm32f7xx_hal.h"
 #include "usart_cli.h"
 

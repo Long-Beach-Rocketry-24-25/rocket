@@ -15,7 +15,7 @@ bool BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 {
     __disable_irq();
 
-    EXIT_IF_FAIL(InitStalloc(&memory, driver_mem, DRIVER_MEM_SIZE));
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
     // Single FRT timer.
     Timeout* time = make_frt_timer(&memory, 100);

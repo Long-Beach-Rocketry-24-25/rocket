@@ -5,7 +5,7 @@
 extern "C"
 {
 #include "dalloc.h"
-#include "stalloc.h"
+#include "prealloc.h"
 }
 
 constexpr size_t BUF_SIZE = 1000;
@@ -13,7 +13,7 @@ constexpr size_t BUF_SIZE = 1000;
 class AllocTest : public testing::Test
 {
 public:
-    uint8_t stalloc_buf[BUF_SIZE];
+    uint8_t prealloc_buf[BUF_SIZE];
     Mem mem;
 };
 
@@ -41,10 +41,10 @@ void test_alloc(Mem* test_mem)
     EXPECT_EQ(t->d4, 64);
 }
 
-TEST_F(AllocTest, StallocTest)
+TEST_F(AllocTest, PreallocTest)
 {
     // Init.
-    InitStalloc(&mem, stalloc_buf, BUF_SIZE);
+    InitPrealloc(&mem, prealloc_buf, BUF_SIZE);
 
     // Test over allocation.
     Overflow* np = ALLOC(&mem, Overflow);
