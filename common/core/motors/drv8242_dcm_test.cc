@@ -8,15 +8,21 @@ extern "C"
 class Drv8242DcmTest : public testing::Test
 {
 public:
-    DCMotor* motor;
-    DCPosControl* dev;
+    DCMotor motor;
+    DCPosControl dev;
+    Pwm pwm;
 };
 
 TEST_F(Drv8242DcmTest, InitTest)
 {
-    EXPECT_EQ(dev->enabled, 1);
-    // EXPECT_TRUE(motor->set_direction(motor, dev->direction_one));
-    // EXPECT_TRUE(motor->set_direction(motor, dev->direction_two));
-    // EXPECT_FALSE(motor->set_en(motor, dev->disabled));
-    // EXPECT_FALSE(motor->set_direction(motor, dev->direction_one));
+    FakeInit(&motor, &dev);
+    //FakeSetDuty(&motor, 50); segfault
+    EXPECT_EQ(dev.state, OFF);
+    FakeSetEnable(&motor, false);
+    EXPECT_EQ(FakeSetEnable(&motor, false), false);
+    EXPECT_EQ(FakeSetDir(&motor, false), false);
+    EXPECT_EQ(FakeSetEnable(&motor, true), true);
+    FakeSetEnable(&motor, true);
+    EXPECT_EQ(FakeSetDir(&motor, true), true);
+    EXPECT_EQ(dev.state, RUNNING);
 }

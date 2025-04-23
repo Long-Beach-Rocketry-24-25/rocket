@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+#include <stdint.h>
 #include "dcm.h"
 #include "pwm.h"
 #include "qenc.h"
@@ -15,18 +17,15 @@ typedef enum
 
 typedef struct
 {
-    DCMotor* instance;
     DCState state;
-    bool enabled;
-    bool disabled;
-    bool direction_one;
-    bool direction_two;
-    float duty;
     Pwm* pwm;
+    // void (*set_enable)(DCMotor* motor, bool enable);
+    // bool (*set_dir)(DCMotor* motor, bool direction);
+    // void (*set_duty)(DCMotor* motor, float duty);
 
 } DCPosControl;
 
-void Drv8242Init(DCMotor* motor, DCPosControl* control, Pwm* pwm);
-bool Drv8242SetEnable(DCMotor* motor, bool enable);
-bool Drv8242SetDir(DCMotor* motor, bool direction);
-void Drv8242SetDuty(DCMotor* motor, float duty);
+void FakeInit(DCMotor* motor, DCPosControl* control);
+bool FakeSetEnable(DCMotor* motor, bool enable);
+bool FakeSetDir(DCMotor* motor, bool direction);
+void FakeSetDuty(DCMotor* motor, float duty);

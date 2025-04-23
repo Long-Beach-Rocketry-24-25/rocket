@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include "gpio.h"
 #include "pwm.h"
-#include "timeout.h"
 
 typedef struct DCMotor DCMotor;
 

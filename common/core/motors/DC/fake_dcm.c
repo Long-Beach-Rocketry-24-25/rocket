@@ -1,45 +1,46 @@
 #include "fake_dcm.h"
 
-void Drv8242Init(DCMotor* motor, DCPosControl* control, Pwm* pwm)
+void FakeInit(DCMotor* motor, DCPosControl* control)
 {
-    motor->set_en = Drv8242SetEnable;
-    motor->set_duty = Drv8242SetDuty;
-    motor->set_direction = Drv8242SetDir;
+    motor->set_en = FakeSetEnable;
+    motor->set_duty = FakeSetDuty;
+    motor->set_direction = FakeSetDir;
     motor->priv = (void*)control;
 
     control->state = OFF;
-    control->enabled = 1;
-    control->disabled = 0;
-    control->direction_one = 0;
-    control->direction_two = 1;
-    control->duty = 50;
+    // control->enabled = true;
+    // control->disabled = false;
+    // control->direction_one = false;
+    // control->direction_two = true;
+    // control->duty = 50;
 
-    control->pwm = pwm;
-
-    Drv8242SetEnable(motor, false);
+    FakeSetEnable(motor, false);
 }
 
-bool Drv8242SetEnable(DCMotor* motor, bool enable)
+bool FakeSetEnable(DCMotor* motor, bool enable)
 {
     DCPosControl* dev = (DCPosControl*)motor->priv;
 
     if (enable)
     {
         dev->state = START;
-        return dev->pwm->enable(dev->pwm, true);
+        //pwm->enable(&pwm, enable);
+        return true;
     }
     else
     {
         dev->state = OFF;
-        return dev->pwm->enable(dev->pwm, false);
+        // dev->pwm->enable(dev->pwm, enable);  // causing segfaul
+        return false;
     }
+    // causing segfault
 }
 
-bool Drv8242etDir(DCMotor* motor, bool direction)
+bool FakeSetDir(DCMotor* motor, bool direction)
 {
     DCPosControl* dev = (DCPosControl*)motor->priv;
 
-    if (motor->set_en)
+    if (dev->state != OFF)
     {
         if (direction)
         {
@@ -58,7 +59,7 @@ bool Drv8242etDir(DCMotor* motor, bool direction)
     }
 }
 
-void Drv8242SetDuty(DCMotor* motor, float duty)
+void FakeSetDuty(DCMotor* motor, float duty)
 {
     DCPosControl* dev = (DCPosControl*)motor->priv;
     dev->pwm->setDuty(dev->pwm, duty);
