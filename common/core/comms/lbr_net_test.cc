@@ -8,8 +8,10 @@ extern "C"
 #include <pb_decode.h>
 #include <pb_encode.h>
 #include <string.h>
+#include "cmd_message.h"
 #include "example.pb.h"
 #include "lbr_net.h"
+#include "pb_cmd.h"
 }
 
 #define ADDRESS 70
@@ -178,4 +180,11 @@ TEST_F(FormatTests, nanopb_test)
 
         EXPECT_EQ(13, (int)message.lucky_number);
     }
+}
+
+/**
+ * @brief Test nanopb using the cmd interface.
+ */
+TEST_F(FormatTests, pb_cmd_msg_test)
+{
 }
