@@ -7,7 +7,7 @@
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
+bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 {
     EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
@@ -16,18 +16,11 @@ void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 
     // USART2
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-
-    StGpioInit(&st_usart.rx, &uart_io1);
-    StGpioInit(&st_usart.tx, &uart_io2);
-
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART2_IRQn);
-
-    StUsartInit(usart, &st_usart, USART2_BASE, &time);
-    StUsartConfig(usart, SystemCoreClock, 115200);
 
     // PA2 AF7/ PA15 AF3
     EXIT_IF_FAIL(GiveStUsart(
@@ -44,6 +37,8 @@ void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
     EXIT_IF_FAIL(GiveStPwm(
         pwm, &memory, TIM2_BASE, 1, HAL_RCC_GetPCLK1Freq(), UINT16_MAX,
         (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x1}}));
+
+    return true;
 }
 
 void USART2_IRQHandler(void)

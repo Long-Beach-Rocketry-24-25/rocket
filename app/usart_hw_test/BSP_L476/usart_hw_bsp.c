@@ -79,12 +79,12 @@ bool BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
 
 void USART2_IRQHandler(void)
 {
-    UartPipeCallback(u2, u3, &rb1, UART_END_CHAR);
+    UartPipeCallback(u2, u3, rb1, UART_END_CHAR);
 }
 
 void USART3_IRQHandler(void)
 {
-    UartPipeCallback(u3, u2, &rb2, UART_END_CHAR);
+    UartPipeCallback(u3, u2, rb2, UART_END_CHAR);
 }
 
 void TIM1_UP_TIM16_IRQHandler(void)

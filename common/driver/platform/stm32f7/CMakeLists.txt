@@ -4,7 +4,9 @@ add_library(hal STATIC
     st_gpio_fctry.c
     st_flash.c
     st_i2c.c
+    st_i2c_fctry.c
     st_pwm.c
+    st_pwm_fctry.c
     st_spi.c
     st_spi_fctry.c
     st_usart.c
