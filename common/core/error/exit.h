@@ -1,3 +1,6 @@
+/**
+ * Function exit handling.
+ */
 
 #pragma once
 
