@@ -10,9 +10,9 @@
 typedef struct cmd_message cmd_message;
 struct cmd_message
 {
-    bool (*get_buf)(cmd_message self);
-    uint8_t (*get_size)(cmd_message self);
-    bool (*parse)(cmd_message self);
+    bool (*get_buf)(cmd_message* self, uint8_t* buffer, size_t size);
+    size_t (*get_size)(cmd_message* self);
+    bool (*parse)(cmd_message* self, uint8_t* buffer, size_t size);
     //the priv rn will hold the schema information as well as the data
     void* priv;
 };
