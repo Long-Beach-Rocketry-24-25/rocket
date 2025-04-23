@@ -9,6 +9,8 @@
 #include "stm32l412xx.h"
 #include "usart_cli.h"
 
+#define DRIVER_MEM_SIZE 0x256
+
 void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio);
 
 void USART2_IRQHandler(void);

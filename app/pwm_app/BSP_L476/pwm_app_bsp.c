@@ -1,60 +1,42 @@
 
 #include "pwm_app_bsp.h"
 
-static StPrivUsart st_usart;
-static StPrivPwm st_pwm;
-static StGpioParams led_stgpio = {{0},
-                                  GPIOA_BASE,
-                                  0,
-                                  {ALT_FUNC, 0, 0, 0, 1}};  // TIM2 CH1 AF1
+#define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
-// Sequential use of these, so using one is fine. Not thread safe.
-static Timeout time;
-static FrtTimerData frt;
+static Mem memory;
+static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-static StGpioParams uart_io1 = {{0},
-                                GPIOA_BASE,
-                                2,
-                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-static StGpioParams uart_io2 = {{0},
-                                GPIOA_BASE,
-                                3,
-                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-
-void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
+bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 {
-
     HAL_InitTick(0);
     SystemClock_Config();
 
-    // LED GPIO
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
-    StGpioInit(led_gpio, &led_stgpio);
-    StGpioConfig(led_gpio);
-
-    // Single FreeRTOS timer
-    frt_timer_init(&time, &frt, 100);
+    // Single FRT timer.
+    Timeout* time = make_frt_timer(&memory, 100);
 
     // USART2
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-
-    StGpioInit(&st_usart.rx, &uart_io1);
-    StGpioInit(&st_usart.tx, &uart_io2);
-
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
     NVIC_SetPriorityGrouping(0);
     NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(0, 6, 0));
     NVIC_EnableIRQ(USART2_IRQn);
 
-    StUsartInit(usart, &st_usart, USART2_BASE, &time);
-    StUsartConfig(usart, SystemCoreClock, 115200);
+    // PA2/3 AF 7
+    EXIT_IF_FAIL(GiveStUsart(
+        usart, &memory, time, USART2_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
-    // Pwm
+    // Pwm: TIM2 CH1 AF1
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
-    StPwmInit(pwm, &st_pwm, TIM2_BASE, 1, HAL_RCC_GetPCLK1Freq(), UINT16_MAX);
-    StPwmConfig(pwm);
+    EXIT_IF_FAIL(GiveStPwm(
+        pwm, &memory, TIM2_BASE, 1, HAL_RCC_GetPCLK1Freq(), UINT16_MAX,
+        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 1}}));
+
+    return true;
 }
 
 void USART2_IRQHandler(void)

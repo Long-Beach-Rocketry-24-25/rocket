@@ -2,45 +2,17 @@
 
 #include "pwm_app_bsp.h"
 
-static StPrivPwm st_pwm;
-static StPrivUsart st_usart;
-// User LED Pin TIM2 CH2
-// static StGpioParams pwm_stgpio = {{0}, GPIOB_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x1}};
-// PA 0 TIM2 CH1
-static StGpioParams pwm_stgpio = {{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x1}};
+#define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
-// Sequential use of these, so using one is fine. Not thread safe.
-static Timeout time;
-static FrtTimerData frt;
-
-static StGpioParams uart_io1 = {{0},
-                                GPIOA_BASE,
-                                2,
-                                {ALT_FUNC, 0, 0, 0, 0x7}};  // USART2 AF 7
-static StGpioParams uart_io2 = {{0},
-                                GPIOA_BASE,
-                                15,
-                                {ALT_FUNC, 0, 0, 0, 0x3}};  // USART2 AF 3
+static Mem memory;
+static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
 void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 {
-    // LED GPIO
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
+    EXIT_IF_FAIL(InitPrealloc(&memory, driver_mem, DRIVER_MEM_SIZE));
 
-    StGpioInit(led_gpio, &pwm_stgpio);
-    StGpioConfig(led_gpio);
-
-    /**
-     * TIM2 CH1 (PA0 AF1):
-     * With no additional clock config, APB1 clock should be same frequency
-     * as core clock.
-     */
-    StPwmInit(pwm, &st_pwm, TIM2_BASE, 1, SystemCoreClock, UINT16_MAX);
-    StPwmConfig(pwm);
-
-    // Single FreeRTOS timer
-    frt_timer_init(&time, &frt, 100);
+    // Single FRT timer.
+    Timeout* time = make_frt_timer(&memory, 100);
 
     // USART2
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
@@ -56,6 +28,22 @@ void BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
 
     StUsartInit(usart, &st_usart, USART2_BASE, &time);
     StUsartConfig(usart, SystemCoreClock, 115200);
+
+    // PA2 AF7/ PA15 AF3
+    EXIT_IF_FAIL(GiveStUsart(
+        usart, &memory, time, USART2_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 15, {ALT_FUNC, 0, 0, 0, 0x3}}));
+
+    /**
+     * TIM2 CH1 (PA0 AF1):
+     * With no additional clock config, APB1 clock should be same frequency
+     * as core clock.
+     */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
+    EXIT_IF_FAIL(GiveStPwm(
+        pwm, &memory, TIM2_BASE, 1, HAL_RCC_GetPCLK1Freq(), UINT16_MAX,
+        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 0x1}}));
 }
 
 void USART2_IRQHandler(void)
