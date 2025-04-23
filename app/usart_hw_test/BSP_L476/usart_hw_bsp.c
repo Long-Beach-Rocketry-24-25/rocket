@@ -6,10 +6,8 @@
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-static RingBuffer rb1;
-static RingBuffer rb2;
-static uint8_t arr1[UART_PIPE_BUF_SIZE] = {0};
-static uint8_t arr2[UART_PIPE_BUF_SIZE] = {0};
+static RingBuffer* rb1;
+static RingBuffer* rb2;
 
 Snx5176b rs485;
 Usart* u2;
@@ -59,8 +57,8 @@ bool BSP_Init(Usart* cli_usart, Usart* comm_usart, Gpio* led_gpio)
         (StGpioParams){{0}, GPIOC_BASE, 10, {ALT_FUNC, 0, 0, 0, 0x7}},
         (StGpioParams){{0}, GPIOC_BASE, 11, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
-    ring_buffer_init(&rb1, arr1, UART_PIPE_BUF_SIZE);
-    ring_buffer_init(&rb2, arr2, UART_PIPE_BUF_SIZE);
+    rb1 = make_ring_buffer(&memory, UART_PIPE_BUF_SIZE);
+    rb2 = make_ring_buffer(&memory, UART_PIPE_BUF_SIZE);
 
     EXIT_IF_FAIL(
         GiveStGpio(rs485.txe, &memory,
