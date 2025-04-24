@@ -32,7 +32,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-<<<<<<< HEAD
     - name: Set up CMake
       uses: lukka/get-cmake@latest
       with:
@@ -60,12 +59,6 @@ jobs:
       uses: ryanwinter/arm-none-eabi-gcc@master
       with:
         release: '10.3-2021.10'
-=======
-      - name: Set up CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmake-version: "3.27"
->>>>>>> 979f2e2 (Nf flight algo (#57))
 
       - name: Pull git submodules
         run: |
@@ -120,7 +113,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-<<<<<<< HEAD
     - name: Set up CMake
       uses: lukka/get-cmake@latest
       with:
@@ -143,12 +135,6 @@ jobs:
     - name: Pull git submodules
       run: |
         git submodule update --init --recursive
-=======
-      - name: Set up CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmake-version: "3.27"
->>>>>>> 979f2e2 (Nf flight algo (#57))
 
       - name: Pull git submodules
         run: |
