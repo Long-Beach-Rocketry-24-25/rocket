@@ -17,5 +17,7 @@ target_link_libraries(comms
     protobuf-nanopb-static 
 )
 
-add_tests(comms lbr_net_test)
-add_tests(comms nano_pb_test)
+add_tests(comms
+    lbr_net_test
+    nano_pb_test
+)

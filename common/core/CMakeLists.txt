@@ -9,7 +9,6 @@ target_link_libraries(core INTERFACE
     error
     memory
     math
-    memory
     periph
     string
     timeout
@@ -22,10 +21,10 @@ add_subdirectory(comms)
 add_subdirectory(container)
 add_subdirectory(gnc)
 add_subdirectory(error)
-add_subdirectory(comms)
 add_subdirectory(math)
 add_subdirectory(memory)
 add_subdirectory(periph)
+add_subdirectory(proto)
 add_subdirectory(string)
 add_subdirectory(timeout)
 
