@@ -21,5 +21,3 @@ The main loop should just call funcitons based off of the strcut of states
 void usart_rx_callback();
 
 void uart_lbr_init(uint8_t address, network_if* net_if, Usart* usart);
-
-void lbr_net_process_task();

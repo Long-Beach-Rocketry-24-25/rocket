@@ -1,6 +1,7 @@
 #include "pb_cmd.h"
 
-bool get_buf_pb(cmd_message* self, uint8_t* buffer, size_t size)
+bool get_buf_pb(cmd_message* self, uint8_t* buffer,
+                size_t size)  // i dont think i need size
 {
     pb_cmd* cmd = self->priv;
     bool status;
