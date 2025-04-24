@@ -9,6 +9,7 @@ target_link_libraries(core INTERFACE
     error
     memory
     math
+    memory
     periph
     string
     timeout
