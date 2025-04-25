@@ -10,6 +10,7 @@ target_link_libraries(core INTERFACE
     memory
     math
     periph
+    proto
     string
     timeout
 )
