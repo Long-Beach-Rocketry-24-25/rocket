@@ -7,8 +7,8 @@ target_link_libraries(core INTERFACE
     container
     gnc
     error
-    memory
     math
+    memory
     periph
     proto
     string
