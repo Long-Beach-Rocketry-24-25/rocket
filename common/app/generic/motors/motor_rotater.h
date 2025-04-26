@@ -28,6 +28,6 @@ struct MotorRotater
     Encoder* encoder;
 };
 
-bool MotorRotaterInit(MotorRotater* control, Motor* motor, Encoder* encoder,
+void MotorRotaterInit(MotorRotater* control, Motor* motor, Encoder* encoder,
                       size_t encoder_counts_per_rotation);
 bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees);

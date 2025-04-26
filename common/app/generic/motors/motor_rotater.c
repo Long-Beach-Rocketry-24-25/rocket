@@ -1,7 +1,7 @@
 
 #include "motor_rotater.h"
 
-bool MotorRotaterInit(MotorRotater* control, Motor* motor, Encoder* encoder,
+void MotorRotaterInit(MotorRotater* control, Motor* motor, Encoder* encoder,
                       size_t encoder_counts_per_rotation)
 {
     control->state = IDLE;

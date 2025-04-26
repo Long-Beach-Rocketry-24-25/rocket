@@ -29,4 +29,9 @@ struct Encoder
      * @return The maximum encoder counter.
      */
     size_t (*get_max_value)(Encoder* encoder);
+
+    /**
+     * Private user context for concrete implementations to use.
+     */
+    void* priv;
 };

@@ -32,6 +32,8 @@ bool Nidec24HInit(Motor* motor, Nidec24H* nidec, Pwm* pwm, Gpio* brake,
     motor->set_enabled = Nidec24HSetEnable;
     motor->set_direction = Nidec24HSetDirection;
     motor->set_power = Nidec24HSetPower;
+
+    return true;
 }
 
 bool Nidec24HSetEnable(Motor* motor, bool enable)
