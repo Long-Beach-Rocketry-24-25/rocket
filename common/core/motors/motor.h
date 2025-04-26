@@ -34,7 +34,7 @@ struct Motor
      * @param enable true to enable, false to disable.
      * @return True on success, false otherwise. 
      */
-    bool (*set_en)(Motor* motor, bool enable);
+    bool (*set_enabled)(Motor* motor, bool enable);
 
     /**
      * Sets the direction for the motor to rotate when driven.

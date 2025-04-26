@@ -4,13 +4,16 @@
 
 #pragma once
 
-#include "alloc.h"
-
 #include "gpio.h"
 #include "pwm.h"
 
+#include "alloc.h"
+#include "exit.h"
 #include "motor.h"
 
+/**
+ * Nidec 24H is capable of frequencies between 15KHz to 25KHz.
+ */
 #define NIDEC_24H_PWM_FREQ_HZ (20000)
 #define NIDEC_24H_PWM_MIN (15.0)
 #define NIDEC_24H_PWM_MAX (100.0)
@@ -22,7 +25,10 @@ typedef struct
     Gpio* direction;
 } Nidec24H;
 
-Motor* make_nidec_24h(Memory* mem, Pwm* pwm, Gpio* brake, Gpio* direction);
+/**
+ * 
+ */
+Motor* make_nidec_24h(Mem* mem, Pwm* pwm, Gpio* brake, Gpio* direction);
 
 /**
  * 
