@@ -70,7 +70,7 @@ struct Bus
 };
 
 /**
- * @brief Converts data into a formatted message and clears/writes to a buffer.
+ * @brief Converts data into a formatted message and clears/writes to a buffer. (change order and name buffers to input output)
  * 
  * @param self A pointer the current sending bus struct.
  * @param buffer A pointer a buffer that we will store the output in.

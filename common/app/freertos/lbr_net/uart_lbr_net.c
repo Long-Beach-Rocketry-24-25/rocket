@@ -19,11 +19,14 @@ void uart_lbr_init(uint8_t address, network_if* network_if, Usart* usart)
 
 bool send(uint8_t target_address, uint8_t* data, size_t size)
 {
-    comm->send(comm, data, size + PACKET_HEADER_SIZE);
+    uint8_t send_buffer[MAX_RECEIVE_BUF_SIZE];
+    bus.pack(&bus, send_buffer, MAX_RECEIVE_BUF_SIZE, target_address, data,
+             size);
+    comm->send(comm, send_buffer, size + PACKET_HEADER_SIZE);
     return true;
 }
 
-bool receive(uint8_t* data_in, uint8_t* data_out, size_t size)
+bool receive(uint8_t* data_in, uint8_t* data_out, size_t size)  //lbr_net bus
 {
     if (xSemaphoreTake(task_semaphore, max_block_time) == pdTRUE)
     {
