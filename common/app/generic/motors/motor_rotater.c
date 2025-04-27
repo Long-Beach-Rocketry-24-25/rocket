@@ -28,11 +28,13 @@ bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
                     (size_t)((degrees / 360) * ((degrees < 0) ? -1 : 1) *
                              (float)control->encoder_counts_per_rotation);
                 control->direction = (degrees > 0) ? CW : CCW;
+                control->last_count =
+                    control->encoder->get_counter(control->encoder);
 
                 control->motor->set_direction(control->motor,
                                               control->direction);
                 control->motor->set_enabled(control->motor, true);
-                control->motor->set_power(control->motor, 100);
+                control->motor->set_power(control->motor, 1);
 
                 control->state = ROTATING;
             }
@@ -72,6 +74,7 @@ bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
             }
             break;
         case DONE:
+            control->motor->set_power(control->motor, 0);
             control->motor->set_enabled(control->motor, false);
             if (!cmd)
             {

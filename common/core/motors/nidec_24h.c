@@ -1,15 +1,20 @@
 
 #include "nidec_24h.h"
 
+bool give_nidec_24h(Motor* motor, Mem* mem, Pwm* pwm, Gpio* brake,
+                    Gpio* direction)
+{
+    Nidec24H* nidec = ALLOC(mem, Nidec24H);
+    EXIT_IF(nidec == NULL, false);
+    EXIT_IF(!Nidec24HInit(motor, nidec, pwm, brake, direction), false);
+    return true;
+}
+
 Motor* make_nidec_24h(Mem* mem, Pwm* pwm, Gpio* brake, Gpio* direction)
 {
     Motor* motor = ALLOC(mem, Motor);
     EXIT_IF(motor == NULL, NULL);
-    Nidec24H* nidec = ALLOC(mem, Nidec24H);
-    EXIT_IF(nidec == NULL, NULL);
-
-    EXIT_IF(!Nidec24HInit(motor, nidec, pwm, brake, direction), NULL);
-
+    EXIT_IF(!give_nidec_24h(motor, mem, pwm, brake, direction), NULL);
     return motor;
 }
 

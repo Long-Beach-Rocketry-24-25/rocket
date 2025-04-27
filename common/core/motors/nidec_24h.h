@@ -27,6 +27,13 @@ typedef struct
 
 /**
  * 
+ * 
+ */
+bool give_nidec_24h(Motor* motor, Mem* mem, Pwm* pwm, Gpio* brake,
+                    Gpio* direction);
+
+/**
+ * 
  */
 Motor* make_nidec_24h(Mem* mem, Pwm* pwm, Gpio* brake, Gpio* direction);
 
