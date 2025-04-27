@@ -16,8 +16,19 @@ void MotorRotaterInit(MotorRotater* control, Motor* motor, Encoder* encoder,
     control->last_count = 0;
 }
 
-bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
+void MotorRotaterCommand(MotorRotater* control, bool cmd, float degrees)
 {
+    control->cmd = cmd;
+    control->cmd_degrees = degrees;
+}
+
+bool MotorRotaterUpdate(MotorRotater* control)
+{
+    EXIT_IF(control->motor == NULL || control->encoder == NULL, false);
+
+    bool cmd = control->cmd;
+    float degrees = control->cmd_degrees;
+
     switch (control->state)
     {
         case IDLE:
@@ -31,10 +42,12 @@ bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
                 control->last_count =
                     control->encoder->get_counter(control->encoder);
 
-                control->motor->set_direction(control->motor,
-                                              control->direction);
-                control->motor->set_enabled(control->motor, true);
-                control->motor->set_power(control->motor, 1);
+                EXIT_IF(!control->motor->set_direction(control->motor,
+                                                       control->direction),
+                        false);
+                EXIT_IF(!control->motor->set_enabled(control->motor, true),
+                        false);
+                EXIT_IF(!control->motor->set_power(control->motor, 1), false);
 
                 control->state = ROTATING;
             }
@@ -74,8 +87,8 @@ bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
             }
             break;
         case DONE:
-            control->motor->set_power(control->motor, 0);
-            control->motor->set_enabled(control->motor, false);
+            EXIT_IF(!control->motor->set_power(control->motor, 0), false);
+            EXIT_IF(!control->motor->set_enabled(control->motor, false), false);
             if (!cmd)
             {
                 control->state = IDLE;
@@ -83,5 +96,10 @@ bool MotorRotaterUpdate(MotorRotater* control, bool cmd, float degrees)
             break;
     }
 
+    return true;
+}
+
+bool MotorRotaterIsActive(MotorRotater* control)
+{
     return control->state == ROTATING;
 }

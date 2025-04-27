@@ -5,6 +5,7 @@
 
 #include "nidec_bsp.h"
 
+#include "main_loop.h"
 #include "motor_rotater.h"
 
 #include "gpio.h"
@@ -17,42 +18,64 @@ Encoder encoder;
 Cli cli;
 Usart usart;
 
+static void motor_loop(void)
+{
+    MotorRotaterUpdate(&rotater);
+}
+
+void command_motor(int argc, char* argv[])
+{
+    float degrees;
+    sscanf(argv[1], "%f", &degrees);
+    cli.comm->fwrite(cli.comm, "Commanding motor to rotate %f degrees.",
+                     degrees);
+    MotorRotaterCommand(&rotater, true, degrees);
+}
+
+void motor_ack(int argc, char* argv[])
+{
+    MotorRotaterCommand(&rotater, false, 0);
+}
+
+#define NUM_MOTOR_CMDS 2
+
+Command motor_cmds[NUM_MOTOR_CMDS] = {
+    {"MotorRotate", command_motor,
+     "Command the motor to rotate x degrees, i.e. "
+     "MotorRotate 90 for 90 degrees CW."},
+    {"MotorAck", motor_ack,
+     "Send command false to acknowledge end of rotation procedure."}};
+
 int main(void)
 {
     BSP_Init(&usart, &motor, &encoder);
 
-    // motor.set_direction(&motor, CW);
-    // motor.set_enabled(&motor, false);
+    create_cli_task(&cli, &usart, motor_cmds, NUM_MOTOR_CMDS);
 
-    // motor.set_direction(&motor, CCW);
-    // motor.set_enabled(&motor, true);
+    create_main_loop(motor_loop, 1000);
 
-    // wait = true;
-    // while (wait);
-
-    // Fix so 100 not defined here?
+    // Fix so encoder counts not cfged here?
     MotorRotaterInit(&rotater, &motor, &encoder, 200);
-    while (MotorRotaterUpdate(&rotater, true, -90));
-    MotorRotaterUpdate(&rotater, false, 0);
 
-    while (MotorRotaterUpdate(&rotater, true, 90));
-    MotorRotaterUpdate(&rotater, false, 0);
+    // while (1)
+    // {
+    //     volatile float deg = 90;
+    //     volatile bool wait = true;
+    //     while (wait);
 
-    // while (MotorRotaterUpdate(&rotater, true, -90));
-    // MotorRotaterUpdate(&rotater, false, 0);
+    //     MotorRotaterCommand(&rotater, true, deg);
+    //     MotorRotaterUpdate(&rotater);
+    //     while (MotorRotaterIsActive(&rotater))
+    //     {
+    //         MotorRotaterUpdate(&rotater);
+    //     }
+    //     MotorRotaterUpdate(&rotater);
+    //     MotorRotaterCommand(&rotater, false, 0);
+    //     MotorRotaterUpdate(&rotater);
+    // }
 
-    // while (MotorRotaterUpdate(&rotater, true, 90));
-    // MotorRotaterUpdate(&rotater, false, 0);
-
-    // while (MotorRotaterUpdate(&rotater, true, -90));
-    // MotorRotaterUpdate(&rotater, false, 0);
-
-    // while (MotorRotaterUpdate(&rotater, true, 90));
-    // MotorRotaterUpdate(&rotater, false, 0);
-
-    while (1);
     /* Start the scheduler to start the tasks executing. */
-    // vTaskStartScheduler();
+    vTaskStartScheduler();
 
     return 0;
 }
