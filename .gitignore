@@ -7,3 +7,4 @@ CMakeCache.txt
 *.cortex-debug*
 *settings.json
 .vscode
+**/venv

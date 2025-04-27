@@ -5,8 +5,13 @@
 #include <cstdio>
 extern "C"
 {
+#include <pb_decode.h>
+#include <pb_encode.h>
 #include <string.h>
+#include "cmd_message.h"
+#include "example.pb.h"
 #include "lbr_net.h"
+#include "pb_cmd.h"
 }
 
 #define ADDRESS 70

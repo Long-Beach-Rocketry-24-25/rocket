@@ -1,0 +1,3 @@
+pandas
+protobuf==3.20
+plotly_express
