@@ -1,4 +1,6 @@
 add_library(hal STATIC
+    st_encoder.c
+    st_encoder_fctry.c
     st_gpio.c
     st_gpio_fctry.c
     st_i2c.c
@@ -11,6 +13,7 @@ add_library(hal STATIC
 
 target_include_directories(hal PUBLIC
     bus
+    io
     .
 )
 target_link_libraries(hal PUBLIC

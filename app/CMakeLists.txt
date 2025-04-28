@@ -1,5 +1,6 @@
 add_subdirectory(cli_app)
 add_subdirectory(logging)
+add_subdirectory(nidec_24h_test)
 add_subdirectory(pwm_app)
 add_subdirectory(serial_term)
 add_subdirectory(sim)
