@@ -24,8 +24,10 @@ static void loop_func(void)
 {
     nav.update(&nav);
     nav.tick = xTaskGetTickCount();
-    logger_update(&logger);
-    led->toggle(led);
+    if (logger_update(&logger))
+    {
+        led->toggle(led);
+    }
 }
 
 void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,

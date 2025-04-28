@@ -13,7 +13,7 @@ void logger_init(Logger* log, LogBuilder* builder, LogSubscriber* subs,
 
 bool logger_update(Logger* log)
 {
-    if (log->enabled)
+    if (!log->enabled)
     {
         if (log->cmd_enable)
         {
@@ -41,7 +41,7 @@ bool logger_update(Logger* log)
         }
     }
 
-    return true;
+    return log->enabled;
 }
 
 void logger_enable(Logger* log, bool enable)
