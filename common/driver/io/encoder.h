@@ -31,6 +31,16 @@ struct Encoder
     size_t (*get_max_value)(Encoder* encoder);
 
     /**
+     * Gets the number of expected counts per full encoder
+     * A/B cycle (for example, rising and falling for both
+     * A and B signal edges would equate to 4 counts.)
+     * 
+     * @param encoder the encoder instance.
+     * @return The number of counts per cycle.
+     */
+    size_t (*counts_per_cycle)(Encoder* encoder);
+
+    /**
      * Private user context for concrete implementations to use.
      */
     void* priv;

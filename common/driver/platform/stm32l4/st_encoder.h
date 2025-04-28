@@ -32,3 +32,5 @@ bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
 size_t StEncoderGetCount(Encoder* encoder);
 
 size_t StEncoderGetMaxValue(Encoder* encoder);
+
+size_t StEncoderCountsPerCycle(Encoder* encoder);

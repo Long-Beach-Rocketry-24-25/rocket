@@ -55,6 +55,7 @@ bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
     encoder->priv = (void*)st_enc;
     encoder->get_counter = StEncoderGetCount;
     encoder->get_max_value = StEncoderGetMaxValue;
+    encoder->counts_per_cycle = StEncoderCountsPerCycle;
 
     return true;
 }
@@ -69,4 +70,13 @@ size_t StEncoderGetMaxValue(Encoder* encoder)
 {
     StPrivEncoder* enc = (StPrivEncoder*)encoder->priv;
     return (size_t)enc->instance->ARR;
+}
+
+size_t StEncoderCountsPerCycle(Encoder* encoder)
+{
+    /** 
+     * Configured for rising, falling edge for each signal,
+     * and to count both A and B signals - 2 * 2 = 4.
+     */
+    return 4;
 }
