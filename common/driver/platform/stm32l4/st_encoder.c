@@ -1,8 +1,6 @@
 
 #include "st_encoder.h"
 
-#include "stm32l412xx.h"
-
 #define SMCR_BOTH_EDGES (3 << TIM_SMCR_SMS_Pos)
 
 /**

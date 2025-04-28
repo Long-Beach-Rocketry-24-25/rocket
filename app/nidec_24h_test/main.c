@@ -20,6 +20,10 @@ Usart usart;
 
 static void motor_loop(void)
 {
+    if (MotorRotaterIsActive(&rotater))
+    {
+        cli.comm->fwrite(cli.comm, "Enc: %zu", encoder.get_counter(&encoder));
+    }
     MotorRotaterUpdate(&rotater);
 }
 
@@ -55,7 +59,7 @@ int main(void)
     create_main_loop(motor_loop, 1000);
 
     // Fix so encoder counts not cfged here?
-    MotorRotaterInit(&rotater, &motor, &encoder, 200);
+    MotorRotaterInit(&rotater, &motor, &encoder, 400);
 
     // while (1)
     // {
@@ -67,6 +71,8 @@ int main(void)
     //     MotorRotaterUpdate(&rotater);
     //     while (MotorRotaterIsActive(&rotater))
     //     {
+    //         cli.comm->fwrite(cli.comm, "Enc: %zu",
+    //                          encoder.get_counter(&encoder));
     //         MotorRotaterUpdate(&rotater);
     //     }
     //     MotorRotaterUpdate(&rotater);

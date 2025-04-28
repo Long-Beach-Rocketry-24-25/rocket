@@ -5,7 +5,9 @@
 #pragma once
 
 #include "freertos_timer.h"
+#include "nidec_24h.h"
 #include "prealloc.h"
+#include "st_encoder_fctry.h"
 #include "st_gpio_fctry.h"
 #include "st_pwm_fctry.h"
 #include "st_usart_fctry.h"
@@ -16,7 +18,7 @@
 
 extern TIM_HandleTypeDef htim1;
 
-bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio);
+bool BSP_Init(Usart* usart, Motor* motor, Encoder* encoder);
 
 void USART2_IRQHandler(void);
 

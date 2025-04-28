@@ -1,12 +1,12 @@
 
-#include "pwm_app_bsp.h"
+#include "nidec_bsp.h"
 
 #define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
 
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
+bool BSP_Init(Usart* usart, Motor* motor, Encoder* encoder)
 {
     HAL_InitTick(0);
     SystemClock_Config();
@@ -30,12 +30,27 @@ bool BSP_Init(Usart* usart, Pwm* pwm, Gpio* led_gpio)
         (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
         (StGpioParams){{0}, GPIOA_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
-    // Pwm: TIM2 CH1 AF1
-    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
-    EXIT_IF_FAIL(GiveStPwm(
-        pwm, &memory, TIM2_BASE, 1, HAL_RCC_GetPCLK1Freq(), UINT16_MAX,
-        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 1}}));
+    /**
+     * TIM3 CH3 (PB0 AF2):
+     * With no additional clock config, APB1 clock should be same frequency
+     * as core clock.
+     */
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN | RCC_AHB2ENR_GPIOCEN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM3EN;
+    EXIT_IF_FAIL(give_nidec_24h(
+        motor, &memory,
+        MakeStPwm(&memory, TIM3_BASE, 3, HAL_RCC_GetPCLK1Freq(), UINT16_MAX,
+                  (StGpioParams){{0}, GPIOB_BASE, 0, {ALT_FUNC, 0, 0, 0, 2}}),
+        MakeStGpio(&memory,
+                   (StGpioParams){{0}, GPIOC_BASE, 0, {GPOUT, 0, 0, 0, 0}}),
+        MakeStGpio(&memory,
+                   (StGpioParams){{0}, GPIOC_BASE, 1, {GPOUT, 0, 0, 0, 0}})));
 
+    RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
+    EXIT_IF_FAIL(GiveStEncoder(
+        encoder, &memory, TIM2_BASE, 1, ONE_TO_ONE,
+        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 1}},
+        (StGpioParams){{0}, GPIOA_BASE, 1, {ALT_FUNC, 0, 0, 0, 1}}));
     return true;
 }
 
