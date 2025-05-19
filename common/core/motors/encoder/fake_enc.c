@@ -18,6 +18,7 @@ void QEnc_Init(QEnc* qenc, MotorRotoationCtrler* params, DCMotor* motor)
     params->encoder = qenc;
     params->state = idle;
     params->motor = motor;
+    params->diff = 0;
 }
 
 size_t get_fake_ticks(QEnc* qenc)
@@ -29,24 +30,29 @@ size_t get_fake_ticks(QEnc* qenc)
 size_t fake_increment(QEnc* qenc, size_t increment)
 {
     MotorRotoationCtrler* controller = (MotorRotoationCtrler*)(qenc->priv);
-    if (fabs(controller->diff) > 65535)
+
+    controller->counter += increment;
+
+    if (controller->counter < controller->last_enc)
     {
         controller->counter = 0;
-        return controller->counter;
+        controller->last_enc = 0;
+        return controller->counter += increment;
     }
     else
     {
-        return controller->counter += increment;
+        return controller->counter;
     }
 }
 
 size_t fake_decrement(QEnc* qenc, size_t decrement)
 {
     MotorRotoationCtrler* controller = (MotorRotoationCtrler*)(qenc->priv);
-    if (fabs(controller->diff) > 65535)
+    if (controller->counter == 0)
     {
-        controller->counter = 0;
-        return controller->counter;
+        controller->counter = 65535;
+        controller->last_enc = 65535;
+        return controller->counter -= decrement;
     }
     else
     {
@@ -66,6 +72,7 @@ bool command_rotate(MotorRotoationCtrler* controller, double degrees)
         controller->ticks_needed = (controller->ticks_per_angle) * (degrees);
         controller->dir = degrees > 0;
         controller->start_pos = get_fake_ticks(controller->encoder);  //segfault
+        controller->diff = 0;
         controller->cmd = true;
         return true;
     }
@@ -83,14 +90,19 @@ bool update(MotorRotoationCtrler* controller)
                                                  controller->dir);
                 controller->motor->set_en(controller->motor, true);
                 controller->state = rotating;
-                return true;
+                //return true;
             }
             break;
         case rotating:
             if (controller->cmd)
             {
-                controller->diff += curr_enc - controller->last_enc;
+                controller->diff += (curr_enc - controller->last_enc);
                 if (fabs(controller->diff) < fabs(controller->ticks_needed))
+                {
+
+                    //return true;
+                }
+                else
                 {
                     controller->motor->set_en(controller->motor, false);
                     controller->state = idle;
@@ -101,5 +113,5 @@ bool update(MotorRotoationCtrler* controller)
             break;
     }
     controller->last_enc = curr_enc;
-    return false;
+    return true;
 }

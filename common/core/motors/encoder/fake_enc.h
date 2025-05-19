@@ -19,11 +19,11 @@ struct MotorRotoationCtrler
     DCMotor* motor;
     Pwm* pwm;
     QEncState state;
-    size_t ticks_needed;
+    int ticks_needed;
     size_t ppr;
     size_t last_enc;
     uint16_t counter;
-    size_t diff;
+    int diff;
     size_t ticks_per_angle;
     size_t start_pos;
     bool cmd;

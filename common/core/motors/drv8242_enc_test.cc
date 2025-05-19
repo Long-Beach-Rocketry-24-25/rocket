@@ -21,11 +21,11 @@ TEST_F(Drv8242EncTest, InitTest)
     FakeInit(&motor, &motor_control);  //segfalt
     EXPECT_EQ(controller.ppr, 100);
     EXPECT_EQ(get_fake_ticks(&qenc), 0);
-    EXPECT_EQ(fake_increment(&qenc, 10000), 10000);
     EXPECT_EQ(controller.command_rotate(&controller, 10), false);
     controller.cmd = true;
     EXPECT_EQ(controller.command_rotate(&controller, 10), true);  //segfault
-    EXPECT_EQ(controller.start_pos, 10000);
+    EXPECT_EQ(controller.start_pos, 0);
     EXPECT_EQ(controller.update(&controller), true);  //NANI??
+    EXPECT_EQ(fake_increment(&qenc, 10000), 10000);
     EXPECT_EQ(controller.update(&controller), false);
 }

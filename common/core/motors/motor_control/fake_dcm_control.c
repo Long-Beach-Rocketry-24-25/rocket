@@ -26,21 +26,19 @@ void config(DCM_Control* control)
 
 void motor_update(DCM_Control* control)
 {
-    switch (control->qenc->state)
-    {
-        case idle:
-            control->qenc->update(control->qenc);
-            control->cmd_enable = true;
-            break;
+    control->qenc->update(control->qenc);
 
-        case rotating:
-            control->qenc->update(control->qenc);
-            control->cmd_enable = false;
-            break;
+    if (control->qenc->cmd)
+    {
+        control->cmd_enable = true;
+    }
+    else
+    {
+        control->cmd_enable = false;
     }
 }
 
 int get_state(DCM_Control* control)
 {
-    return control->motor->state;
+    return control->qenc->state;
 }
