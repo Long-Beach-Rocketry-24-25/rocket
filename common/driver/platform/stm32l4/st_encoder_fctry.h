@@ -7,11 +7,9 @@
 #include "st_gpio_fctry.h"
 
 bool GiveStEncoder(Encoder* enc, Mem* mem, const uint32_t base_addr,
-                   const size_t channel_pair,
                    const StEncoderCmpChannel channel_polarity,
                    const StGpioParams io1, const StGpioParams io2);
 
 Encoder* MakeStEncoder(Mem* mem, const uint32_t base_addr,
-                       const size_t channel_pair,
                        const StEncoderCmpChannel channel_polarity,
                        const StGpioParams io1, const StGpioParams io2);

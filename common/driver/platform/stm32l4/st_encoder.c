@@ -24,9 +24,9 @@ bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
     // Mode select encoder.
     st_enc->instance->SMCR |= SMCR_BOTH_EDGES;
 
-    // Channel input capture enable.
+    // Channel 1 & 2 (encoder only works on 1/2) input capture enable.
+    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(1);
     st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(2);
-    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(3);
 
     st_enc->instance->CCMR1 |= (channel_polarity << TIM_CCMR1_CC1S_Pos) |
                                (channel_polarity << TIM_CCMR1_CC2S_Pos);
