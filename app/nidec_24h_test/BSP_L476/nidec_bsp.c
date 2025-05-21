@@ -48,7 +48,7 @@ bool BSP_Init(Usart* usart, Motor* motor, Encoder* encoder)
 
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
     EXIT_IF_FAIL(GiveStEncoder(
-        encoder, &memory, TIM2_BASE, 1, ONE_TO_ONE,
+        encoder, &memory, TIM2_BASE, ONE_TO_ONE,
         (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, 0, 0, 0, 1}},
         (StGpioParams){{0}, GPIOA_BASE, 1, {ALT_FUNC, 0, 0, 0, 1}}));
     return true;

@@ -14,13 +14,8 @@
 #define CCER_CONFIG_CLEAR(channel) (0xF << CCER_CHANNEL_Pos(channel))
 
 bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
-                   size_t channel_pair, StEncoderCmpChannel channel_polarity)
+                   StEncoderCmpChannel channel_polarity)
 {
-    if (channel_pair < 0 || channel_pair > ST_ENCODER_CHANNEL_PAIR_MAX)
-    {
-        return false;
-    }
-
     st_enc->instance = (TIM_TypeDef*)base_addr;
 
     // Max out reload value to all F's.
@@ -30,25 +25,11 @@ bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
     st_enc->instance->SMCR |= SMCR_BOTH_EDGES;
 
     // Channel input capture enable.
-    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(channel_pair + 1);
-    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(channel_pair + 2);
+    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(2);
+    st_enc->instance->CCER &= ~CCER_CONFIG_CLEAR(3);
 
-    switch (channel_pair)
-    {
-        case 1:
-            st_enc->instance->CCMR1 |=
-                (channel_polarity << TIM_CCMR1_CC1S_Pos) |
-                (channel_polarity << TIM_CCMR1_CC2S_Pos);
-            break;
-        case 2:
-            st_enc->instance->CCMR2 |=
-                (channel_polarity << TIM_CCMR2_CC3S_Pos) |
-                (channel_polarity << TIM_CCMR2_CC4S_Pos);
-            break;
-        default:
-            return false;
-            break;
-    }
+    st_enc->instance->CCMR1 |= (channel_polarity << TIM_CCMR1_CC1S_Pos) |
+                               (channel_polarity << TIM_CCMR1_CC2S_Pos);
 
     st_enc->instance->CR1 |= TIM_CR1_CEN;
 

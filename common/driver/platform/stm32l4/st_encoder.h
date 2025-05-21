@@ -8,8 +8,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ST_ENCODER_CHANNEL_PAIR_MAX 2
-
 /**
  * Configures polarity of capture/compare input to TI number.
  * ONE_TO_ONE maps IC1 to TI1 and IC2 to TI2, and SWAPPED maps
@@ -27,7 +25,7 @@ typedef struct
 } StPrivEncoder;
 
 bool StEncoderInit(Encoder* encoder, StPrivEncoder* st_enc, uint32_t base_addr,
-                   size_t channel_pair, StEncoderCmpChannel channel_polarity);
+                   StEncoderCmpChannel channel_polarity);
 
 size_t StEncoderGetCount(Encoder* encoder);
 
