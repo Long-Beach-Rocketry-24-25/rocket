@@ -6,8 +6,7 @@ bool get_buf_pb(cmd_message* self, uint8_t* buffer,
     pb_cmd* cmd = self->priv;
     bool status;
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-    status = pb_encode(&stream, ((pb_cmd*)self->priv)->schema_field,
-                       ((pb_cmd*)self->priv)->schema_object);
+    status = pb_encode(&stream, cmd->schema_field, cmd->schema_object);
     cmd->buffer_size = stream.bytes_written;
     return status;
 }
@@ -23,8 +22,7 @@ bool parse_pb(cmd_message* self, uint8_t* buffer, size_t size)
     bool status;
     pb_cmd* cmd = self->priv;
     pb_istream_t stream = pb_istream_from_buffer(buffer, size);
-    status = pb_decode(&stream, ((pb_cmd*)self->priv)->schema_field,
-                       ((pb_cmd*)self->priv)->schema_object);
+    status = pb_decode(&stream, cmd->schema_field, cmd->schema_object);
     return status;
 }
 

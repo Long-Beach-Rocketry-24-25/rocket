@@ -46,7 +46,7 @@ void read_byte(Bus* self, uint8_t data)
             case IDLE:
                 if (data == NACK)
                 {
-                    self->state = ERROR;
+                    self->state = FAIL;
                 }
                 else if (data == START_TRANSMISSION)
                 {
@@ -61,7 +61,7 @@ void read_byte(Bus* self, uint8_t data)
 
                     self->receive_index += 1;
                 }
-                if (data == ACK)
+                else if (data == ACK)
                 {
                     self->state = ACKNOWLEDGED;
                 }
@@ -100,21 +100,19 @@ void read_byte(Bus* self, uint8_t data)
                 self->sum = self->sum % 256;
                 if (self->sum != data)
                 {
-                    self->state = ERROR;
+                    self->state = FAIL;
                     self->receive_buffer[self->receive_index] = data;
-                    self->sum += data;
                     self->receive_index += 1;
                 }
                 else
                 {
                     self->state = FINISHED;
                     self->receive_buffer[self->receive_index] = data;
-                    self->sum += data;
                     self->receive_index += 1;
                 }
 
                 break;
-            case ERROR:
+            case FAIL:
                 break;
             default:
                 break;

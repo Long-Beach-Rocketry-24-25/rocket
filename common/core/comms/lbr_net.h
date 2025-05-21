@@ -3,7 +3,7 @@
  * This software is a generic bus designed to serialize data over UART for board to board communication.
  * Allows for one byte addressing and checksum error checking.
  * Format for the packets one byte each:
- *      acknowledge, address, datalength, data(as long as the package size), checksum   
+ *      start transmission, address, datalength, data(as long as the package size), checksum   
  * Author: TJ Malaska
  */
 #pragma once
@@ -26,7 +26,7 @@
 typedef enum
 {
     IDLE,
-    ERROR,
+    FAIL,
     ACKNOWLEDGED,
     READ_ADDRESS,
     READ_LEN,

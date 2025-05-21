@@ -9,7 +9,7 @@ set(PREPROCESS_DEFS
 add_subdirectory_for(STM32L412 BSP_L412)
 add_subdirectory_for(STM32L476 BSP_L476)
 
-if (TARGET network_test_app_bsp)
+if (TARGET uart_network_bsp)
 
     add_executable_for(${TARGET_DEVICE} ${EXECUTABLE} ${LDF}
         main.c

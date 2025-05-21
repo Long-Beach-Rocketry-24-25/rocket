@@ -9,13 +9,13 @@
 #include "st_gpio_fctry.h"
 #include "st_usart_fctry.h"
 #include "stm32l4xx_hal.h"
-#include "usart_cli.h"
+#include "uart_lbr_net.h"
 
 #define DRIVER_MEM_SIZE 0x256
 
 extern TIM_HandleTypeDef htim1;
 
-bool BSP_Init(Usart* usart, Gpio* led_gpio);
+bool BSP_Init(Usart* usart);
 
 void USART2_IRQHandler(void);
 

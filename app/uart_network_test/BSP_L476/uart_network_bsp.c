@@ -6,7 +6,7 @@
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-bool BSP_Init(Usart* usart, Gpio* led_gpio)
+bool BSP_Init(Usart* usart)
 {
     HAL_InitTick(0);
     SystemClock_Config();
@@ -16,6 +16,8 @@ bool BSP_Init(Usart* usart, Gpio* led_gpio)
     // Single FRT timer.
     Timeout* time = make_frt_timer(&memory, 100);
 
+    //GPIO clock
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
     // USART2
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
 
@@ -30,15 +32,14 @@ bool BSP_Init(Usart* usart, Gpio* led_gpio)
     EXIT_IF_FAIL(
         GiveStGpio(led_gpio, &memory,
                    (StGpioParams){{0}, GPIOA_BASE, 5, {GPOUT, 0, 0, 0, 0}}));
-
-   
+*/
 
     // PA2/3 AF 7
     EXIT_IF_FAIL(GiveStUsart(
         usart, &memory, time, USART2_BASE, SystemCoreClock, 115200,
         (StGpioParams){{0}, GPIOA_BASE, 2, {ALT_FUNC, 0, 0, 0, 0x7}},
         (StGpioParams){{0}, GPIOA_BASE, 3, {ALT_FUNC, 0, 0, 0, 0x7}}));
-
+    /*
     // I2c1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
@@ -51,11 +52,12 @@ bool BSP_Init(Usart* usart, Gpio* led_gpio)
 
     return true;
     */
+    return true;
 }
 
 void USART2_IRQHandler(void)
 {
-    cli_usart_rx_callback();
+    usart_rx_callback();
 }
 
 void TIM1_UP_TIM16_IRQHandler(void)
