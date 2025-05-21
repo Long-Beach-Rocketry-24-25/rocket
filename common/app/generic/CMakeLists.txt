@@ -9,6 +9,7 @@ target_include_directories(generic_app PUBLIC
     logging
     logging/builders
     logging/subscribers
+    motors
     navigation
 )
 

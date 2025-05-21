@@ -90,7 +90,7 @@ bool cli_process(Cli* cli, const char* message)
         /*
          * Unknown command parsed.
          */
-        cli->comm->fwrite(cli->comm, "Unknown command!");
+        cli->comm->fwrite(cli->comm, "Unknown command: %s", message);
         return false;
     }
 
