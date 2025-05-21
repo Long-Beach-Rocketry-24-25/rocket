@@ -1,9 +1,3 @@
-#pragma once
-
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
 /**
  * @file io_input.h
  * @author Ayleen Perez
@@ -12,6 +6,11 @@
  * This interface allows app logic to read input state using a common structure,
  * regardless of the underlying implementation (e.g., raw GPIO or debounced GPIO).
  */
+#pragma once
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 typedef struct IoInput IoInput;
 
