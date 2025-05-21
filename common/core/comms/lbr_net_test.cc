@@ -41,7 +41,7 @@ public:
  */
 TEST_F(FormatTests, pack_test)
 {
-    const uint8_t data[10] = "f";
+    uint8_t data[10] = "f";
     const uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 1 + 'f') % 256;
     const uint8_t expected_buf[] = {START_TRANSMISSION, ADDRESS, 1, 'f',
@@ -59,7 +59,7 @@ TEST_F(ReadCharTests, idle_to_error_test)
 {
     lbr_net_node_init(&bus, ADDRESS);
     bus.read_byte(&bus, NACK);
-    EXPECT_EQ(bus.state, ERROR);
+    EXPECT_EQ(bus.state, FAIL);
 }
 
 /**
@@ -119,7 +119,7 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
     {
         bus.read_byte(&bus, data[i]);
     }
-    EXPECT_EQ(bus.state, ERROR);
+    EXPECT_EQ(bus.state, FAIL);
 }
 
 /**
@@ -127,7 +127,7 @@ TEST_F(ReadCharTests, idle_wrong_checksum)
  */
 TEST_F(FormatTests, encode_decode_test)
 {
-    const uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
+    uint8_t data[5] = {'c', 'a', 'f', 'e', 's'};
     const uint8_t expected_checksum =
         (START_TRANSMISSION + ADDRESS + 5 + 'c' + 'a' + 'f' + 'e' + 's') % 256;
     const uint8_t expected_buf[] = {
