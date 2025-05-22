@@ -5,9 +5,11 @@
 #pragma once
 
 #include "freertos_timer.h"
+#include "gpio_cs.h"
 #include "prealloc.h"
 #include "st_gpio_fctry.h"
 #include "st_i2c_fctry.h"
+#include "st_spi_fctry.h"
 #include "st_usart_fctry.h"
 
 #include "stm32l4xx_hal.h"
@@ -17,8 +19,12 @@
 
 extern TIM_HandleTypeDef htim1;
 
-bool BSP_Init(Usart* debug_usart, I2c* i2c, Gpio* red_led, Gpio* green_led,
-              Gpio* blue_led);
+bool BSP_Init(Usart* debug_usart, I2c* i2c, Spi* spi, Gpio* red_led,
+              Gpio* green_led, Gpio* blue_led);
+
+void ConfigIrq(void);
+
+void SystemReset(void);
 
 void USART1_IRQHandler(void);
 

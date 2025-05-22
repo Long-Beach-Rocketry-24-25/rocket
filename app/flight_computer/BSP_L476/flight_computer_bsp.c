@@ -6,8 +6,8 @@
 static Mem memory;
 static uint8_t driver_mem[DRIVER_MEM_SIZE] = {0};
 
-bool BSP_Init(Usart* debug_usart, I2c* i2c, Gpio* red_led, Gpio* green_led,
-              Gpio* blue_led)
+bool BSP_Init(Usart* debug_usart, I2c* i2c, Spi* spi, Gpio* red_led,
+              Gpio* green_led, Gpio* blue_led)
 {
     HAL_InitTick(0);
     SystemClock_Config();
@@ -30,20 +30,6 @@ bool BSP_Init(Usart* debug_usart, I2c* i2c, Gpio* red_led, Gpio* green_led,
         GiveStGpio(blue_led, &memory,
                    (StGpioParams){{0}, GPIOB_BASE, 0, {GPOUT, 0, 0, 0, 0}}));
 
-    // USART1
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-
-    NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
-    NVIC_EnableIRQ(USART1_IRQn);
-
-    // PA9/10
-    EXIT_IF_FAIL(GiveStUsart(
-        debug_usart, &memory, time, USART1_BASE, SystemCoreClock, 115200,
-        (StGpioParams){{0}, GPIOA_BASE, 9, {ALT_FUNC, 0, 0, 0, 0x7}},
-        (StGpioParams){{0}, GPIOA_BASE, 10, {ALT_FUNC, 0, 0, 0, 0x7}}));
-
     // I2c1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
@@ -54,7 +40,45 @@ bool BSP_Init(Usart* debug_usart, I2c* i2c, Gpio* red_led, Gpio* green_led,
                            (StGpioParams){{0}, GPIOB_BASE, 6, i2c_conf},
                            (StGpioParams){{0}, GPIOB_BASE, 7, i2c_conf}));
 
+    // SPI1
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+
+    // PA4 gpio cs
+    Gpio* cs_pin = MakeStGpio(
+        &memory, (StGpioParams){{0}, GPIOA_BASE, 4, {1, 0, 0, 0, 0}});
+
+    // PA 5, 6, 7 AF 5
+    const StGpioSettings spi_io_conf = {ALT_FUNC, 0, 0, 0, 0x5};
+    EXIT_IF_FAIL(GiveStSpi(spi, &memory, time,
+                           MakeGpioCs(&memory, cs_pin, true), SPI1_BASE,
+                           (StGpioParams){{0}, GPIOA_BASE, 5, spi_io_conf},
+                           (StGpioParams){{0}, GPIOA_BASE, 6, spi_io_conf},
+                           (StGpioParams){{0}, GPIOA_BASE, 7, spi_io_conf}));
+
+    // USART1
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+
+    // PA9/10
+    EXIT_IF_FAIL(GiveStUsart(
+        debug_usart, &memory, time, USART1_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 9, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 10, {ALT_FUNC, 0, 0, 0, 0x7}}));
+
     return true;
+}
+
+void ConfigIrq(void)
+{
+    NVIC_SetPriorityGrouping(0);
+    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_EnableIRQ(USART1_IRQn);
+}
+
+void SystemReset(void)
+{
+    __NVIC_SystemReset();
 }
 
 void USART1_IRQHandler(void)
@@ -121,7 +145,6 @@ void Error_Handler(void)
     __disable_irq();
     while (1)
     {
-        GPIOA->ODR |= GPIO_ODR_OD0;
     }
     /* USER CODE END Error_Handler_Debug */
 }

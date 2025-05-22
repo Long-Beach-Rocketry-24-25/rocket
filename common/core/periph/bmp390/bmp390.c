@@ -122,6 +122,11 @@ static int64_t Bmp390_Compensate_Pressure(Bmp390* dev, uint32_t data)
 
 static void Bmp390_Get_Data(Bmp390* dev)
 {
+    if (dev->cal.t1 == 0)
+    {
+        Bmp390_Get_Calib(dev);
+    }
+
     uint8_t data[6] = {0};
     dev->status = dev->bus->set_target(dev->bus, dev->addr);
     dev->status = dev->bus->read(dev->bus, BMP390_PRESS_DAT_REG_START, data, 3);

@@ -9,7 +9,6 @@
 #include "spi.h"
 #include "usart.h"
 
-#include "debug_app.h"
 #include "subscale_app.h"
 
 /*-----------------------------------------------------------*/

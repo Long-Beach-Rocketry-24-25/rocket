@@ -7,6 +7,8 @@ add_library(hal STATIC
     st_usart_fctry.c
     st_pwm.c
     st_pwm_fctry.c
+    st_spi.c
+    st_spi_fctry.c
 )
 
 target_include_directories(hal PUBLIC
