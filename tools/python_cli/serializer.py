@@ -2,7 +2,7 @@ import serial.tools.list_ports
 from typing import List
 
 class Serializer:
-    def __init__(self, baudrate: int, ) -> None:
+    def __init__(self, baudrate: int, ) -> None:    #may need to add more parameters for the serial class
         self.ser = serial.Serial()
         self.ser.baudrate = baudrate
         self.ports = None
@@ -14,13 +14,23 @@ class Serializer:
         return ports 
     
     def connect_port(self, port: str) -> bool:
+        if self.ser.is_open:
+            self.ser.close()
         self.ser.port = port
         self.ser.open()
         return self.ser.is_open
 
-    def send(self, msg: str) -> bool:
+    def close_port(self) -> bool:
+        self.ser.close()
+        self.ser.port = None
+        return True
 
-        pass
+
+    def send(self, msg: str) -> bool:
+        self.ser.write(msg.encode('utf-8'))
+        return True
 
     def receive(self) -> str:
+
         pass
+
