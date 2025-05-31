@@ -1,4 +1,5 @@
 
+//for rayne flight module
 #include "subscale_bsp.h"
 
 #define EXIT_IF_FAIL(cond) EXIT_IF(!(cond), false)
@@ -18,35 +19,39 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     //blue PB0
     //green PC7
     //red PC6
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;  //only gpio B
 
-    EXIT_IF_FAIL(
-        GiveStGpio(led_gpio, &memory,
-                   (StGpioParams){{0}, GPIOB_BASE, 0, {1, 0, 0, 0, 0}}));
+    EXIT_IF_FAIL(GiveStGpio(
+        led_gpio, &memory,
+        (StGpioParams){{0}, GPIOB_BASE, 0, {GPOUT, 0, 0, 0, 0}}));  //output
 
-    // USART3
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-    RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+    // USART4
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
 
-    NVIC_SetPriorityGrouping(0);
-    NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(0, 6, 0));
-    NVIC_EnableIRQ(USART3_IRQn);
+    NVIC_SetPriorityGrouping(0);  //highest priority
+    NVIC_SetPriority(UART4_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_EnableIRQ(UART4_IRQn);
 
-    // PD8/9 AF 7
+    //TX PA0
+    //RX PA1
     EXIT_IF_FAIL(GiveStUsart(
-        usart, &memory, time, USART3_BASE, SystemCoreClock, 115200,
-        (StGpioParams){{0}, GPIOD_BASE, 8, {ALT_FUNC, 0, 0, 0, 0x7}},
-        (StGpioParams){{0}, GPIOD_BASE, 9, {ALT_FUNC, 0, 0, 0, 0x7}}));
+        usart, &memory, time, UART4_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, PUSH_PULL, 0, 0, 0x8}},
+        (StGpioParams){{0}, GPIOA_BASE, 1, {ALT_FUNC, PUSH_PULL, 0, 0, 0x8}}));
 
     // SPI1
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIODEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
 
-    // PD14 gpio cs
+    // PA4 gpio cs
     Gpio* cs_pin = MakeStGpio(
-        &memory, (StGpioParams){{0}, GPIOD_BASE, 14, {1, 0, 0, 0, 0}});
+        &memory, (StGpioParams){
+                     {0}, GPIOA_BASE, 4, {GPOUT, PUSH_PULL, LOW, NO_PULL, 0}});
 
-    // PA 5, 6, 7 AF 5
+    // PA5 SCK
+    // PA6 MISO
+    // PA7 MOSI
     const StGpioSettings spi_io_conf = {ALT_FUNC, 0, 0, 0, 0x5};
     EXIT_IF_FAIL(GiveStSpi(spi, &memory, time,
                            MakeGpioCs(&memory, cs_pin, true), SPI1_BASE,
@@ -55,14 +60,14 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
                            (StGpioParams){{0}, GPIOA_BASE, 7, spi_io_conf}));
 
     // I2C1
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
-    RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+    RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
 
-    // PB8/9 AF 4
+    // PB6 PB7 AF 4
     const StGpioSettings i2c_conf = {ALT_FUNC, OPEN_DRAIN, 0, PULL_UP, 0x4};
     EXIT_IF_FAIL(GiveStI2c(temp_i2c, &memory, time, I2C1_BASE, 0x20B,
-                           (StGpioParams){{0}, GPIOB_BASE, 8, i2c_conf},
-                           (StGpioParams){{0}, GPIOB_BASE, 9, i2c_conf}));
+                           (StGpioParams){{0}, GPIOB_BASE, 6, i2c_conf},
+                           (StGpioParams){{0}, GPIOB_BASE, 7, i2c_conf}));
 
     return true;
 }

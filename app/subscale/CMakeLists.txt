@@ -8,6 +8,7 @@ set(PREPROCESS_DEFS
 
 add_subdirectory_for(STM32F746 BSP_F746)
 add_subdirectory_for(STM32H503 BSP_H503)
+add_subdirectory_for(STM32L476 BSP_L476)
 
 if (TARGET subscale_bsp)
 
