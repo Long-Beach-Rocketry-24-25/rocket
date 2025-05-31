@@ -25,7 +25,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
         led_gpio, &memory,
         (StGpioParams){{0}, GPIOB_BASE, 0, {GPOUT, 0, 0, 0, 0}}));  //output
 
-    // USART4
+    // UART4
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
     RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
 
@@ -72,7 +72,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     return true;
 }
 
-void USART3_IRQHandler(void)
+void UART4_IRQHandler(void)
 {
     cli_usart_rx_callback();
 }

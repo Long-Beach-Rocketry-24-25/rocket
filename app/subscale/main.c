@@ -10,7 +10,7 @@
 #include "usart.h"
 
 #include "debug_app.h"
-#include "subscale_app.h"
+#include "subscale_app_rayne.h"
 
 /*-----------------------------------------------------------*/
 
@@ -24,6 +24,8 @@ int main(void)
 
     BSP_Init(&usart, &spi, &i2c, &led_gpio);
     SubscaleAppCreate(&usart, &spi, &i2c, &led_gpio, SystemReset);
+    uint8_t data[] = "test";
+    usart.send(&usart, data, 4);
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
