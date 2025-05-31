@@ -28,8 +28,8 @@ static void loop_func(void)
     led->toggle(led);
 }
 
-void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
-                       ResetFunc reset)
+void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
+                            ResetFunc reset)
 {
     led = led_gpio;
     Command commands[4] = {{"Blink", blink, "Blinks LED."},

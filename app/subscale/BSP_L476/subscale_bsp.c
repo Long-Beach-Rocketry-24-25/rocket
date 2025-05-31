@@ -25,20 +25,20 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
         led_gpio, &memory,
         (StGpioParams){{0}, GPIOB_BASE, 0, {GPOUT, 0, 0, 0, 0}}));  //output
 
-    // UART4
+    // USART1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
-    RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
     NVIC_SetPriorityGrouping(0);  //highest priority
-    NVIC_SetPriority(UART4_IRQn, NVIC_EncodePriority(0, 6, 0));
-    NVIC_EnableIRQ(UART4_IRQn);
+    NVIC_SetPriority(USART1_IRQn, NVIC_EncodePriority(0, 6, 0));
+    NVIC_EnableIRQ(USART1_IRQn);
 
-    //TX PA0
-    //RX PA1
+    //TX PA9
+    //RX PA10
     EXIT_IF_FAIL(GiveStUsart(
-        usart, &memory, time, UART4_BASE, SystemCoreClock, 115200,
-        (StGpioParams){{0}, GPIOA_BASE, 0, {ALT_FUNC, PUSH_PULL, 0, 0, 0x8}},
-        (StGpioParams){{0}, GPIOA_BASE, 1, {ALT_FUNC, PUSH_PULL, 0, 0, 0x8}}));
+        usart, &memory, time, USART1_BASE, SystemCoreClock, 115200,
+        (StGpioParams){{0}, GPIOA_BASE, 9, {ALT_FUNC, 0, 0, 0, 0x7}},
+        (StGpioParams){{0}, GPIOA_BASE, 10, {ALT_FUNC, 0, 0, 0, 0x7}}));
 
     // SPI1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
@@ -72,7 +72,7 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     return true;
 }
 
-void UART4_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
     cli_usart_rx_callback();
 }
