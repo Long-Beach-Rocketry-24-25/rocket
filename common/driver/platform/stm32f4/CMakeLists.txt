@@ -4,6 +4,7 @@ add_library(hal STATIC
 
 target_include_directories(hal PUBLIC
     bus
+    io
     .
 )
 target_link_libraries(hal PUBLIC

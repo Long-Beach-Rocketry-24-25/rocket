@@ -1,6 +1,5 @@
 /**
- * 
- * 
+ * GPIO Pin interface.
  */
 
 #pragma once
@@ -9,7 +8,6 @@
 #include <stddef.h>
 
 typedef struct Gpio Gpio;
-
 struct Gpio
 {
     void (*config)(Gpio* gpio);
