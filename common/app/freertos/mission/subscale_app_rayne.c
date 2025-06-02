@@ -1,5 +1,5 @@
 
-#include "subscale_app.h"
+#include "subscale_app_rayne.h"
 
 static Cli cli;
 
@@ -28,14 +28,9 @@ static void loop_func(void)
     led->toggle(led);
 }
 
-void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
-                       ResetFunc reset)
+void SubscaleAppCreateRayne(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
+                            ResetFunc reset)
 {
-    uint32_t count = 0;
-    while (count < 10000)
-    {
-        count += 1;
-    }
     led = led_gpio;
     Command commands[4] = {{"Blink", blink, "Blinks LED."},
                            {"Imu", read_bno055, "Reads IMU accel/gyro."},
@@ -46,7 +41,7 @@ void SubscaleAppCreate(Usart* usart, Spi* spi, I2c* i2c, Gpio* led_gpio,
     W25qInit(&flash, spi, 0xFFFFFF);
     Bno055_Init(&bno, i2c, BNO055_DEV_ADDR_GND);
     Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
-    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_PWR);
+    Bmp390_Init(&bmp, i2c, BMP390_DEV_ADDR_GND);
     Bmp390_Config(&bmp);
     Bno055_Set_Mode(&bno, BNO055_IMU_MODE);
 
