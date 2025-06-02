@@ -21,13 +21,22 @@ Gpio led_gpio;
 
 int main(void)
 {
-
+    volatile uint32_t c = 0;
+    while (c < 1000000)
+    {
+        c += 1;
+    }
     BSP_Init(&usart, &spi, &i2c, &led_gpio);
     SubscaleAppCreateRayne(&usart, &spi, &i2c, &led_gpio, SystemReset);
-    uint8_t data[] = "test";
-
-    usart.send(&usart, data, 4);
-    usart.send(&usart, data, 4);
+    // uint32_t count = 1000;
+    // // while (1)
+    // // {
+    // //     count += 1;
+    // //     if (count % 100000 == 1)
+    // //     {
+    // //         led_gpio.toggle(&led_gpio);
+    // //     }
+    // // }
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

@@ -20,10 +20,11 @@ bool BSP_Init(Usart* usart, Spi* spi, I2c* temp_i2c, Gpio* led_gpio)
     //green PC7
     //red PC6
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;  //only gpio B
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;  //only gpio B
 
     EXIT_IF_FAIL(GiveStGpio(
         led_gpio, &memory,
-        (StGpioParams){{0}, GPIOB_BASE, 0, {GPOUT, 0, 0, 0, 0}}));  //output
+        (StGpioParams){{0}, GPIOC_BASE, 6, {GPOUT, 0, 0, 0, 0}}));  //output
 
     // USART1
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;

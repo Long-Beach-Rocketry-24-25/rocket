@@ -24,7 +24,6 @@ int main(void)
 
     BSP_Init(&usart, &spi, &i2c, &led_gpio);
     SubscaleAppCreate(&usart, &spi, &i2c, &led_gpio, SystemReset);
-    uint8_t data[] = "test";
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
