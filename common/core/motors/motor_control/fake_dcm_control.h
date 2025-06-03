@@ -16,8 +16,8 @@ struct DCM_Control
     size_t pusle_per_rev;
 };
 
-void DCM_Control_Init(DCM_Control* control, DCPosControl* motor,
-                      MotorRotoationCtrler* qenc);
+void Fake_Control_Init(DCM_Control* control, DCPosControl* motor,
+                       MotorRotoationCtrler* qenc);
 
 void config(DCM_Control* control);
 

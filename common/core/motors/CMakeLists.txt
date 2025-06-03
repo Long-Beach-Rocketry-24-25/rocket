@@ -5,6 +5,8 @@ add_library(motors STATIC
     DC/fake_dcm.c
     encoder/fake_enc.c
     motor_control/fake_dcm_control.c
+    DC/st_dcm.c
+    motor_control/dcm_control.c
 )
 
 target_include_directories(motors PUBLIC 

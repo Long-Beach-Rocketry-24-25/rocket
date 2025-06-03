@@ -14,14 +14,16 @@ public:
     DCM_Control dev;
     DCPosControl motor_ctrl;
     MotorRotoationCtrler qenc_ctrl;
+    QEncPriv st_qenc;
     DCMotor motor;
     QEnc qenc;
+    uint32_t base_addr = 0;
 };
 
 TEST_F(DcmControlTest, InitTest)
 {
     FakeInit(&motor, &motor_ctrl);
-    QEnc_Init(&qenc, &qenc_ctrl, &motor);
+    QEnc_Init(&qenc, &qenc_ctrl, &st_qenc, &motor, base_addr);
     DCM_Control_Init(&dev, &motor_ctrl, &qenc_ctrl);
     FakeSetEnable(&motor, true);
     config(&dev);

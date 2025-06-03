@@ -1,7 +1,7 @@
 #include "fake_dcm_control.h"
 
-void DCM_Control_Init(DCM_Control* control, DCPosControl* motor,
-                      MotorRotoationCtrler* qenc)
+void Fake_Control_Init(DCM_Control* control, DCPosControl* motor,
+                       MotorRotoationCtrler* qenc)
 {
     control->motor = motor;
     control->qenc = qenc;
