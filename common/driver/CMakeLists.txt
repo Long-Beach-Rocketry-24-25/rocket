@@ -16,6 +16,7 @@ add_library(driver INTERFACE)
 
 target_include_directories(driver INTERFACE
     bus
+    io
     memory
     io
 )
